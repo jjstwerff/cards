@@ -11,6 +11,5 @@ public class TestStructure extends Tests {
 	@Test
 	public void testProjectStructure() {
 		Assert.assertEquals(content(this, "cards.record.testProjectStructure.txt"), Structure.getProject().toString());
-
 	}
 }

@@ -9,10 +9,10 @@ name=Card, size=14, related=true
   name=name, type=STRING, pos=0
   name=set, type=ENUMERATE, pos=32
   name=stats, type=ARRAY, related=CardStatistic, pos=48
-name=CardStatistic, size=5
+name=CardStatistic, size=5, array=true
   name=statistic, type=RELATION, related=Statistic, pos=0
   name=value, type=BYTE, pos=32
-name=Cards, size=4
+name=Cards, size=4, array=true
   name=card, type=RELATION, related=Card, pos=0
 name=Character, size=8, related=true
   name=name, type=STRING, pos=0
