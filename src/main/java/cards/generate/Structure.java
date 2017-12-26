@@ -7,6 +7,11 @@ import com.betterbe.memorydb.generate.Type;
 
 public class Structure {
 	public static void main(String[] args) {
+		Generate.project(getProject());
+		System.out.println("Refresh the project to allow eclipse to see the last changes");
+	}
+
+	public static Project getProject() {
 		Project project = new Project("Cards", "cards.record", "src/main/java/cards/record");
 
 		Record statistic = project.table("Statistic");
@@ -53,6 +58,7 @@ public class Structure {
 		cards.field("card", Type.RELATION, card);
 
 		Record connect = project.table("Connect");
+		connect.field("nr", Type.INTEGER);
 		connect.field("type", Type.ENUMERATE).setValues("DOOR", "CLIMB", "LINE");
 		connect.field("checks", Type.ARRAY, cards);
 
@@ -60,20 +66,20 @@ public class Structure {
 		room.field("name", Type.STRING);
 		room.field("opponent", Type.ARRAY, cards);
 		room.field("items", Type.ARRAY, cards);
-		room.field("connection", connect, "connect.nr");
+		room.field("connection", connect, "nr");
 		connect.field("to", Type.RELATION, room);
 
 		Record goal = project.table("Goal");
-		goal.field("name,", Type.STRING);
+		goal.field("name", Type.STRING);
 		goal.field("type", Type.ENUMERATE).setValues("KNOWLEDGE", "WEAPON", "WEARABLE", "STATUS", "IMPLANT");
 		goal.field("XP", Type.INTEGER);
 		goal.field("gained", Type.ENUMERATE).setValues("STASH", "OVERHEAR", "REWARD");
 
 		Record area = project.table("Area");
 		area.field("name", Type.STRING);
-		area.field("rooms", room, "nr");
+		area.field("rooms", room, "name");
 		area.field("encounter", Type.ARRAY, cards);
-		area.field("goal", goal, "goal.name");
+		area.field("goal", goal, "name");
 
 		Record skill = project.table("Skill");
 		skill.field("card", Type.RELATION, card);
@@ -85,6 +91,7 @@ public class Structure {
 
 		Record game = project.table("Game");
 		game.field("name", Type.STRING);
+		game.field("areas", area, "name");
 		game.field("rules", Type.RELATION, rules);
 		game.index("gameName", "name");
 
@@ -99,8 +106,6 @@ public class Structure {
 		player.field("name", Type.STRING);
 		player.field("member", member, "game.name");
 		player.index("playerName", "name");
-
-		Generate.project(project);
-		System.out.println("Refresh the project to allow eclipse to see the last changes");
+		return project;
 	}
 }
