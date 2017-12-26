@@ -5,11 +5,10 @@ name=Area, parent=Game, size=41, related=true
   name=encounter, type=ARRAY, related=Cards, pos=128
   name=goal, type=SET, related=Goal, pos=192
   name=upRecord, type=RELATION, related=Game, pos=296
-name=Card, parent=Rules, size=35, related=true
-  name=name, type=STRING, pos=64
-  name=set, type=ENUMERATE, pos=96
-  name=stats, type=ARRAY, related=CardStatistic, pos=112
-  name=upRecord, type=RELATION, related=Rules, pos=248
+name=Card, size=14, related=true
+  name=name, type=STRING, pos=0
+  name=set, type=ENUMERATE, pos=32
+  name=stats, type=ARRAY, related=CardStatistic, pos=48
 name=CardStatistic, size=5
   name=statistic, type=RELATION, related=Statistic, pos=0
   name=value, type=BYTE, pos=32
@@ -44,23 +43,20 @@ name=Player, size=37, related=true
   name=last, type=DATE, pos=96
   name=name, type=STRING, pos=160
   name=member, type=SET, related=Member, pos=192
-name=Race, parent=Rules, size=29, related=true
+name=Race, parent=Rules, size=33
   name=name, type=STRING, pos=64
-  name=cards, type=SET, related=Racial, pos=96
-  name=upRecord, type=RELATION, related=Rules, pos=200
-name=Racial, parent=Race, size=25
-  name=card, type=RELATION, related=Card, pos=64
-  name=upRecord, type=RELATION, related=Race, pos=168
+  name=cards, type=ARRAY, related=Cards, pos=96
+  name=upRecord, type=RELATION, related=Rules, pos=232
 name=Room, parent=Area, size=45, related=true
   name=name, type=STRING, pos=64
   name=opponent, type=ARRAY, related=Cards, pos=96
   name=items, type=ARRAY, related=Cards, pos=160
   name=connection, type=SET, related=Connect, pos=224
   name=upRecord, type=RELATION, related=Area, pos=328
-name=Rules, size=25, related=true
+name=Rules, size=29, related=true
   name=name, type=STRING, pos=32
   name=races, type=SET, related=Race, pos=64
-  name=cards, type=SET, related=Card, pos=96
+  name=cards, type=ARRAY, related=Cards, pos=96
 name=Skill, parent=Character, size=27
   name=card, type=RELATION, related=Card, pos=64
   name=state, type=ENUMERATE, pos=96
@@ -72,9 +68,7 @@ name=Statistic, size=30, related=true
 Indexes
 name=statisticName, record=Statistic
 name=statisticNr, record=Statistic
-name=cards, record=Racial
 name=races, record=Race
-name=cards, record=Card
 name=rulesName, record=Rules
 name=connection, record=Connect
 name=rooms, record=Room

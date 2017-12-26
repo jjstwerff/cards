@@ -41,21 +41,18 @@ public class Structure {
 		card.field("set", Type.ENUMERATE).setValues("RACIAL", "BACKGROUND", "MOVE", "WEAPON", "WEARING", "IMPLANT", "ENCOUNTER", "ROOM", "OPPONENT", "COMBAT");
 		card.field("stats", Type.ARRAY, cardStatistic);
 
-		Record racial = project.table("Racial");
-		racial.field("card", Type.RELATION, card);
+		Record cards = project.table("Cards");
+		cards.field("card", Type.RELATION, card);
 
 		Record race = project.table("Race");
 		race.field("name", Type.STRING);
-		race.field("cards", racial, "card.name");
+		race.field("cards", Type.ARRAY, cards);
 
 		Record rules = project.table("Rules");
 		rules.field("name", Type.STRING);
 		rules.field("races", race, "name");
-		rules.field("cards", card, "name");
+		rules.field("cards", Type.ARRAY, cards);
 		rules.index("rulesName", "name");
-
-		Record cards = project.table("Cards");
-		cards.field("card", Type.RELATION, card);
 
 		Record connect = project.table("Connect");
 		connect.field("nr", Type.INTEGER);
