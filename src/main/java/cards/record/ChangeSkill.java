@@ -21,23 +21,8 @@ public class ChangeSkill extends Skill implements AutoCloseable {
 		parent.new IndexSkills(this).remove(getRec());
 	}
 
-	public void getCard(Card value) {
-		value.setRec(store.getInt(rec, 8));
-	}
-
-	public Card getCard() {
-		return new Card(store, rec == 0 ? 0 : store.getInt(rec, 8));
-	}
-
 	public void setCard(Card value) {
 		store.setInt(rec, 8, value == null ? 0 : value.getRec());
-	}
-
-	public Skill.State getState() {
-		int data = rec == 0 ? 0 : store.getShort(rec, 12);
-		if (data <= 0)
-			return null;
-		return State.values()[data - 1];
 	}
 
 	public void setState(Skill.State value) {
@@ -45,14 +30,6 @@ public class ChangeSkill extends Skill implements AutoCloseable {
 				store.setShort(rec, 12, 0);
 			else
 				store.setShort(rec, 12, 1 + value.ordinal());
-	}
-
-	public void getUpRecord(Character value) {
-		value.setRec(store.getInt(rec, 23));
-	}
-
-	public Character getUpRecord() {
-		return new Character(store, rec == 0 ? 0 : store.getInt(rec, 23));
 	}
 
 	public void setUpRecord(Character value) {

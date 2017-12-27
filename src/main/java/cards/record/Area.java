@@ -4,11 +4,12 @@ import java.io.IOException;
 import java.io.StringWriter;
 import java.util.Iterator;
 
-import com.betterbe.memorydb.structure.Store;
+import com.betterbe.memorydb.file.Parser;
 import com.betterbe.memorydb.file.Write;
 import com.betterbe.memorydb.structure.IndexOperation;
 import com.betterbe.memorydb.structure.Key;
 import com.betterbe.memorydb.structure.RedBlackTree;
+import com.betterbe.memorydb.structure.Store;
 
 /**
  * Automatically generated record class for table Area
@@ -577,5 +578,9 @@ public class Area {
 			throw new RuntimeException(e);
 		}
 		return write.toString();
+	}
+
+	public void parse(Parser parser, Game game) {
+		
 	}
 }

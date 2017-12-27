@@ -4,11 +4,12 @@ import java.io.IOException;
 import java.io.StringWriter;
 import java.util.Iterator;
 
-import com.betterbe.memorydb.structure.Store;
+import com.betterbe.memorydb.file.Parser;
 import com.betterbe.memorydb.file.Write;
 import com.betterbe.memorydb.structure.IndexOperation;
 import com.betterbe.memorydb.structure.Key;
 import com.betterbe.memorydb.structure.RedBlackTree;
+import com.betterbe.memorydb.structure.Store;
 
 /**
  * Automatically generated record class for table Game
@@ -34,7 +35,7 @@ public class Game {
 	}
 
 	public void setRec(int rec) {
-		assert(store.validate(rec));
+		assert (store.validate(rec));
 		this.rec = rec;
 	}
 
@@ -66,7 +67,7 @@ public class Game {
 				public int compareTo(int recNr) {
 					if (recNr < 0)
 						return -1;
-					assert(store.validate(recNr));
+					assert (store.validate(recNr));
 					record.setRec(recNr);
 					int o = 0;
 					o = RedBlackTree.compare(key1, record.getName());
@@ -106,37 +107,37 @@ public class Game {
 
 		@Override
 		protected boolean readRed(int recNr) {
-			assert(store.validate(recNr));
+			assert (store.validate(recNr));
 			return (store.getByte(recNr, 24) & 1) > 0;
 		}
 
 		@Override
 		protected void changeRed(int recNr, boolean value) {
-			assert(store.validate(recNr));
+			assert (store.validate(recNr));
 			store.setByte(recNr, 24, (store.getByte(rec, 24) & 254) + (value ? 1 : 0));
 		}
 
 		@Override
 		protected int readLeft(int recNr) {
-			assert(store.validate(recNr));
+			assert (store.validate(recNr));
 			return store.getInt(recNr, 29);
 		}
 
 		@Override
 		protected void changeLeft(int recNr, int value) {
-			assert(store.validate(recNr));
+			assert (store.validate(recNr));
 			store.setInt(recNr, 29, value);
 		}
 
 		@Override
 		protected int readRight(int recNr) {
-			assert(store.validate(recNr));
+			assert (store.validate(recNr));
 			return store.getInt(recNr, 33);
 		}
 
 		@Override
 		protected void changeRight(int recNr, int value) {
-			assert(store.validate(recNr));
+			assert (store.validate(recNr));
 			store.setInt(recNr, 33, value);
 		}
 
@@ -190,7 +191,7 @@ public class Game {
 				public int compareTo(int recNr) {
 					if (recNr < 0)
 						return -1;
-					assert(store.validate(recNr));
+					assert (store.validate(recNr));
 					setRec(recNr);
 					int o = 0;
 					o = RedBlackTree.compare(key1, Game.this.getName());
@@ -230,37 +231,37 @@ public class Game {
 
 		@Override
 		protected boolean readRed(int recNr) {
-			assert(store.validate(recNr));
+			assert (store.validate(recNr));
 			return (store.getByte(recNr, 12) & 1) > 0;
 		}
 
 		@Override
 		protected void changeRed(int recNr, boolean value) {
-			assert(store.validate(recNr));
+			assert (store.validate(recNr));
 			store.setByte(recNr, 12, (store.getByte(rec, 12) & 254) + (value ? 1 : 0));
 		}
 
 		@Override
 		protected int readLeft(int recNr) {
-			assert(store.validate(recNr));
+			assert (store.validate(recNr));
 			return store.getInt(recNr, 17);
 		}
 
 		@Override
 		protected void changeLeft(int recNr, int value) {
-			assert(store.validate(recNr));
+			assert (store.validate(recNr));
 			store.setInt(recNr, 17, value);
 		}
 
 		@Override
 		protected int readRight(int recNr) {
-			assert(store.validate(recNr));
+			assert (store.validate(recNr));
 			return store.getInt(recNr, 21);
 		}
 
 		@Override
 		protected void changeRight(int recNr, int value) {
-			assert(store.validate(recNr));
+			assert (store.validate(recNr));
 			store.setInt(recNr, 21, value);
 		}
 
@@ -295,8 +296,10 @@ public class Game {
 		if (rec == 0 || iterate <= 0)
 			return;
 		write.field("name", getName(), true);
-		for (Area sub: getAreas())
+		write.sub("areas", false);
+		for (Area sub : getAreas())
 			sub.output(write, iterate - 1);
+		write.endSub();
 		write.field("rules", "{" + getRules().toKeyString() + "}", false);
 	}
 
@@ -317,5 +320,33 @@ public class Game {
 			throw new RuntimeException(e);
 		}
 		return write.toString();
+	}
+
+	public void parse(Parser parser) {
+		String name = parser.getString("name");
+		IndexGameName indexGameName = new IndexGameName(name);
+		if (indexGameName.nextRec == 0) {
+			try (ChangeGame changeGame = new ChangeGame(store)) {
+				changeGame.setName(name);
+				parseFields(parser, changeGame);
+			}
+		} else {
+			rec = indexGameName.nextRec;
+			try (ChangeGame changeGame = new ChangeGame(this)) {
+				parseFields(parser, changeGame);
+			}
+		}
+	}
+
+	private void parseFields(Parser parser, ChangeGame game) {
+		while (parser.hasSub("areas")) {
+			Area area = new Area(store);
+			area.parse(parser, game);
+		}
+		if (parser.hasRelation("rules")) {
+			Rules rules = new Rules(store);
+			game.setRules(rules.parseKey(parser));
+			parser.stopRelation();
+		}
 	}
 }

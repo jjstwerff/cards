@@ -24,40 +24,16 @@ public class ChangeMap extends Map implements AutoCloseable {
 		parent.new IndexMaps(this).remove(getRec());
 	}
 
-	public int getX() {
-		return rec == 0 ? Integer.MIN_VALUE : store.getInt(rec, 8);
-	}
-
 	public void setX(int value) {
 		store.setInt(rec, 8, value);
-	}
-
-	public int getY() {
-		return rec == 0 ? Integer.MIN_VALUE : store.getInt(rec, 12);
 	}
 
 	public void setY(int value) {
 		store.setInt(rec, 12, value);
 	}
 
-	public int getZ() {
-		return rec == 0 ? Integer.MIN_VALUE : store.getInt(rec, 16);
-	}
-
 	public void setZ(int value) {
 		store.setInt(rec, 16, value);
-	}
-
-	public DataArray getData() {
-		return new DataArray();
-	}
-
-	public void getUpRecord(Area value) {
-		value.setRec(store.getInt(rec, 37));
-	}
-
-	public Area getUpRecord() {
-		return new Area(store, rec == 0 ? 0 : store.getInt(rec, 37));
 	}
 
 	public void setUpRecord(Area value) {

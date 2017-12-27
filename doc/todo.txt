@@ -1,4 +1,5 @@
 - very simple map data structure
+	initial test data
 - draw single map on canvas.. inside = gray, outside = open
 	for now draw each tile separately
 - show different colors for floor materials

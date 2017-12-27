@@ -25,32 +25,8 @@ public class ChangeRoom extends Room implements AutoCloseable {
 		parent.new IndexRooms(this).remove(getRec());
 	}
 
-	public String getName() {
-		return rec == 0 ? null : store.getString(store.getInt(rec, 8));
-	}
-
 	public void setName(String value) {
 		store.setInt(rec, 8, store.putString(value));
-	}
-
-	public OpponentArray getOpponent() {
-		return new OpponentArray();
-	}
-
-	public ItemsArray getItems() {
-		return new ItemsArray();
-	}
-
-	public IndexConnection getConnection() {
-		return new IndexConnection(new Connect(store));
-	}
-
-	public void getUpRecord(Area value) {
-		value.setRec(store.getInt(rec, 41));
-	}
-
-	public Area getUpRecord() {
-		return new Area(store, rec == 0 ? 0 : store.getInt(rec, 41));
 	}
 
 	public void setUpRecord(Area value) {

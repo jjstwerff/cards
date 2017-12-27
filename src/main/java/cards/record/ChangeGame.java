@@ -18,24 +18,8 @@ public class ChangeGame extends Game implements AutoCloseable {
 		new IndexGameName().remove(getRec());
 	}
 
-	public String getName() {
-		return rec == 0 ? null : store.getString(store.getInt(rec, 4));
-	}
-
 	public void setName(String value) {
 		store.setInt(rec, 4, store.putString(value));
-	}
-
-	public IndexAreas getAreas() {
-		return new IndexAreas(new Area(store));
-	}
-
-	public void getRules(Rules value) {
-		value.setRec(store.getInt(rec, 12));
-	}
-
-	public Rules getRules() {
-		return new Rules(store, rec == 0 ? 0 : store.getInt(rec, 12));
 	}
 
 	public void setRules(Rules value) {
@@ -43,7 +27,7 @@ public class ChangeGame extends Game implements AutoCloseable {
 	}
 
 	@Override
-	public void close() throws Exception {
+	public void close() {
 		new IndexGameName().insert(getRec());
 	}
 }

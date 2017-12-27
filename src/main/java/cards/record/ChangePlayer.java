@@ -21,32 +21,16 @@ public class ChangePlayer extends Player implements AutoCloseable {
 		new IndexPlayerName().remove(getRec());
 	}
 
-	public LocalDateTime getCreation() {
-		return rec == 0 ? null : DateTime.of(store.getLong(rec, 4));
-	}
-
 	public void setCreation(LocalDateTime value) {
 		store.setLong(rec, 4, value == null ? 0 : DateTime.getLong(value));
-	}
-
-	public LocalDateTime getLast() {
-		return rec == 0 ? null : DateTime.of(store.getLong(rec, 12));
 	}
 
 	public void setLast(LocalDateTime value) {
 		store.setLong(rec, 12, value == null ? 0 : DateTime.getLong(value));
 	}
 
-	public String getName() {
-		return rec == 0 ? null : store.getString(store.getInt(rec, 20));
-	}
-
 	public void setName(String value) {
 		store.setInt(rec, 20, store.putString(value));
-	}
-
-	public IndexMember getMember() {
-		return new IndexMember(new Member(store));
 	}
 
 	@Override

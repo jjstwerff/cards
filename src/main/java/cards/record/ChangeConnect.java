@@ -24,19 +24,8 @@ public class ChangeConnect extends Connect implements AutoCloseable {
 		parent.new IndexConnection(this).remove(getRec());
 	}
 
-	public int getNr() {
-		return rec == 0 ? Integer.MIN_VALUE : store.getInt(rec, 8);
-	}
-
 	public void setNr(int value) {
 		store.setInt(rec, 8, value);
-	}
-
-	public Connect.Type getType() {
-		int data = rec == 0 ? 0 : store.getShort(rec, 12);
-		if (data <= 0)
-			return null;
-		return Type.values()[data - 1];
 	}
 
 	public void setType(Connect.Type value) {
@@ -46,28 +35,8 @@ public class ChangeConnect extends Connect implements AutoCloseable {
 				store.setShort(rec, 12, 1 + value.ordinal());
 	}
 
-	public ChecksArray getChecks() {
-		return new ChecksArray();
-	}
-
-	public void getUpRecord(Room value) {
-		value.setRec(store.getInt(rec, 31));
-	}
-
-	public Room getUpRecord() {
-		return new Room(store, rec == 0 ? 0 : store.getInt(rec, 31));
-	}
-
 	public void setUpRecord(Room value) {
 		store.setInt(rec, 31, value == null ? 0 : value.getRec());
-	}
-
-	public void getTo(Room value) {
-		value.setRec(store.getInt(rec, 35));
-	}
-
-	public Room getTo() {
-		return new Room(store, rec == 0 ? 0 : store.getInt(rec, 35));
 	}
 
 	public void setTo(Room value) {

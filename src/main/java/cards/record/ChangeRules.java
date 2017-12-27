@@ -19,20 +19,8 @@ public class ChangeRules extends Rules implements AutoCloseable {
 		new IndexRulesName().remove(getRec());
 	}
 
-	public String getName() {
-		return rec == 0 ? null : store.getString(store.getInt(rec, 4));
-	}
-
 	public void setName(String value) {
 		store.setInt(rec, 4, store.putString(value));
-	}
-
-	public IndexRaces getRaces() {
-		return new IndexRaces(new Race(store));
-	}
-
-	public CardsArray getCards() {
-		return new CardsArray();
 	}
 
 	@Override

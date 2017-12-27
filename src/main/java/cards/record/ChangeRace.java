@@ -22,24 +22,8 @@ public class ChangeRace extends Race implements AutoCloseable {
 		parent.new IndexRaces(this).remove(getRec());
 	}
 
-	public String getName() {
-		return rec == 0 ? null : store.getString(store.getInt(rec, 8));
-	}
-
 	public void setName(String value) {
 		store.setInt(rec, 8, store.putString(value));
-	}
-
-	public CardsArray getCards() {
-		return new CardsArray();
-	}
-
-	public void getUpRecord(Rules value) {
-		value.setRec(store.getInt(rec, 29));
-	}
-
-	public Rules getUpRecord() {
-		return new Rules(store, rec == 0 ? 0 : store.getInt(rec, 29));
 	}
 
 	public void setUpRecord(Rules value) {

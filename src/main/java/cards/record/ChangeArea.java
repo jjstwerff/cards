@@ -25,36 +25,8 @@ public class ChangeArea extends Area implements AutoCloseable {
 		parent.new IndexAreas(this).remove(getRec());
 	}
 
-	public String getName() {
-		return rec == 0 ? null : store.getString(store.getInt(rec, 8));
-	}
-
 	public void setName(String value) {
 		store.setInt(rec, 8, store.putString(value));
-	}
-
-	public IndexRooms getRooms() {
-		return new IndexRooms(new Room(store));
-	}
-
-	public EncounterArray getEncounter() {
-		return new EncounterArray();
-	}
-
-	public IndexGoal getGoal() {
-		return new IndexGoal(new Goal(store));
-	}
-
-	public IndexMaps getMaps() {
-		return new IndexMaps(new Map(store));
-	}
-
-	public void getUpRecord(Game value) {
-		value.setRec(store.getInt(rec, 41));
-	}
-
-	public Game getUpRecord() {
-		return new Game(store, rec == 0 ? 0 : store.getInt(rec, 41));
 	}
 
 	public void setUpRecord(Game value) {

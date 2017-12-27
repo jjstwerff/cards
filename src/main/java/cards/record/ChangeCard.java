@@ -18,19 +18,8 @@ public class ChangeCard extends Card implements AutoCloseable {
 		super(current.store, current.getRec());
 	}
 
-	public String getName() {
-		return rec == 0 ? null : store.getString(store.getInt(rec, 0));
-	}
-
 	public void setName(String value) {
 		store.setInt(rec, 0, store.putString(value));
-	}
-
-	public Card.Set getSet() {
-		int data = rec == 0 ? 0 : store.getShort(rec, 4);
-		if (data <= 0)
-			return null;
-		return Set.values()[data - 1];
 	}
 
 	public void setSet(Card.Set value) {
@@ -38,10 +27,6 @@ public class ChangeCard extends Card implements AutoCloseable {
 				store.setShort(rec, 4, 0);
 			else
 				store.setShort(rec, 4, 1 + value.ordinal());
-	}
-
-	public StatsArray getStats() {
-		return new StatsArray();
 	}
 
 	@Override

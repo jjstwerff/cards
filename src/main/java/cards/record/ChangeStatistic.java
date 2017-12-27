@@ -18,16 +18,8 @@ public class ChangeStatistic extends Statistic implements AutoCloseable {
 		new IndexStatisticNr().remove(getRec());
 	}
 
-	public String getName() {
-		return rec == 0 ? null : store.getString(store.getInt(rec, 4));
-	}
-
 	public void setName(String value) {
 		store.setInt(rec, 4, store.putString(value));
-	}
-
-	public int getNr() {
-		return rec == 0 ? Integer.MIN_VALUE : store.getInt(rec, 8);
 	}
 
 	public void setNr(int value) {
