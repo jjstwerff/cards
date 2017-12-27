@@ -107,47 +107,47 @@ public class Game {
 		@Override
 		protected boolean readRed(int recNr) {
 			assert(store.validate(recNr));
-			return (store.getByte(recNr, 20) & 1) > 0;
+			return (store.getByte(recNr, 24) & 1) > 0;
 		}
 
 		@Override
 		protected void changeRed(int recNr, boolean value) {
 			assert(store.validate(recNr));
-			store.setByte(recNr, 20, (store.getByte(rec, 20) & 254) + (value ? 1 : 0));
+			store.setByte(recNr, 24, (store.getByte(rec, 24) & 254) + (value ? 1 : 0));
 		}
 
 		@Override
 		protected int readLeft(int recNr) {
 			assert(store.validate(recNr));
-			return store.getInt(recNr, 25);
+			return store.getInt(recNr, 29);
 		}
 
 		@Override
 		protected void changeLeft(int recNr, int value) {
 			assert(store.validate(recNr));
-			store.setInt(recNr, 25, value);
+			store.setInt(recNr, 29, value);
 		}
 
 		@Override
 		protected int readRight(int recNr) {
 			assert(store.validate(recNr));
-			return store.getInt(recNr, 29);
+			return store.getInt(recNr, 33);
 		}
 
 		@Override
 		protected void changeRight(int recNr, int value) {
 			assert(store.validate(recNr));
-			store.setInt(recNr, 29, value);
+			store.setInt(recNr, 33, value);
 		}
 
 		@Override
 		protected int readTop() {
-			return store.getInt(store.getInt(record.getRec(), 37), 36);
+			return store.getInt(store.getInt(record.getRec(), 41), 40);
 		}
 
 		@Override
 		protected void changeTop(int value) {
-			store.setInt(store.getInt(record.getRec(), 37), 36, value);
+			store.setInt(store.getInt(record.getRec(), 41), 40, value);
 		}
 
 		@Override
@@ -266,12 +266,12 @@ public class Game {
 
 		@Override
 		protected int readTop() {
-			return store.getInt(0, 40);
+			return store.getInt(0, 44);
 		}
 
 		@Override
 		protected void changeTop(int value) {
-			store.setInt(0, 40, value);
+			store.setInt(0, 44, value);
 		}
 
 		@Override

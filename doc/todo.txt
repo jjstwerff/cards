@@ -1,14 +1,9 @@
 - very simple map data structure
-	no height, inside floors, no different
-		wallTL, wallT, wallTR: OPEN/COMBINED/BRICKS/CONCRETE/METAL/WOOD/ROCK/FENCE/LOW_WALL/LOW_FENCE: byte 0, 1, 2
-		floor: OPEN/FILLED/DOOR/METAL_DOOR/WINDOW/WOOD/CONCRETE/ASPHALT/GRAVEL   .. later: separate door/window states
-			GRASS/DIRT/ROCK/STAIRS/METAL/METAL_STAIRS/TILES/TILED
-		item: PERSON/TABLE/BENCH/CHAIR/BED/BEDROLL/LAMP .. byte ... later: separate person lists
-		rotation: per 15 degrees = 0 - 11 = 4 bits
-		height: short
 - draw single map on canvas.. inside = gray, outside = open
+	for now draw each tile separately
 - show different colors for floor materials
 - add walls as thicker colored lines and doors / windows
+	separate pass
 - indicators of player/NPC/item positions
 - multiple levels and stairs.. including roofs.. do not show levels above the player
 - show as web-GL object

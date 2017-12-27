@@ -14,6 +14,7 @@ public class ChangeArea extends Area implements AutoCloseable {
 		store.setInt(rec, 16, 0);
 		store.setInt(rec, 20, 0);
 		store.setInt(rec, 24, 0);
+		store.setInt(rec, 28, 0);
 		setUpRecord(null);
 		setUpRecord(parent);
 	}
@@ -44,16 +45,20 @@ public class ChangeArea extends Area implements AutoCloseable {
 		return new IndexGoal(new Goal(store));
 	}
 
+	public IndexMaps getMaps() {
+		return new IndexMaps(new Map(store));
+	}
+
 	public void getUpRecord(Game value) {
-		value.setRec(store.getInt(rec, 37));
+		value.setRec(store.getInt(rec, 41));
 	}
 
 	public Game getUpRecord() {
-		return new Game(store, rec == 0 ? 0 : store.getInt(rec, 37));
+		return new Game(store, rec == 0 ? 0 : store.getInt(rec, 41));
 	}
 
 	public void setUpRecord(Game value) {
-		store.setInt(rec, 37, value == null ? 0 : value.getRec());
+		store.setInt(rec, 41, value == null ? 0 : value.getRec());
 	}
 
 	@Override

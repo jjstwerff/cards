@@ -142,12 +142,12 @@ public class Character {
 
 		@Override
 		protected int readTop() {
-			return store.getInt(store.getInt(record.getRec(), 23), 32);
+			return store.getInt(store.getInt(record.getRec(), 23), 36);
 		}
 
 		@Override
 		protected void changeTop(int value) {
-			store.setInt(store.getInt(record.getRec(), 23), 32, value);
+			store.setInt(store.getInt(record.getRec(), 23), 36, value);
 		}
 
 		@Override

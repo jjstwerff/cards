@@ -1,10 +1,11 @@
 Records
-name=Area, parent=Game, size=41, related=true
+name=Area, parent=Game, size=45, related=true
   name=name, type=STRING, pos=64
   name=rooms, type=SET, related=Room, pos=96
   name=encounter, type=ARRAY, related=Cards, pos=128
   name=goal, type=SET, related=Goal, pos=192
-  name=upRecord, type=RELATION, related=Game, pos=296
+  name=maps, type=SET, related=Map, pos=224
+  name=upRecord, type=RELATION, related=Game, pos=328
 name=Card, size=14, related=true
   name=name, type=STRING, pos=0
   name=set, type=ENUMERATE, pos=32
@@ -23,6 +24,14 @@ name=Connect, parent=Room, size=39
   name=checks, type=ARRAY, related=Cards, pos=112
   name=upRecord, type=RELATION, related=Room, pos=248
   name=to, type=RELATION, related=Room, pos=280
+name=Element, size=8, array=true
+  name=wallL, type=BYTE, pos=0
+  name=wallT, type=BYTE, pos=8
+  name=wallR, type=BYTE, pos=16
+  name=floor, type=BYTE, pos=24
+  name=item, type=BYTE, pos=32
+  name=rotation, type=BYTE, pos=40
+  name=height, type=SHORT, pos=48
 name=Game, size=25, related=true
   name=name, type=STRING, pos=32
   name=areas, type=SET, related=Area, pos=64
@@ -33,6 +42,12 @@ name=Goal, parent=Area, size=33
   name=XP, type=INTEGER, pos=112
   name=gained, type=ENUMERATE, pos=144
   name=upRecord, type=RELATION, related=Area, pos=232
+name=Map, parent=Area, size=41
+  name=X, type=INTEGER, pos=64
+  name=Y, type=INTEGER, pos=96
+  name=Z, type=INTEGER, pos=128
+  name=data, type=ARRAY, related=Element, pos=160
+  name=upRecord, type=RELATION, related=Area, pos=296
 name=Member, parent=Player, size=31
   name=game, type=RELATION, related=Game, pos=64
   name=role, type=ENUMERATE, pos=96
@@ -73,6 +88,7 @@ name=rulesName, record=Rules
 name=connection, record=Connect
 name=rooms, record=Room
 name=goal, record=Goal
+name=maps, record=Map
 name=skills, record=Skill
 name=areas, record=Area
 name=gameName, record=Game

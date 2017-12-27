@@ -16,7 +16,7 @@ import com.betterbe.memorydb.structure.RedBlackTree;
 public class Area {
 	/* package private */ Store store;
 	protected int rec;
-	/* package private */ static int SIZE = 41;
+	/* package private */ static int SIZE = 45;
 
 	public Area(Store store) {
 		this.store = store;
@@ -350,12 +350,198 @@ public class Area {
 		}
 	}
 
+	public IndexMaps getMaps() {
+		return new IndexMaps(new Map(store));
+	}
+
+	public class IndexMaps extends RedBlackTree implements Iterable<Map>, Iterator<Map> {
+		Key key = null;
+		Map record;
+		int nextRec;
+
+		public IndexMaps(Map record) {
+			this.record = record;
+			record.store = store;
+			this.key = null;
+			nextRec = first();
+		}
+
+		public IndexMaps(Map record, int key1) {
+			this.record = record;
+			record.store = store;
+			this.key = new Key() {
+				@Override
+				public int compareTo(int recNr) {
+					if (recNr < 0)
+						return -1;
+					assert(store.validate(recNr));
+					record.setRec(recNr);
+					int o = 0;
+					o = RedBlackTree.compare(key1, record.getX());
+					return o;
+				}
+
+				@Override
+				public IndexOperation oper() {
+					return IndexOperation.EQ;
+				}
+			};
+			nextRec = find(this.key);
+		}
+
+		public IndexMaps(Map record, int key1, int key2) {
+			this.record = record;
+			record.store = store;
+			this.key = new Key() {
+				@Override
+				public int compareTo(int recNr) {
+					if (recNr < 0)
+						return -1;
+					assert(store.validate(recNr));
+					record.setRec(recNr);
+					int o = 0;
+					o = RedBlackTree.compare(key1, record.getX());
+					if (o != 0)
+						return o;
+					o = RedBlackTree.compare(key2, record.getY());
+					return o;
+				}
+
+				@Override
+				public IndexOperation oper() {
+					return IndexOperation.EQ;
+				}
+			};
+			nextRec = find(this.key);
+		}
+
+		public IndexMaps(Map record, int key1, int key2, int key3) {
+			this.record = record;
+			record.store = store;
+			this.key = new Key() {
+				@Override
+				public int compareTo(int recNr) {
+					if (recNr < 0)
+						return -1;
+					assert(store.validate(recNr));
+					record.setRec(recNr);
+					int o = 0;
+					o = RedBlackTree.compare(key1, record.getX());
+					if (o != 0)
+						return o;
+					o = RedBlackTree.compare(key2, record.getY());
+					if (o != 0)
+						return o;
+					o = RedBlackTree.compare(key3, record.getZ());
+					return o;
+				}
+
+				@Override
+				public IndexOperation oper() {
+					return IndexOperation.EQ;
+				}
+			};
+			nextRec = find(this.key);
+		}
+
+		@Override
+		public Iterator<Map> iterator() {
+			return this;
+		}
+
+		@Override
+		public boolean hasNext() {
+			return nextRec != 0;
+		}
+
+		@Override
+		public Map next() {
+			int n = nextRec;
+			nextRec = next(nextRec);
+			if (key != null) {
+				while (nextRec != 0 && key.compareTo(nextRec) != 0) {
+					nextRec = next(nextRec);
+				}
+			}
+			record.setRec(n);
+			return record;
+		}
+
+		@Override
+		protected boolean readRed(int recNr) {
+			assert(store.validate(recNr));
+			return (store.getByte(recNr, 20) & 1) > 0;
+		}
+
+		@Override
+		protected void changeRed(int recNr, boolean value) {
+			assert(store.validate(recNr));
+			store.setByte(recNr, 20, (store.getByte(rec, 20) & 254) + (value ? 1 : 0));
+		}
+
+		@Override
+		protected int readLeft(int recNr) {
+			assert(store.validate(recNr));
+			return store.getInt(recNr, 25);
+		}
+
+		@Override
+		protected void changeLeft(int recNr, int value) {
+			assert(store.validate(recNr));
+			store.setInt(recNr, 25, value);
+		}
+
+		@Override
+		protected int readRight(int recNr) {
+			assert(store.validate(recNr));
+			return store.getInt(recNr, 29);
+		}
+
+		@Override
+		protected void changeRight(int recNr, int value) {
+			assert(store.validate(recNr));
+			store.setInt(recNr, 29, value);
+		}
+
+		@Override
+		protected int readTop() {
+			return store.getInt(store.getInt(record.getRec(), 37), 32);
+		}
+
+		@Override
+		protected void changeTop(int value) {
+			store.setInt(store.getInt(record.getRec(), 37), 32, value);
+		}
+
+		@Override
+		protected int compareTo(int a, int b) {
+			Map recA = new Map(store, a);
+			Map recB = new Map(store, b);
+			int o = 0;
+			o = compare(recA.getX(), recB.getX());
+			if (o == 0)
+				return 0;
+			o = compare(recA.getY(), recB.getY());
+			if (o == 0)
+				return 0;
+			o = compare(recA.getZ(), recB.getZ());
+			if (o == 0)
+				return 0;
+			return 0;
+		}
+
+		@Override
+		protected String toString(int rec) {
+			return new Area(store, rec).toString();
+		}
+	}
+
 	public void getUpRecord(Game value) {
-		value.setRec(store.getInt(rec, 37));
+		value.setRec(store.getInt(rec, 41));
 	}
 
 	public Game getUpRecord() {
-		return new Game(store, rec == 0 ? 0 : store.getInt(rec, 37));
+		return new Game(store, rec == 0 ? 0 : store.getInt(rec, 41));
 	}
 
 	public void output(Write write, int iterate) throws IOException {
@@ -367,6 +553,8 @@ public class Area {
 		for (EncounterArray sub: getEncounter())
 			sub.output(write, iterate - 1);
 		for (Goal sub: getGoal())
+			sub.output(write, iterate - 1);
+		for (Map sub: getMaps())
 			sub.output(write, iterate - 1);
 	}
 
