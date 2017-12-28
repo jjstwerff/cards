@@ -34,7 +34,7 @@ public class ChangeRoom extends Room implements AutoCloseable {
 	}
 
 	@Override
-	public void close() throws Exception {
+	public void close() {
 		parent.new IndexRooms(this).insert(getRec());
 	}
 }

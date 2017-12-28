@@ -4,8 +4,9 @@ import java.io.IOException;
 import java.io.StringWriter;
 import java.util.Iterator;
 
-import com.betterbe.memorydb.structure.Store;
+import com.betterbe.memorydb.file.Parser;
 import com.betterbe.memorydb.file.Write;
+import com.betterbe.memorydb.structure.Store;
 
 /**
  * Automatically generated record class for table Card
@@ -31,7 +32,7 @@ public class Card {
 	}
 
 	public void setRec(int rec) {
-		assert(store.validate(rec));
+		assert store.validate(rec);
 		this.rec = rec;
 	}
 
@@ -115,6 +116,17 @@ public class Card {
 			write.field("statistic", "{" + getStatistic().toKeyString() + "}", true);
 			write.field("value", getValue(), false);
 		}
+
+		public void parse(Parser parser) {
+			StatsArray record = this;
+		parser.getRelation("statistic)", () -> {
+			Statistic rec = new Statistic(store);
+			boolean found = rec.parseKey(parser);
+			record.setStatistic(rec);
+			return found;
+		});
+		record.setValue((byte) parser.getInt("value"));
+		}
 	}
 
 	public void output(Write write, int iterate) throws IOException {
@@ -142,5 +154,40 @@ public class Card {
 			throw new RuntimeException(e);
 		}
 		return write.toString();
+	}
+
+	public void parse(Parser parser) {
+		while (parser.getSub()) {
+
+			if (idx.nextRec == 0) {
+				try (ChangeCard record = new ChangeCard(store)) {
+
+					parseFields(parser, record);
+				}
+			} else {
+				rec = idx.nextRec;
+				try (ChangeCard record = new ChangeCard(this)) {
+					parseFields(parser, record);
+				}
+			}
+		}
+	}
+
+	public boolean parseKey(Parser parser) {
+
+		parser.finishRelation();
+		rec = idx.nextRec;
+		return idx.nextRec != 0;
+	}
+
+	private void parseFields(Parser parser, ChangeCard record) {
+		record.setName(parser.getString("name"));
+		record.setSet(Set.valueOf(parser.getString("set")));
+		if (parser.hasSub("stats"))
+			while (parser.getSub()) {
+				StatsArray sub = new StatsArray();
+				sub.add();
+				sub.parse(parser);
+			}
 	}
 }

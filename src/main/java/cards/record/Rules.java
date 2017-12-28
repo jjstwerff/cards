@@ -35,7 +35,7 @@ public class Rules {
 	}
 
 	public void setRec(int rec) {
-		assert (store.validate(rec));
+		assert store.validate(rec);
 		this.rec = rec;
 	}
 
@@ -67,7 +67,7 @@ public class Rules {
 				public int compareTo(int recNr) {
 					if (recNr < 0)
 						return -1;
-					assert (store.validate(recNr));
+					assert store.validate(recNr);
 					record.setRec(recNr);
 					int o = 0;
 					o = RedBlackTree.compare(key1, record.getName());
@@ -107,37 +107,37 @@ public class Rules {
 
 		@Override
 		protected boolean readRed(int recNr) {
-			assert (store.validate(recNr));
+			assert store.validate(recNr);
 			return (store.getByte(recNr, 12) & 1) > 0;
 		}
 
 		@Override
 		protected void changeRed(int recNr, boolean value) {
-			assert (store.validate(recNr));
+			assert store.validate(recNr);
 			store.setByte(recNr, 12, (store.getByte(rec, 12) & 254) + (value ? 1 : 0));
 		}
 
 		@Override
 		protected int readLeft(int recNr) {
-			assert (store.validate(recNr));
+			assert store.validate(recNr);
 			return store.getInt(recNr, 17);
 		}
 
 		@Override
 		protected void changeLeft(int recNr, int value) {
-			assert (store.validate(recNr));
+			assert store.validate(recNr);
 			store.setInt(recNr, 17, value);
 		}
 
 		@Override
 		protected int readRight(int recNr) {
-			assert (store.validate(recNr));
+			assert store.validate(recNr);
 			return store.getInt(recNr, 21);
 		}
 
 		@Override
 		protected void changeRight(int recNr, int value) {
-			assert (store.validate(recNr));
+			assert store.validate(recNr);
 			store.setInt(recNr, 21, value);
 		}
 
@@ -172,7 +172,7 @@ public class Rules {
 		return new CardsArray();
 	}
 
-	public class CardsArray implements Iterable<CardsArray>, Iterator<CardsArray> {
+	public class CardsArray implements Iterable<CardsArray>, Iterator<CardsArray>{
 		int idx = -1;
 
 		public int getSize() {
@@ -206,6 +206,7 @@ public class Rules {
 			return this;
 		}
 
+
 		public void getCard(Card value) {
 			value.setRec(store.getInt(rec, 0));
 		}
@@ -222,6 +223,16 @@ public class Rules {
 			if (rec == 0 || iterate <= 0)
 				return;
 			write.field("card", "{" + getCard().toKeyString() + "}", true);
+		}
+
+		public void parse(Parser parser) {
+			CardsArray record = this;
+		parser.getRelation("card)", () -> {
+			Card rec = new Card(store);
+			boolean found = rec.parseKey(parser);
+			record.setCard(rec);
+			return found;
+		});
 		}
 	}
 
@@ -240,7 +251,7 @@ public class Rules {
 				public int compareTo(int recNr) {
 					if (recNr < 0)
 						return -1;
-					assert (store.validate(recNr));
+					assert store.validate(recNr);
 					setRec(recNr);
 					int o = 0;
 					o = RedBlackTree.compare(key1, Rules.this.getName());
@@ -280,37 +291,37 @@ public class Rules {
 
 		@Override
 		protected boolean readRed(int recNr) {
-			assert (store.validate(recNr));
+			assert store.validate(recNr);
 			return (store.getByte(recNr, 16) & 1) > 0;
 		}
 
 		@Override
 		protected void changeRed(int recNr, boolean value) {
-			assert (store.validate(recNr));
+			assert store.validate(recNr);
 			store.setByte(recNr, 16, (store.getByte(rec, 16) & 254) + (value ? 1 : 0));
 		}
 
 		@Override
 		protected int readLeft(int recNr) {
-			assert (store.validate(recNr));
+			assert store.validate(recNr);
 			return store.getInt(recNr, 21);
 		}
 
 		@Override
 		protected void changeLeft(int recNr, int value) {
-			assert (store.validate(recNr));
+			assert store.validate(recNr);
 			store.setInt(recNr, 21, value);
 		}
 
 		@Override
 		protected int readRight(int recNr) {
-			assert (store.validate(recNr));
+			assert store.validate(recNr);
 			return store.getInt(recNr, 25);
 		}
 
 		@Override
 		protected void changeRight(int recNr, int value) {
-			assert (store.validate(recNr));
+			assert store.validate(recNr);
 			store.setInt(recNr, 25, value);
 		}
 
@@ -345,9 +356,11 @@ public class Rules {
 		if (rec == 0 || iterate <= 0)
 			return;
 		write.field("name", getName(), true);
+		write.sub("races", false);
 		for (Race sub : getRaces())
 			sub.output(write, iterate - 1);
-		for (CardsArray sub : getCards())
+		write.endSub();
+		for (CardsArray sub: getCards())
 			sub.output(write, iterate - 1);
 	}
 
@@ -370,11 +383,43 @@ public class Rules {
 		return write.toString();
 	}
 
-	public void parser(Parser parser, Game game) {
-
+	public void parse(Parser parser) {
+		while (parser.getSub()) {
+			String name = parser.getString("name");
+			IndexRulesName idx = new IndexRulesName(name);
+			if (idx.nextRec == 0) {
+				try (ChangeRules record = new ChangeRules(store)) {
+					record.setName(name);
+					parseFields(parser, record);
+				}
+			} else {
+				rec = idx.nextRec;
+				try (ChangeRules record = new ChangeRules(this)) {
+					parseFields(parser, record);
+				}
+			}
+		}
 	}
 
 	public boolean parseKey(Parser parser) {
-		return null;
+		String name = parser.getString("name");
+		IndexRulesName idx = new IndexRulesName(name);
+		parser.finishRelation();
+		rec = idx.nextRec;
+		return idx.nextRec != 0;
+	}
+
+	private void parseFields(Parser parser, ChangeRules record) {
+		if (parser.hasSub("races"))
+			while (parser.getSub()) {
+				Race sub = new Race(store);
+				sub.parse(parser, record);
+			}
+		if (parser.hasSub("cards"))
+			while (parser.getSub()) {
+				CardsArray sub = new CardsArray();
+				sub.add();
+				sub.parse(parser);
+			}
 	}
 }

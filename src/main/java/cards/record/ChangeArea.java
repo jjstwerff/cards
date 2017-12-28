@@ -34,7 +34,7 @@ public class ChangeArea extends Area implements AutoCloseable {
 	}
 
 	@Override
-	public void close() throws Exception {
+	public void close() {
 		parent.new IndexAreas(this).insert(getRec());
 	}
 }

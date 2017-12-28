@@ -3,8 +3,9 @@ package cards.record;
 import java.io.IOException;
 import java.io.StringWriter;
 
-import com.betterbe.memorydb.structure.Store;
+import com.betterbe.memorydb.file.Parser;
 import com.betterbe.memorydb.file.Write;
+import com.betterbe.memorydb.structure.Store;
 
 /**
  * Automatically generated record class for table Skill
@@ -30,7 +31,7 @@ public class Skill {
 	}
 
 	public void setRec(int rec) {
-		assert(store.validate(rec));
+		assert store.validate(rec);
 		this.rec = rec;
 	}
 
@@ -87,5 +88,48 @@ public class Skill {
 			throw new RuntimeException(e);
 		}
 		return write.toString();
+	}
+
+	public void parse(Parser parser, Character parent) {
+		while (parser.getSub()) {
+			Card card = new Card(store);
+			parser.getRelation("card", () -> {
+				card.parseKey(parser);
+				return true;
+			});
+			Character.IndexSkills idx = parent.new IndexSkills(this, card);
+			if (idx.nextRec == 0) {
+				try (ChangeSkill record = new ChangeSkill(parent)) {
+					record.setCard(card);
+					parseFields(parser, record);
+				}
+			} else {
+				rec = idx.nextRec;
+				try (ChangeSkill record = new ChangeSkill(this)) {
+					parseFields(parser, record);
+				}
+			}
+		}
+	}
+
+	public boolean parseKey(Parser parser) {
+		Character parent = new Character(store);
+		parser.getRelation("Character", () -> {
+			parent.parseKey(parser);
+			return true;
+		});
+		Card card = new Card(store);
+		parser.getRelation("card", () -> {
+			card.parseKey(parser);
+			return true;
+		});
+		Character.IndexSkills idx = parent.new IndexSkills(this, card);
+		parser.finishRelation();
+		rec = idx.nextRec;
+		return idx.nextRec != 0;
+	}
+
+	private void parseFields(Parser parser, ChangeSkill record) {
+		record.setState(State.valueOf(parser.getString("state")));
 	}
 }

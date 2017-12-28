@@ -37,7 +37,7 @@ public class ChangeSkill extends Skill implements AutoCloseable {
 	}
 
 	@Override
-	public void close() throws Exception {
+	public void close() {
 		parent.new IndexSkills(this).insert(getRec());
 	}
 }

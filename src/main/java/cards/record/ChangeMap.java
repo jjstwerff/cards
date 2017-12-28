@@ -41,7 +41,7 @@ public class ChangeMap extends Map implements AutoCloseable {
 	}
 
 	@Override
-	public void close() throws Exception {
+	public void close() {
 		parent.new IndexMaps(this).insert(getRec());
 	}
 }

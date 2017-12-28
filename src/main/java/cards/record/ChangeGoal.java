@@ -50,7 +50,7 @@ public class ChangeGoal extends Goal implements AutoCloseable {
 	}
 
 	@Override
-	public void close() throws Exception {
+	public void close() {
 		parent.new IndexGoal(this).insert(getRec());
 	}
 }

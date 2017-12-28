@@ -4,11 +4,12 @@ import java.io.IOException;
 import java.io.StringWriter;
 import java.util.Iterator;
 
-import com.betterbe.memorydb.structure.Store;
+import com.betterbe.memorydb.file.Parser;
 import com.betterbe.memorydb.file.Write;
 import com.betterbe.memorydb.structure.IndexOperation;
 import com.betterbe.memorydb.structure.Key;
 import com.betterbe.memorydb.structure.RedBlackTree;
+import com.betterbe.memorydb.structure.Store;
 
 /**
  * Automatically generated record class for table Character
@@ -34,7 +35,7 @@ public class Character {
 	}
 
 	public void setRec(int rec) {
-		assert(store.validate(rec));
+		assert store.validate(rec);
 		this.rec = rec;
 	}
 
@@ -66,7 +67,7 @@ public class Character {
 				public int compareTo(int recNr) {
 					if (recNr < 0)
 						return -1;
-					assert(store.validate(recNr));
+					assert store.validate(recNr);
 					record.setRec(recNr);
 					int o = 0;
 					o = RedBlackTree.compare(key1, record.getCard().getName());
@@ -106,37 +107,37 @@ public class Character {
 
 		@Override
 		protected boolean readRed(int recNr) {
-			assert(store.validate(recNr));
+			assert store.validate(recNr);
 			return (store.getByte(recNr, 6) & 1) > 0;
 		}
 
 		@Override
 		protected void changeRed(int recNr, boolean value) {
-			assert(store.validate(recNr));
+			assert store.validate(recNr);
 			store.setByte(recNr, 6, (store.getByte(rec, 6) & 254) + (value ? 1 : 0));
 		}
 
 		@Override
 		protected int readLeft(int recNr) {
-			assert(store.validate(recNr));
+			assert store.validate(recNr);
 			return store.getInt(recNr, 11);
 		}
 
 		@Override
 		protected void changeLeft(int recNr, int value) {
-			assert(store.validate(recNr));
+			assert store.validate(recNr);
 			store.setInt(recNr, 11, value);
 		}
 
 		@Override
 		protected int readRight(int recNr) {
-			assert(store.validate(recNr));
+			assert store.validate(recNr);
 			return store.getInt(recNr, 15);
 		}
 
 		@Override
 		protected void changeRight(int recNr, int value) {
-			assert(store.validate(recNr));
+			assert store.validate(recNr);
 			store.setInt(recNr, 15, value);
 		}
 
@@ -171,8 +172,10 @@ public class Character {
 		if (rec == 0 || iterate <= 0)
 			return;
 		write.field("name", getName(), true);
-		for (Skill sub: getSkills())
+		write.sub("skills", false);
+		for (Skill sub : getSkills())
 			sub.output(write, iterate - 1);
+		write.endSub();
 	}
 
 	public String toKeyString() {
@@ -191,5 +194,38 @@ public class Character {
 			throw new RuntimeException(e);
 		}
 		return write.toString();
+	}
+
+	public void parse(Parser parser) {
+		while (parser.getSub()) {
+
+			if (idx.nextRec == 0) {
+				try (ChangeCharacter record = new ChangeCharacter(store)) {
+
+					parseFields(parser, record);
+				}
+			} else {
+				rec = idx.nextRec;
+				try (ChangeCharacter record = new ChangeCharacter(this)) {
+					parseFields(parser, record);
+				}
+			}
+		}
+	}
+
+	public boolean parseKey(Parser parser) {
+
+		parser.finishRelation();
+		rec = idx.nextRec;
+		return idx.nextRec != 0;
+	}
+
+	private void parseFields(Parser parser, ChangeCharacter record) {
+		record.setName(parser.getString("name"));
+		if (parser.hasSub("skills"))
+			while (parser.getSub()) {
+				Skill sub = new Skill(store);
+				sub.parse(parser, record);
+			}
 	}
 }

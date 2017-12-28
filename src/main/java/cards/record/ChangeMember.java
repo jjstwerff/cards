@@ -42,7 +42,7 @@ public class ChangeMember extends Member implements AutoCloseable {
 	}
 
 	@Override
-	public void close() throws Exception {
+	public void close() {
 		parent.new IndexMember(this).insert(getRec());
 	}
 }

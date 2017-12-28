@@ -35,7 +35,7 @@ public class Area {
 	}
 
 	public void setRec(int rec) {
-		assert(store.validate(rec));
+		assert store.validate(rec);
 		this.rec = rec;
 	}
 
@@ -67,7 +67,7 @@ public class Area {
 				public int compareTo(int recNr) {
 					if (recNr < 0)
 						return -1;
-					assert(store.validate(recNr));
+					assert store.validate(recNr);
 					record.setRec(recNr);
 					int o = 0;
 					o = RedBlackTree.compare(key1, record.getName());
@@ -107,37 +107,37 @@ public class Area {
 
 		@Override
 		protected boolean readRed(int recNr) {
-			assert(store.validate(recNr));
+			assert store.validate(recNr);
 			return (store.getByte(recNr, 24) & 1) > 0;
 		}
 
 		@Override
 		protected void changeRed(int recNr, boolean value) {
-			assert(store.validate(recNr));
+			assert store.validate(recNr);
 			store.setByte(recNr, 24, (store.getByte(rec, 24) & 254) + (value ? 1 : 0));
 		}
 
 		@Override
 		protected int readLeft(int recNr) {
-			assert(store.validate(recNr));
+			assert store.validate(recNr);
 			return store.getInt(recNr, 29);
 		}
 
 		@Override
 		protected void changeLeft(int recNr, int value) {
-			assert(store.validate(recNr));
+			assert store.validate(recNr);
 			store.setInt(recNr, 29, value);
 		}
 
 		@Override
 		protected int readRight(int recNr) {
-			assert(store.validate(recNr));
+			assert store.validate(recNr);
 			return store.getInt(recNr, 33);
 		}
 
 		@Override
 		protected void changeRight(int recNr, int value) {
-			assert(store.validate(recNr));
+			assert store.validate(recNr);
 			store.setInt(recNr, 33, value);
 		}
 
@@ -224,6 +224,16 @@ public class Area {
 				return;
 			write.field("card", "{" + getCard().toKeyString() + "}", true);
 		}
+
+		public void parse(Parser parser) {
+			EncounterArray record = this;
+		parser.getRelation("card)", () -> {
+			Card rec = new Card(store);
+			boolean found = rec.parseKey(parser);
+			record.setCard(rec);
+			return found;
+		});
+		}
 	}
 
 	public IndexGoal getGoal() {
@@ -250,7 +260,7 @@ public class Area {
 				public int compareTo(int recNr) {
 					if (recNr < 0)
 						return -1;
-					assert(store.validate(recNr));
+					assert store.validate(recNr);
 					record.setRec(recNr);
 					int o = 0;
 					o = RedBlackTree.compare(key1, record.getName());
@@ -290,37 +300,37 @@ public class Area {
 
 		@Override
 		protected boolean readRed(int recNr) {
-			assert(store.validate(recNr));
+			assert store.validate(recNr);
 			return (store.getByte(recNr, 12) & 1) > 0;
 		}
 
 		@Override
 		protected void changeRed(int recNr, boolean value) {
-			assert(store.validate(recNr));
+			assert store.validate(recNr);
 			store.setByte(recNr, 12, (store.getByte(rec, 12) & 254) + (value ? 1 : 0));
 		}
 
 		@Override
 		protected int readLeft(int recNr) {
-			assert(store.validate(recNr));
+			assert store.validate(recNr);
 			return store.getInt(recNr, 17);
 		}
 
 		@Override
 		protected void changeLeft(int recNr, int value) {
-			assert(store.validate(recNr));
+			assert store.validate(recNr);
 			store.setInt(recNr, 17, value);
 		}
 
 		@Override
 		protected int readRight(int recNr) {
-			assert(store.validate(recNr));
+			assert store.validate(recNr);
 			return store.getInt(recNr, 21);
 		}
 
 		@Override
 		protected void changeRight(int recNr, int value) {
-			assert(store.validate(recNr));
+			assert store.validate(recNr);
 			store.setInt(recNr, 21, value);
 		}
 
@@ -375,7 +385,7 @@ public class Area {
 				public int compareTo(int recNr) {
 					if (recNr < 0)
 						return -1;
-					assert(store.validate(recNr));
+					assert store.validate(recNr);
 					record.setRec(recNr);
 					int o = 0;
 					o = RedBlackTree.compare(key1, record.getX());
@@ -398,7 +408,7 @@ public class Area {
 				public int compareTo(int recNr) {
 					if (recNr < 0)
 						return -1;
-					assert(store.validate(recNr));
+					assert store.validate(recNr);
 					record.setRec(recNr);
 					int o = 0;
 					o = RedBlackTree.compare(key1, record.getX());
@@ -424,7 +434,7 @@ public class Area {
 				public int compareTo(int recNr) {
 					if (recNr < 0)
 						return -1;
-					assert(store.validate(recNr));
+					assert store.validate(recNr);
 					record.setRec(recNr);
 					int o = 0;
 					o = RedBlackTree.compare(key1, record.getX());
@@ -470,37 +480,37 @@ public class Area {
 
 		@Override
 		protected boolean readRed(int recNr) {
-			assert(store.validate(recNr));
+			assert store.validate(recNr);
 			return (store.getByte(recNr, 20) & 1) > 0;
 		}
 
 		@Override
 		protected void changeRed(int recNr, boolean value) {
-			assert(store.validate(recNr));
+			assert store.validate(recNr);
 			store.setByte(recNr, 20, (store.getByte(rec, 20) & 254) + (value ? 1 : 0));
 		}
 
 		@Override
 		protected int readLeft(int recNr) {
-			assert(store.validate(recNr));
+			assert store.validate(recNr);
 			return store.getInt(recNr, 25);
 		}
 
 		@Override
 		protected void changeLeft(int recNr, int value) {
-			assert(store.validate(recNr));
+			assert store.validate(recNr);
 			store.setInt(recNr, 25, value);
 		}
 
 		@Override
 		protected int readRight(int recNr) {
-			assert(store.validate(recNr));
+			assert store.validate(recNr);
 			return store.getInt(recNr, 29);
 		}
 
 		@Override
 		protected void changeRight(int recNr, int value) {
-			assert(store.validate(recNr));
+			assert store.validate(recNr);
 			store.setInt(recNr, 29, value);
 		}
 
@@ -549,14 +559,20 @@ public class Area {
 		if (rec == 0 || iterate <= 0)
 			return;
 		write.field("name", getName(), true);
-		for (Room sub: getRooms())
+		write.sub("rooms", false);
+		for (Room sub : getRooms())
 			sub.output(write, iterate - 1);
+		write.endSub();
 		for (EncounterArray sub: getEncounter())
 			sub.output(write, iterate - 1);
-		for (Goal sub: getGoal())
+		write.sub("goal", false);
+		for (Goal sub : getGoal())
 			sub.output(write, iterate - 1);
-		for (Map sub: getMaps())
+		write.endSub();
+		write.sub("maps", false);
+		for (Map sub : getMaps())
 			sub.output(write, iterate - 1);
+		write.endSub();
 	}
 
 	public String toKeyString() {
@@ -580,7 +596,58 @@ public class Area {
 		return write.toString();
 	}
 
-	public void parse(Parser parser, Game game) {
-		
+	public void parse(Parser parser, Game parent) {
+		while (parser.getSub()) {
+			String name = parser.getString("name");
+			Game.IndexAreas idx = parent.new IndexAreas(this, name);
+			if (idx.nextRec == 0) {
+				try (ChangeArea record = new ChangeArea(parent)) {
+					record.setName(name);
+					parseFields(parser, record);
+				}
+			} else {
+				rec = idx.nextRec;
+				try (ChangeArea record = new ChangeArea(this)) {
+					parseFields(parser, record);
+				}
+			}
+		}
+	}
+
+	public boolean parseKey(Parser parser) {
+		Game parent = new Game(store);
+		parser.getRelation("Game", () -> {
+			parent.parseKey(parser);
+			return true;
+		});
+		String name = parser.getString("name");
+		Game.IndexAreas idx = parent.new IndexAreas(this, name);
+		parser.finishRelation();
+		rec = idx.nextRec;
+		return idx.nextRec != 0;
+	}
+
+	private void parseFields(Parser parser, ChangeArea record) {
+		if (parser.hasSub("rooms"))
+			while (parser.getSub()) {
+				Room sub = new Room(store);
+				sub.parse(parser, record);
+			}
+		if (parser.hasSub("encounter"))
+			while (parser.getSub()) {
+				EncounterArray sub = new EncounterArray();
+				sub.add();
+				sub.parse(parser);
+			}
+		if (parser.hasSub("goal"))
+			while (parser.getSub()) {
+				Goal sub = new Goal(store);
+				sub.parse(parser, record);
+			}
+		if (parser.hasSub("maps"))
+			while (parser.getSub()) {
+				Map sub = new Map(store);
+				sub.parse(parser, record);
+			}
 	}
 }

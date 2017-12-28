@@ -3,8 +3,9 @@ package cards.record;
 import java.io.IOException;
 import java.io.StringWriter;
 
-import com.betterbe.memorydb.structure.Store;
+import com.betterbe.memorydb.file.Parser;
 import com.betterbe.memorydb.file.Write;
+import com.betterbe.memorydb.structure.Store;
 
 /**
  * Automatically generated record class for table Member
@@ -30,7 +31,7 @@ public class Member {
 	}
 
 	public void setRec(int rec) {
-		assert(store.validate(rec));
+		assert store.validate(rec);
 		this.rec = rec;
 	}
 
@@ -92,5 +93,49 @@ public class Member {
 			throw new RuntimeException(e);
 		}
 		return write.toString();
+	}
+
+	public void parse(Parser parser, Player parent) {
+		while (parser.getSub()) {
+			Game game = new Game(store);
+			parser.getRelation("game", () -> {
+				game.parseKey(parser);
+				return true;
+			});
+			Player.IndexMember idx = parent.new IndexMember(this, game);
+			if (idx.nextRec == 0) {
+				try (ChangeMember record = new ChangeMember(parent)) {
+					record.setGame(game);
+					parseFields(parser, record);
+				}
+			} else {
+				rec = idx.nextRec;
+				try (ChangeMember record = new ChangeMember(this)) {
+					parseFields(parser, record);
+				}
+			}
+		}
+	}
+
+	public boolean parseKey(Parser parser) {
+		Player parent = new Player(store);
+		parser.getRelation("Player", () -> {
+			parent.parseKey(parser);
+			return true;
+		});
+		Game game = new Game(store);
+		parser.getRelation("game", () -> {
+			game.parseKey(parser);
+			return true;
+		});
+		Player.IndexMember idx = parent.new IndexMember(this, game);
+		parser.finishRelation();
+		rec = idx.nextRec;
+		return idx.nextRec != 0;
+	}
+
+	private void parseFields(Parser parser, ChangeMember record) {
+		record.setRole(Role.valueOf(parser.getString("role")));
+		record.setXp(parser.getInt("xp"));
 	}
 }

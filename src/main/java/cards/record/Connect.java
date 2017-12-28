@@ -4,8 +4,9 @@ import java.io.IOException;
 import java.io.StringWriter;
 import java.util.Iterator;
 
-import com.betterbe.memorydb.structure.Store;
+import com.betterbe.memorydb.file.Parser;
 import com.betterbe.memorydb.file.Write;
+import com.betterbe.memorydb.structure.Store;
 
 /**
  * Automatically generated record class for table Connect
@@ -31,7 +32,7 @@ public class Connect {
 	}
 
 	public void setRec(int rec) {
-		assert(store.validate(rec));
+		assert store.validate(rec);
 		this.rec = rec;
 	}
 
@@ -106,6 +107,16 @@ public class Connect {
 				return;
 			write.field("card", "{" + getCard().toKeyString() + "}", true);
 		}
+
+		public void parse(Parser parser) {
+			ChecksArray record = this;
+		parser.getRelation("card)", () -> {
+			Card rec = new Card(store);
+			boolean found = rec.parseKey(parser);
+			record.setCard(rec);
+			return found;
+		});
+		}
 	}
 
 	public void getUpRecord(Room value) {
@@ -153,5 +164,52 @@ public class Connect {
 			throw new RuntimeException(e);
 		}
 		return write.toString();
+	}
+
+	public void parse(Parser parser, Room parent) {
+		while (parser.getSub()) {
+			int nr = parser.getInt("nr");
+			Room.IndexConnection idx = parent.new IndexConnection(this, nr);
+			if (idx.nextRec == 0) {
+				try (ChangeConnect record = new ChangeConnect(parent)) {
+					record.setNr(nr);
+					parseFields(parser, record);
+				}
+			} else {
+				rec = idx.nextRec;
+				try (ChangeConnect record = new ChangeConnect(this)) {
+					parseFields(parser, record);
+				}
+			}
+		}
+	}
+
+	public boolean parseKey(Parser parser) {
+		Room parent = new Room(store);
+		parser.getRelation("Room", () -> {
+			parent.parseKey(parser);
+			return true;
+		});
+		int nr = parser.getInt("nr");
+		Room.IndexConnection idx = parent.new IndexConnection(this, nr);
+		parser.finishRelation();
+		rec = idx.nextRec;
+		return idx.nextRec != 0;
+	}
+
+	private void parseFields(Parser parser, ChangeConnect record) {
+		record.setType(Type.valueOf(parser.getString("type")));
+		if (parser.hasSub("checks"))
+			while (parser.getSub()) {
+				ChecksArray sub = new ChecksArray();
+				sub.add();
+				sub.parse(parser);
+			}
+		parser.getRelation("to)", () -> {
+			Room rec = new Room(store);
+			boolean found = rec.parseKey(parser);
+			record.setTo(rec);
+			return found;
+		});
 	}
 }

@@ -27,7 +27,7 @@ public class ChangeStatistic extends Statistic implements AutoCloseable {
 	}
 
 	@Override
-	public void close() throws Exception {
+	public void close() {
 		new IndexStatisticName().insert(getRec());
 		new IndexStatisticNr().insert(getRec());
 	}

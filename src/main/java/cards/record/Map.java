@@ -4,8 +4,9 @@ import java.io.IOException;
 import java.io.StringWriter;
 import java.util.Iterator;
 
-import com.betterbe.memorydb.structure.Store;
+import com.betterbe.memorydb.file.Parser;
 import com.betterbe.memorydb.file.Write;
+import com.betterbe.memorydb.structure.Store;
 
 /**
  * Automatically generated record class for table Map
@@ -31,7 +32,7 @@ public class Map {
 	}
 
 	public void setRec(int rec) {
-		assert(store.validate(rec));
+		assert store.validate(rec);
 		this.rec = rec;
 	}
 
@@ -153,6 +154,17 @@ public class Map {
 			write.field("rotation", getRotation(), false);
 			write.field("height", getHeight(), false);
 		}
+
+		public void parse(Parser parser) {
+			DataArray record = this;
+		record.setWallL((byte) parser.getInt("wallL"));
+		record.setWallT((byte) parser.getInt("wallT"));
+		record.setWallR((byte) parser.getInt("wallR"));
+		record.setFloor((byte) parser.getInt("floor"));
+		record.setItem((byte) parser.getInt("item"));
+		record.setRotation((byte) parser.getInt("rotation"));
+		record.setHeight(parser.getInt("height"));
+		}
 	}
 
 	public void getUpRecord(Area value) {
@@ -196,5 +208,51 @@ public class Map {
 			throw new RuntimeException(e);
 		}
 		return write.toString();
+	}
+
+	public void parse(Parser parser, Area parent) {
+		while (parser.getSub()) {
+			int X = parser.getInt("X");
+			int Y = parser.getInt("Y");
+			int Z = parser.getInt("Z");
+			Area.IndexMaps idx = parent.new IndexMaps(this, X, Y, Z);
+			if (idx.nextRec == 0) {
+				try (ChangeMap record = new ChangeMap(parent)) {
+					record.setX(X);
+					record.setY(Y);
+					record.setZ(Z);
+					parseFields(parser, record);
+				}
+			} else {
+				rec = idx.nextRec;
+				try (ChangeMap record = new ChangeMap(this)) {
+					parseFields(parser, record);
+				}
+			}
+		}
+	}
+
+	public boolean parseKey(Parser parser) {
+		Area parent = new Area(store);
+		parser.getRelation("Area", () -> {
+			parent.parseKey(parser);
+			return true;
+		});
+		int X = parser.getInt("X");
+		int Y = parser.getInt("Y");
+		int Z = parser.getInt("Z");
+		Area.IndexMaps idx = parent.new IndexMaps(this, X, Y, Z);
+		parser.finishRelation();
+		rec = idx.nextRec;
+		return idx.nextRec != 0;
+	}
+
+	private void parseFields(Parser parser, ChangeMap record) {
+		if (parser.hasSub("data"))
+			while (parser.getSub()) {
+				DataArray sub = new DataArray();
+				sub.add();
+				sub.parse(parser);
+			}
 	}
 }

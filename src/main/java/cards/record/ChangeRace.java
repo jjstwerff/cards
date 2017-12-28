@@ -31,7 +31,7 @@ public class ChangeRace extends Race implements AutoCloseable {
 	}
 
 	@Override
-	public void close() throws Exception {
+	public void close() {
 		parent.new IndexRaces(this).insert(getRec());
 	}
 }

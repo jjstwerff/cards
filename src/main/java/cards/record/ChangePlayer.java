@@ -34,7 +34,7 @@ public class ChangePlayer extends Player implements AutoCloseable {
 	}
 
 	@Override
-	public void close() throws Exception {
+	public void close() {
 		new IndexPlayerName().insert(getRec());
 	}
 }

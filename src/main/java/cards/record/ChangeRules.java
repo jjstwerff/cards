@@ -24,7 +24,7 @@ public class ChangeRules extends Rules implements AutoCloseable {
 	}
 
 	@Override
-	public void close() throws Exception {
+	public void close() {
 		new IndexRulesName().insert(getRec());
 	}
 }

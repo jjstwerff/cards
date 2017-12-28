@@ -4,11 +4,12 @@ import java.io.IOException;
 import java.io.StringWriter;
 import java.util.Iterator;
 
-import com.betterbe.memorydb.structure.Store;
+import com.betterbe.memorydb.file.Parser;
 import com.betterbe.memorydb.file.Write;
 import com.betterbe.memorydb.structure.IndexOperation;
 import com.betterbe.memorydb.structure.Key;
 import com.betterbe.memorydb.structure.RedBlackTree;
+import com.betterbe.memorydb.structure.Store;
 
 /**
  * Automatically generated record class for table Statistic
@@ -34,7 +35,7 @@ public class Statistic {
 	}
 
 	public void setRec(int rec) {
-		assert(store.validate(rec));
+		assert store.validate(rec);
 		this.rec = rec;
 	}
 
@@ -61,7 +62,7 @@ public class Statistic {
 				public int compareTo(int recNr) {
 					if (recNr < 0)
 						return -1;
-					assert(store.validate(recNr));
+					assert store.validate(recNr);
 					setRec(recNr);
 					int o = 0;
 					o = RedBlackTree.compare(key1, Statistic.this.getName());
@@ -101,37 +102,37 @@ public class Statistic {
 
 		@Override
 		protected boolean readRed(int recNr) {
-			assert(store.validate(recNr));
+			assert store.validate(recNr);
 			return (store.getByte(recNr, 8) & 1) > 0;
 		}
 
 		@Override
 		protected void changeRed(int recNr, boolean value) {
-			assert(store.validate(recNr));
+			assert store.validate(recNr);
 			store.setByte(recNr, 8, (store.getByte(rec, 8) & 254) + (value ? 1 : 0));
 		}
 
 		@Override
 		protected int readLeft(int recNr) {
-			assert(store.validate(recNr));
+			assert store.validate(recNr);
 			return store.getInt(recNr, 13);
 		}
 
 		@Override
 		protected void changeLeft(int recNr, int value) {
-			assert(store.validate(recNr));
+			assert store.validate(recNr);
 			store.setInt(recNr, 13, value);
 		}
 
 		@Override
 		protected int readRight(int recNr) {
-			assert(store.validate(recNr));
+			assert store.validate(recNr);
 			return store.getInt(recNr, 17);
 		}
 
 		@Override
 		protected void changeRight(int recNr, int value) {
-			assert(store.validate(recNr));
+			assert store.validate(recNr);
 			store.setInt(recNr, 17, value);
 		}
 
@@ -177,7 +178,7 @@ public class Statistic {
 				public int compareTo(int recNr) {
 					if (recNr < 0)
 						return -1;
-					assert(store.validate(recNr));
+					assert store.validate(recNr);
 					setRec(recNr);
 					int o = 0;
 					o = RedBlackTree.compare(key1, Statistic.this.getNr());
@@ -217,37 +218,37 @@ public class Statistic {
 
 		@Override
 		protected boolean readRed(int recNr) {
-			assert(store.validate(recNr));
+			assert store.validate(recNr);
 			return (store.getByte(recNr, 21) & 1) > 0;
 		}
 
 		@Override
 		protected void changeRed(int recNr, boolean value) {
-			assert(store.validate(recNr));
+			assert store.validate(recNr);
 			store.setByte(recNr, 21, (store.getByte(rec, 21) & 254) + (value ? 1 : 0));
 		}
 
 		@Override
 		protected int readLeft(int recNr) {
-			assert(store.validate(recNr));
+			assert store.validate(recNr);
 			return store.getInt(recNr, 22);
 		}
 
 		@Override
 		protected void changeLeft(int recNr, int value) {
-			assert(store.validate(recNr));
+			assert store.validate(recNr);
 			store.setInt(recNr, 22, value);
 		}
 
 		@Override
 		protected int readRight(int recNr) {
-			assert(store.validate(recNr));
+			assert store.validate(recNr);
 			return store.getInt(recNr, 26);
 		}
 
 		@Override
 		protected void changeRight(int recNr, int value) {
-			assert(store.validate(recNr));
+			assert store.validate(recNr);
 			store.setInt(recNr, 26, value);
 		}
 
@@ -302,5 +303,35 @@ public class Statistic {
 			throw new RuntimeException(e);
 		}
 		return write.toString();
+	}
+
+	public void parse(Parser parser) {
+		while (parser.getSub()) {
+			String name = parser.getString("name");
+			IndexStatisticName idx = new IndexStatisticName(name);
+			if (idx.nextRec == 0) {
+				try (ChangeStatistic record = new ChangeStatistic(store)) {
+					record.setName(name);
+					parseFields(parser, record);
+				}
+			} else {
+				rec = idx.nextRec;
+				try (ChangeStatistic record = new ChangeStatistic(this)) {
+					parseFields(parser, record);
+				}
+			}
+		}
+	}
+
+	public boolean parseKey(Parser parser) {
+		String name = parser.getString("name");
+		IndexStatisticName idx = new IndexStatisticName(name);
+		parser.finishRelation();
+		rec = idx.nextRec;
+		return idx.nextRec != 0;
+	}
+
+	private void parseFields(Parser parser, ChangeStatistic record) {
+		record.setNr(parser.getInt("nr"));
 	}
 }

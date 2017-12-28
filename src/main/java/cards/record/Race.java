@@ -4,8 +4,9 @@ import java.io.IOException;
 import java.io.StringWriter;
 import java.util.Iterator;
 
-import com.betterbe.memorydb.structure.Store;
+import com.betterbe.memorydb.file.Parser;
 import com.betterbe.memorydb.file.Write;
+import com.betterbe.memorydb.structure.Store;
 
 /**
  * Automatically generated record class for table Race
@@ -31,7 +32,7 @@ public class Race {
 	}
 
 	public void setRec(int rec) {
-		assert(store.validate(rec));
+		assert store.validate(rec);
 		this.rec = rec;
 	}
 
@@ -95,6 +96,16 @@ public class Race {
 				return;
 			write.field("card", "{" + getCard().toKeyString() + "}", true);
 		}
+
+		public void parse(Parser parser) {
+			CardsArray record = this;
+		parser.getRelation("card)", () -> {
+			Card rec = new Card(store);
+			boolean found = rec.parseKey(parser);
+			record.setCard(rec);
+			return found;
+		});
+		}
 	}
 
 	public void getUpRecord(Rules value) {
@@ -132,5 +143,45 @@ public class Race {
 			throw new RuntimeException(e);
 		}
 		return write.toString();
+	}
+
+	public void parse(Parser parser, Rules parent) {
+		while (parser.getSub()) {
+			String name = parser.getString("name");
+			Rules.IndexRaces idx = parent.new IndexRaces(this, name);
+			if (idx.nextRec == 0) {
+				try (ChangeRace record = new ChangeRace(parent)) {
+					record.setName(name);
+					parseFields(parser, record);
+				}
+			} else {
+				rec = idx.nextRec;
+				try (ChangeRace record = new ChangeRace(this)) {
+					parseFields(parser, record);
+				}
+			}
+		}
+	}
+
+	public boolean parseKey(Parser parser) {
+		Rules parent = new Rules(store);
+		parser.getRelation("Rules", () -> {
+			parent.parseKey(parser);
+			return true;
+		});
+		String name = parser.getString("name");
+		Rules.IndexRaces idx = parent.new IndexRaces(this, name);
+		parser.finishRelation();
+		rec = idx.nextRec;
+		return idx.nextRec != 0;
+	}
+
+	private void parseFields(Parser parser, ChangeRace record) {
+		if (parser.hasSub("cards"))
+			while (parser.getSub()) {
+				CardsArray sub = new CardsArray();
+				sub.add();
+				sub.parse(parser);
+			}
 	}
 }

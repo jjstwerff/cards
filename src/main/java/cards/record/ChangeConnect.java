@@ -44,7 +44,7 @@ public class ChangeConnect extends Connect implements AutoCloseable {
 	}
 
 	@Override
-	public void close() throws Exception {
+	public void close() {
 		parent.new IndexConnection(this).insert(getRec());
 	}
 }

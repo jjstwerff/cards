@@ -3,8 +3,9 @@ package cards.record;
 import java.io.IOException;
 import java.io.StringWriter;
 
-import com.betterbe.memorydb.structure.Store;
+import com.betterbe.memorydb.file.Parser;
 import com.betterbe.memorydb.file.Write;
+import com.betterbe.memorydb.structure.Store;
 
 /**
  * Automatically generated record class for table Goal
@@ -30,7 +31,7 @@ public class Goal {
 	}
 
 	public void setRec(int rec) {
-		assert(store.validate(rec));
+		assert store.validate(rec);
 		this.rec = rec;
 	}
 
@@ -100,5 +101,42 @@ public class Goal {
 			throw new RuntimeException(e);
 		}
 		return write.toString();
+	}
+
+	public void parse(Parser parser, Area parent) {
+		while (parser.getSub()) {
+			String name = parser.getString("name");
+			Area.IndexGoal idx = parent.new IndexGoal(this, name);
+			if (idx.nextRec == 0) {
+				try (ChangeGoal record = new ChangeGoal(parent)) {
+					record.setName(name);
+					parseFields(parser, record);
+				}
+			} else {
+				rec = idx.nextRec;
+				try (ChangeGoal record = new ChangeGoal(this)) {
+					parseFields(parser, record);
+				}
+			}
+		}
+	}
+
+	public boolean parseKey(Parser parser) {
+		Area parent = new Area(store);
+		parser.getRelation("Area", () -> {
+			parent.parseKey(parser);
+			return true;
+		});
+		String name = parser.getString("name");
+		Area.IndexGoal idx = parent.new IndexGoal(this, name);
+		parser.finishRelation();
+		rec = idx.nextRec;
+		return idx.nextRec != 0;
+	}
+
+	private void parseFields(Parser parser, ChangeGoal record) {
+		record.setType(Type.valueOf(parser.getString("type")));
+		record.setXP(parser.getInt("XP"));
+		record.setGained(Gained.valueOf(parser.getString("gained")));
 	}
 }

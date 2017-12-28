@@ -4,11 +4,12 @@ import java.io.IOException;
 import java.io.StringWriter;
 import java.util.Iterator;
 
-import com.betterbe.memorydb.structure.Store;
+import com.betterbe.memorydb.file.Parser;
 import com.betterbe.memorydb.file.Write;
 import com.betterbe.memorydb.structure.IndexOperation;
 import com.betterbe.memorydb.structure.Key;
 import com.betterbe.memorydb.structure.RedBlackTree;
+import com.betterbe.memorydb.structure.Store;
 
 /**
  * Automatically generated record class for table Room
@@ -34,7 +35,7 @@ public class Room {
 	}
 
 	public void setRec(int rec) {
-		assert(store.validate(rec));
+		assert store.validate(rec);
 		this.rec = rec;
 	}
 
@@ -98,6 +99,16 @@ public class Room {
 				return;
 			write.field("card", "{" + getCard().toKeyString() + "}", true);
 		}
+
+		public void parse(Parser parser) {
+			OpponentArray record = this;
+		parser.getRelation("card)", () -> {
+			Card rec = new Card(store);
+			boolean found = rec.parseKey(parser);
+			record.setCard(rec);
+			return found;
+		});
+		}
 	}
 
 	public ItemsArray getItems() {
@@ -156,6 +167,16 @@ public class Room {
 				return;
 			write.field("card", "{" + getCard().toKeyString() + "}", true);
 		}
+
+		public void parse(Parser parser) {
+			ItemsArray record = this;
+		parser.getRelation("card)", () -> {
+			Card rec = new Card(store);
+			boolean found = rec.parseKey(parser);
+			record.setCard(rec);
+			return found;
+		});
+		}
 	}
 
 	public IndexConnection getConnection() {
@@ -182,7 +203,7 @@ public class Room {
 				public int compareTo(int recNr) {
 					if (recNr < 0)
 						return -1;
-					assert(store.validate(recNr));
+					assert store.validate(recNr);
 					record.setRec(recNr);
 					int o = 0;
 					o = RedBlackTree.compare(key1, record.getNr());
@@ -222,37 +243,37 @@ public class Room {
 
 		@Override
 		protected boolean readRed(int recNr) {
-			assert(store.validate(recNr));
+			assert store.validate(recNr);
 			return (store.getByte(recNr, 14) & 1) > 0;
 		}
 
 		@Override
 		protected void changeRed(int recNr, boolean value) {
-			assert(store.validate(recNr));
+			assert store.validate(recNr);
 			store.setByte(recNr, 14, (store.getByte(rec, 14) & 254) + (value ? 1 : 0));
 		}
 
 		@Override
 		protected int readLeft(int recNr) {
-			assert(store.validate(recNr));
+			assert store.validate(recNr);
 			return store.getInt(recNr, 19);
 		}
 
 		@Override
 		protected void changeLeft(int recNr, int value) {
-			assert(store.validate(recNr));
+			assert store.validate(recNr);
 			store.setInt(recNr, 19, value);
 		}
 
 		@Override
 		protected int readRight(int recNr) {
-			assert(store.validate(recNr));
+			assert store.validate(recNr);
 			return store.getInt(recNr, 23);
 		}
 
 		@Override
 		protected void changeRight(int recNr, int value) {
-			assert(store.validate(recNr));
+			assert store.validate(recNr);
 			store.setInt(recNr, 23, value);
 		}
 
@@ -299,8 +320,10 @@ public class Room {
 			sub.output(write, iterate - 1);
 		for (ItemsArray sub: getItems())
 			sub.output(write, iterate - 1);
-		for (Connect sub: getConnection())
+		write.sub("connection", false);
+		for (Connect sub : getConnection())
 			sub.output(write, iterate - 1);
+		write.endSub();
 	}
 
 	public String toKeyString() {
@@ -322,5 +345,56 @@ public class Room {
 			throw new RuntimeException(e);
 		}
 		return write.toString();
+	}
+
+	public void parse(Parser parser, Area parent) {
+		while (parser.getSub()) {
+			String name = parser.getString("name");
+			Area.IndexRooms idx = parent.new IndexRooms(this, name);
+			if (idx.nextRec == 0) {
+				try (ChangeRoom record = new ChangeRoom(parent)) {
+					record.setName(name);
+					parseFields(parser, record);
+				}
+			} else {
+				rec = idx.nextRec;
+				try (ChangeRoom record = new ChangeRoom(this)) {
+					parseFields(parser, record);
+				}
+			}
+		}
+	}
+
+	public boolean parseKey(Parser parser) {
+		Area parent = new Area(store);
+		parser.getRelation("Area", () -> {
+			parent.parseKey(parser);
+			return true;
+		});
+		String name = parser.getString("name");
+		Area.IndexRooms idx = parent.new IndexRooms(this, name);
+		parser.finishRelation();
+		rec = idx.nextRec;
+		return idx.nextRec != 0;
+	}
+
+	private void parseFields(Parser parser, ChangeRoom record) {
+		if (parser.hasSub("opponent"))
+			while (parser.getSub()) {
+				OpponentArray sub = new OpponentArray();
+				sub.add();
+				sub.parse(parser);
+			}
+		if (parser.hasSub("items"))
+			while (parser.getSub()) {
+				ItemsArray sub = new ItemsArray();
+				sub.add();
+				sub.parse(parser);
+			}
+		if (parser.hasSub("connection"))
+			while (parser.getSub()) {
+				Connect sub = new Connect(store);
+				sub.parse(parser, record);
+			}
 	}
 }
