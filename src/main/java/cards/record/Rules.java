@@ -374,7 +374,7 @@ public class Rules {
 
 	}
 
-	public Rules parseKey(Parser parser) {
+	public boolean parseKey(Parser parser) {
 		return null;
 	}
 }

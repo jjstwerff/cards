@@ -323,30 +323,42 @@ public class Game {
 	}
 
 	public void parse(Parser parser) {
-		String name = parser.getString("name");
-		IndexGameName indexGameName = new IndexGameName(name);
-		if (indexGameName.nextRec == 0) {
-			try (ChangeGame changeGame = new ChangeGame(store)) {
-				changeGame.setName(name);
-				parseFields(parser, changeGame);
-			}
-		} else {
-			rec = indexGameName.nextRec;
-			try (ChangeGame changeGame = new ChangeGame(this)) {
-				parseFields(parser, changeGame);
+		while (parser.getSub()) {
+			String name = parser.getString("name");
+			IndexGameName indexGameName = new IndexGameName(name);
+			if (indexGameName.nextRec == 0) {
+				try (ChangeGame changeGame = new ChangeGame(store)) {
+					changeGame.setName(name);
+					parseFields(parser, changeGame);
+				}
+			} else {
+				rec = indexGameName.nextRec;
+				try (ChangeGame changeGame = new ChangeGame(this)) {
+					parseFields(parser, changeGame);
+				}
 			}
 		}
 	}
 
+	public boolean parseKey(Parser parser) {
+		String name = parser.getString("name");
+		parser.finishRelation();
+		IndexGameName indexGameName = new IndexGameName(name);
+		rec = indexGameName.nextRec;
+		return indexGameName.nextRec != 0;
+	}
+
 	private void parseFields(Parser parser, ChangeGame game) {
-		while (parser.hasSub("areas")) {
-			Area area = new Area(store);
-			area.parse(parser, game);
-		}
-		if (parser.hasRelation("rules")) {
+		if (parser.hasSub("areas"))
+			while (parser.getSub()) {
+				Area area = new Area(store);
+				area.parse(parser, game);
+			}
+		parser.hasRelation("rules", () -> {
 			Rules rules = new Rules(store);
-			game.setRules(rules.parseKey(parser));
-			parser.stopRelation();
-		}
+			boolean found = rules.parseKey(parser);
+			game.setRules(rules);
+			return found;
+		});
 	}
 }
