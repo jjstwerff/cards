@@ -99,12 +99,12 @@ public class Race {
 
 		public void parse(Parser parser) {
 			CardsArray record = this;
-		parser.getRelation("card)", () -> {
-			Card rec = new Card(store);
-			boolean found = rec.parseKey(parser);
-			record.setCard(rec);
-			return found;
-		});
+			parser.getRelation("card)", () -> {
+				Card rec = new Card(store);
+				boolean found = rec.parseKey(parser);
+				record.setCard(rec);
+				return found;
+			});
 		}
 	}
 

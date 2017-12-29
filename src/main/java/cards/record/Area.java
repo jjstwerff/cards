@@ -143,12 +143,12 @@ public class Area {
 
 		@Override
 		protected int readTop() {
-			return store.getInt(store.getInt(record.getRec(), 41), 24);
+			return store.getInt(store.getInt(record.getRec(), 41), 28);
 		}
 
 		@Override
 		protected void changeTop(int value) {
-			store.setInt(store.getInt(record.getRec(), 41), 24, value);
+			store.setInt(store.getInt(record.getRec(), 41), 28, value);
 		}
 
 		@Override
@@ -227,12 +227,12 @@ public class Area {
 
 		public void parse(Parser parser) {
 			EncounterArray record = this;
-		parser.getRelation("card)", () -> {
-			Card rec = new Card(store);
-			boolean found = rec.parseKey(parser);
-			record.setCard(rec);
-			return found;
-		});
+			parser.getRelation("card)", () -> {
+				Card rec = new Card(store);
+				boolean found = rec.parseKey(parser);
+				record.setCard(rec);
+				return found;
+			});
 		}
 	}
 
@@ -336,12 +336,12 @@ public class Area {
 
 		@Override
 		protected int readTop() {
-			return store.getInt(store.getInt(record.getRec(), 29), 28);
+			return store.getInt(store.getInt(record.getRec(), 29), 32);
 		}
 
 		@Override
 		protected void changeTop(int value) {
-			store.setInt(store.getInt(record.getRec(), 29), 28, value);
+			store.setInt(store.getInt(record.getRec(), 29), 32, value);
 		}
 
 		@Override
@@ -516,12 +516,12 @@ public class Area {
 
 		@Override
 		protected int readTop() {
-			return store.getInt(store.getInt(record.getRec(), 37), 32);
+			return store.getInt(store.getInt(record.getRec(), 37), 36);
 		}
 
 		@Override
 		protected void changeTop(int value) {
-			store.setInt(store.getInt(record.getRec(), 37), 32, value);
+			store.setInt(store.getInt(record.getRec(), 37), 36, value);
 		}
 
 		@Override

@@ -51,7 +51,7 @@ public class Structure {
 		Record rules = project.table("Rules");
 		rules.field("name", Type.STRING);
 		rules.field("races", race, "name");
-		rules.field("cards", Type.ARRAY, cards);
+		rules.field("cards", card, "name");
 		rules.index("rulesName", "name");
 
 		Record connect = project.table("Connect");
@@ -106,6 +106,7 @@ public class Structure {
 		game.field("name", Type.STRING);
 		game.field("areas", area, "name");
 		game.field("rules", Type.RELATION, rules);
+		game.field("characters", character, "name");
 		game.index("gameName", "name");
 
 		Record member = project.table("Member");

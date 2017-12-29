@@ -110,12 +110,12 @@ public class Connect {
 
 		public void parse(Parser parser) {
 			ChecksArray record = this;
-		parser.getRelation("card)", () -> {
-			Card rec = new Card(store);
-			boolean found = rec.parseKey(parser);
-			record.setCard(rec);
-			return found;
-		});
+			parser.getRelation("card)", () -> {
+				Card rec = new Card(store);
+				boolean found = rec.parseKey(parser);
+				record.setCard(rec);
+				return found;
+			});
 		}
 	}
 

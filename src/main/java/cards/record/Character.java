@@ -17,7 +17,7 @@ import com.betterbe.memorydb.structure.Store;
 public class Character {
 	/* package private */ Store store;
 	protected int rec;
-	/* package private */ static int SIZE = 8;
+	/* package private */ static int SIZE = 29;
 
 	public Character(Store store) {
 		this.store = store;
@@ -40,7 +40,7 @@ public class Character {
 	}
 
 	public String getName() {
-		return rec == 0 ? null : store.getString(store.getInt(rec, 0));
+		return rec == 0 ? null : store.getString(store.getInt(rec, 8));
 	}
 
 	public IndexSkills getSkills() {
@@ -143,12 +143,12 @@ public class Character {
 
 		@Override
 		protected int readTop() {
-			return store.getInt(store.getInt(record.getRec(), 23), 36);
+			return store.getInt(store.getInt(record.getRec(), 23), 40);
 		}
 
 		@Override
 		protected void changeTop(int value) {
-			store.setInt(store.getInt(record.getRec(), 23), 36, value);
+			store.setInt(store.getInt(record.getRec(), 23), 40, value);
 		}
 
 		@Override
@@ -168,6 +168,14 @@ public class Character {
 		}
 	}
 
+	public void getUpRecord(Game value) {
+		value.setRec(store.getInt(rec, 25));
+	}
+
+	public Game getUpRecord() {
+		return new Game(store, rec == 0 ? 0 : store.getInt(rec, 25));
+	}
+
 	public void output(Write write, int iterate) throws IOException {
 		if (rec == 0 || iterate <= 0)
 			return;
@@ -182,6 +190,9 @@ public class Character {
 		StringBuilder res = new StringBuilder();
 		if (rec == 0)
 			return "";
+		res.append("Game").append("={").append(getUpRecord().toKeyString()).append("}");
+		res.append(", ");
+		res.append("Name").append("=").append(getName());
 		return res.toString();
 	}
 
@@ -196,12 +207,13 @@ public class Character {
 		return write.toString();
 	}
 
-	public void parse(Parser parser) {
+	public void parse(Parser parser, Game parent) {
 		while (parser.getSub()) {
-
+			String name = parser.getString("name");
+			Game.IndexCharacters idx = parent.new IndexCharacters(this, name);
 			if (idx.nextRec == 0) {
-				try (ChangeCharacter record = new ChangeCharacter(store)) {
-
+				try (ChangeCharacter record = new ChangeCharacter(parent)) {
+					record.setName(name);
 					parseFields(parser, record);
 				}
 			} else {
@@ -214,14 +226,19 @@ public class Character {
 	}
 
 	public boolean parseKey(Parser parser) {
-
+		Game parent = new Game(store);
+		parser.getRelation("Game", () -> {
+			parent.parseKey(parser);
+			return true;
+		});
+		String name = parser.getString("name");
+		Game.IndexCharacters idx = parent.new IndexCharacters(this, name);
 		parser.finishRelation();
 		rec = idx.nextRec;
 		return idx.nextRec != 0;
 	}
 
 	private void parseFields(Parser parser, ChangeCharacter record) {
-		record.setName(parser.getString("name"));
 		if (parser.hasSub("skills"))
 			while (parser.getSub()) {
 				Skill sub = new Skill(store);

@@ -11,7 +11,6 @@ public class ChangeRules extends Rules implements AutoCloseable {
 		setName(null);
 		store.setInt(rec, 8, 0);
 		store.setInt(rec, 12, 0);
-		store.setInt(rec, 16, 0);
 	}
 
 	public ChangeRules(Rules current) {

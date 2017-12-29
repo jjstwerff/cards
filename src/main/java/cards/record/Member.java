@@ -102,7 +102,7 @@ public class Member {
 				game.parseKey(parser);
 				return true;
 			});
-			Player.IndexMember idx = parent.new IndexMember(this, game);
+			Player.IndexMember idx = parent.new IndexMember(this, game.getName());
 			if (idx.nextRec == 0) {
 				try (ChangeMember record = new ChangeMember(parent)) {
 					record.setGame(game);
@@ -128,7 +128,7 @@ public class Member {
 			game.parseKey(parser);
 			return true;
 		});
-		Player.IndexMember idx = parent.new IndexMember(this, game);
+		Player.IndexMember idx = parent.new IndexMember(this, game.getName());
 		parser.finishRelation();
 		rec = idx.nextRec;
 		return idx.nextRec != 0;

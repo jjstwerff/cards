@@ -14,7 +14,7 @@ import com.betterbe.memorydb.structure.Store;
 public class Card {
 	/* package private */ Store store;
 	protected int rec;
-	/* package private */ static int SIZE = 14;
+	/* package private */ static int SIZE = 35;
 
 	public Card(Store store) {
 		this.store = store;
@@ -37,7 +37,7 @@ public class Card {
 	}
 
 	public String getName() {
-		return rec == 0 ? null : store.getString(store.getInt(rec, 0));
+		return rec == 0 ? null : store.getString(store.getInt(rec, 8));
 	}
 
 	public enum Set {
@@ -45,7 +45,7 @@ public class Card {
 	};
 
 	public Card.Set getSet() {
-		int data = rec == 0 ? 0 : store.getShort(rec, 4);
+		int data = rec == 0 ? 0 : store.getShort(rec, 12);
 		if (data <= 0)
 			return null;
 		return Set.values()[data - 1];
@@ -59,17 +59,17 @@ public class Card {
 		int idx = -1;
 
 		public int getSize() {
-			return store.getInt(rec, 6);
+			return store.getInt(rec, 14);
 		}
 
 		public StatsArray add() {
-			int p = store.getInt(rec, 10);
+			int p = store.getInt(rec, 18);
 			idx = getSize();
 			if (p == 0 || idx * 5 >= store.getInt(p, 0)) {
 				store.setInt(p, 0, idx * 5);
-				store.setInt(rec, 10, store.resize(p));
+				store.setInt(rec, 18, store.resize(p));
 			}
-			store.setInt(rec, 6, idx + 1);
+			store.setInt(rec, 14, idx + 1);
 			return this;
 		}
 
@@ -119,14 +119,22 @@ public class Card {
 
 		public void parse(Parser parser) {
 			StatsArray record = this;
-		parser.getRelation("statistic)", () -> {
-			Statistic rec = new Statistic(store);
-			boolean found = rec.parseKey(parser);
-			record.setStatistic(rec);
-			return found;
-		});
-		record.setValue((byte) parser.getInt("value"));
+			parser.getRelation("statistic)", () -> {
+				Statistic rec = new Statistic(store);
+				boolean found = rec.parseKey(parser);
+				record.setStatistic(rec);
+				return found;
+			});
+			record.setValue((byte) parser.getInt("value"));
 		}
+	}
+
+	public void getUpRecord(Rules value) {
+		value.setRec(store.getInt(rec, 31));
+	}
+
+	public Rules getUpRecord() {
+		return new Rules(store, rec == 0 ? 0 : store.getInt(rec, 31));
 	}
 
 	public void output(Write write, int iterate) throws IOException {
@@ -142,6 +150,9 @@ public class Card {
 		StringBuilder res = new StringBuilder();
 		if (rec == 0)
 			return "";
+		res.append("Rules").append("={").append(getUpRecord().toKeyString()).append("}");
+		res.append(", ");
+		res.append("Name").append("=").append(getName());
 		return res.toString();
 	}
 
@@ -156,12 +167,13 @@ public class Card {
 		return write.toString();
 	}
 
-	public void parse(Parser parser) {
+	public void parse(Parser parser, Rules parent) {
 		while (parser.getSub()) {
-
+			String name = parser.getString("name");
+			Rules.IndexCards idx = parent.new IndexCards(this, name);
 			if (idx.nextRec == 0) {
-				try (ChangeCard record = new ChangeCard(store)) {
-
+				try (ChangeCard record = new ChangeCard(parent)) {
+					record.setName(name);
 					parseFields(parser, record);
 				}
 			} else {
@@ -174,14 +186,19 @@ public class Card {
 	}
 
 	public boolean parseKey(Parser parser) {
-
+		Rules parent = new Rules(store);
+		parser.getRelation("Rules", () -> {
+			parent.parseKey(parser);
+			return true;
+		});
+		String name = parser.getString("name");
+		Rules.IndexCards idx = parent.new IndexCards(this, name);
 		parser.finishRelation();
 		rec = idx.nextRec;
 		return idx.nextRec != 0;
 	}
 
 	private void parseFields(Parser parser, ChangeCard record) {
-		record.setName(parser.getString("name"));
 		record.setSet(Set.valueOf(parser.getString("set")));
 		if (parser.hasSub("stats"))
 			while (parser.getSub()) {

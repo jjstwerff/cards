@@ -157,13 +157,13 @@ public class Map {
 
 		public void parse(Parser parser) {
 			DataArray record = this;
-		record.setWallL((byte) parser.getInt("wallL"));
-		record.setWallT((byte) parser.getInt("wallT"));
-		record.setWallR((byte) parser.getInt("wallR"));
-		record.setFloor((byte) parser.getInt("floor"));
-		record.setItem((byte) parser.getInt("item"));
-		record.setRotation((byte) parser.getInt("rotation"));
-		record.setHeight(parser.getInt("height"));
+			record.setWallL((byte) parser.getInt("wallL"));
+			record.setWallT((byte) parser.getInt("wallT"));
+			record.setWallR((byte) parser.getInt("wallR"));
+			record.setFloor((byte) parser.getInt("floor"));
+			record.setItem((byte) parser.getInt("item"));
+			record.setRotation((byte) parser.getInt("rotation"));
+			record.setHeight((short) parser.getInt("height"));
 		}
 	}
 

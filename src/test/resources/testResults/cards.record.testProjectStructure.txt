@@ -1,25 +1,27 @@
 Records
 name=Area, parent=Game, size=45, related=true
-  name=name, type=STRING, pos=64
+  name=name, type=STRING, pos=64, key=true
   name=rooms, type=SET, related=Room, pos=96
   name=encounter, type=ARRAY, related=Cards, pos=128
   name=goal, type=SET, related=Goal, pos=192
   name=maps, type=SET, related=Map, pos=224
   name=upRecord, type=RELATION, related=Game, pos=328
-name=Card, size=14, related=true
-  name=name, type=STRING, pos=0
-  name=set, type=ENUMERATE, pos=32
-  name=stats, type=ARRAY, related=CardStatistic, pos=48
+name=Card, parent=Rules, size=35, related=true
+  name=name, type=STRING, pos=64, key=true
+  name=set, type=ENUMERATE, pos=96
+  name=stats, type=ARRAY, related=CardStatistic, pos=112
+  name=upRecord, type=RELATION, related=Rules, pos=248
 name=CardStatistic, size=5, array=true
   name=statistic, type=RELATION, related=Statistic, pos=0
   name=value, type=BYTE, pos=32
 name=Cards, size=4, array=true
   name=card, type=RELATION, related=Card, pos=0
-name=Character, size=8, related=true
-  name=name, type=STRING, pos=0
-  name=skills, type=SET, related=Skill, pos=32
+name=Character, parent=Game, size=29, related=true
+  name=name, type=STRING, pos=64, key=true
+  name=skills, type=SET, related=Skill, pos=96
+  name=upRecord, type=RELATION, related=Game, pos=200
 name=Connect, parent=Room, size=39
-  name=nr, type=INTEGER, pos=64
+  name=nr, type=INTEGER, pos=64, key=true
   name=type, type=ENUMERATE, pos=96
   name=checks, type=ARRAY, related=Cards, pos=112
   name=upRecord, type=RELATION, related=Room, pos=248
@@ -32,65 +34,100 @@ name=Element, size=8, array=true
   name=item, type=BYTE, pos=32
   name=rotation, type=BYTE, pos=40
   name=height, type=SHORT, pos=48
-name=Game, size=25, related=true
-  name=name, type=STRING, pos=32
+name=Game, size=29, related=true
+  name=name, type=STRING, pos=32, key=true
   name=areas, type=SET, related=Area, pos=64
   name=rules, type=RELATION, related=Rules, pos=96
+  name=characters, type=SET, related=Character, pos=128
 name=Goal, parent=Area, size=33
-  name=name, type=STRING, pos=64
+  name=name, type=STRING, pos=64, key=true
   name=type, type=ENUMERATE, pos=96
   name=XP, type=INTEGER, pos=112
   name=gained, type=ENUMERATE, pos=144
   name=upRecord, type=RELATION, related=Area, pos=232
 name=Map, parent=Area, size=41
-  name=X, type=INTEGER, pos=64
-  name=Y, type=INTEGER, pos=96
-  name=Z, type=INTEGER, pos=128
+  name=X, type=INTEGER, pos=64, key=true
+  name=Y, type=INTEGER, pos=96, key=true
+  name=Z, type=INTEGER, pos=128, key=true
   name=data, type=ARRAY, related=Element, pos=160
   name=upRecord, type=RELATION, related=Area, pos=296
 name=Member, parent=Player, size=31
-  name=game, type=RELATION, related=Game, pos=64
+  name=game, type=RELATION, related=Game, pos=64, key=true
   name=role, type=ENUMERATE, pos=96
   name=xp, type=INTEGER, pos=112
   name=upRecord, type=RELATION, related=Player, pos=216
 name=Player, size=37, related=true
   name=creation, type=DATE, pos=32
   name=last, type=DATE, pos=96
-  name=name, type=STRING, pos=160
+  name=name, type=STRING, pos=160, key=true
   name=member, type=SET, related=Member, pos=192
 name=Race, parent=Rules, size=33
-  name=name, type=STRING, pos=64
+  name=name, type=STRING, pos=64, key=true
   name=cards, type=ARRAY, related=Cards, pos=96
   name=upRecord, type=RELATION, related=Rules, pos=232
 name=Room, parent=Area, size=45, related=true
-  name=name, type=STRING, pos=64
+  name=name, type=STRING, pos=64, key=true
   name=opponent, type=ARRAY, related=Cards, pos=96
   name=items, type=ARRAY, related=Cards, pos=160
   name=connection, type=SET, related=Connect, pos=224
   name=upRecord, type=RELATION, related=Area, pos=328
-name=Rules, size=29, related=true
-  name=name, type=STRING, pos=32
+name=Rules, size=25, related=true
+  name=name, type=STRING, pos=32, key=true
   name=races, type=SET, related=Race, pos=64
-  name=cards, type=ARRAY, related=Cards, pos=96
+  name=cards, type=SET, related=Card, pos=96
 name=Skill, parent=Character, size=27
-  name=card, type=RELATION, related=Card, pos=64
+  name=card, type=RELATION, related=Card, pos=64, key=true
   name=state, type=ENUMERATE, pos=96
   name=upRecord, type=RELATION, related=Character, pos=184
 name=Statistic, size=30, related=true
-  name=name, type=STRING, pos=32
+  name=name, type=STRING, pos=32, key=true
   name=nr, type=INTEGER, pos=64
 
 Indexes
-name=statisticName, record=Statistic
-name=statisticNr, record=Statistic
-name=races, record=Race
-name=rulesName, record=Rules
-name=connection, record=Connect
-name=rooms, record=Room
-name=goal, record=Goal
-name=maps, record=Map
-name=skills, record=Skill
-name=areas, record=Area
-name=gameName, record=Game
-name=member, record=Member
-name=playerName, record=Player
+name=statisticName, record=Statistic, fields=[
+	field=name
+]
+name=statisticNr, record=Statistic, fields=[
+	field=nr
+]
+name=races, record=Race, fields=[
+	field=name
+]
+name=cards, record=Card, fields=[
+	field=name
+]
+name=rulesName, record=Rules, fields=[
+	field=name
+]
+name=connection, record=Connect, fields=[
+	field=nr
+]
+name=rooms, record=Room, fields=[
+	field=name
+]
+name=goal, record=Goal, fields=[
+	field=name
+]
+name=maps, record=Map, fields=[
+	field=X
+	field=Y
+	field=Z
+]
+name=skills, record=Skill, fields=[
+	field=card.name
+]
+name=areas, record=Area, fields=[
+	field=name
+]
+name=characters, record=Character, fields=[
+	field=name
+]
+name=gameName, record=Game, fields=[
+	field=name
+]
+name=member, record=Member, fields=[
+	field=game.name
+]
+name=playerName, record=Player, fields=[
+	field=name
+]

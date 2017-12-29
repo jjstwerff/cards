@@ -97,7 +97,7 @@ public class Skill {
 				card.parseKey(parser);
 				return true;
 			});
-			Character.IndexSkills idx = parent.new IndexSkills(this, card);
+			Character.IndexSkills idx = parent.new IndexSkills(this, card.getName());
 			if (idx.nextRec == 0) {
 				try (ChangeSkill record = new ChangeSkill(parent)) {
 					record.setCard(card);
@@ -123,7 +123,7 @@ public class Skill {
 			card.parseKey(parser);
 			return true;
 		});
-		Character.IndexSkills idx = parent.new IndexSkills(this, card);
+		Character.IndexSkills idx = parent.new IndexSkills(this, card.getName());
 		parser.finishRelation();
 		rec = idx.nextRec;
 		return idx.nextRec != 0;

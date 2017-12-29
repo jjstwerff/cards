@@ -17,7 +17,7 @@ import com.betterbe.memorydb.structure.Store;
 public class Rules {
 	/* package private */ Store store;
 	protected int rec;
-	/* package private */ static int SIZE = 29;
+	/* package private */ static int SIZE = 25;
 
 	public Rules(Store store) {
 		this.store = store;
@@ -168,71 +168,128 @@ public class Rules {
 		}
 	}
 
-	public CardsArray getCards() {
-		return new CardsArray();
+	public IndexCards getCards() {
+		return new IndexCards(new Card(store));
 	}
 
-	public class CardsArray implements Iterable<CardsArray>, Iterator<CardsArray>{
-		int idx = -1;
+	public class IndexCards extends RedBlackTree implements Iterable<Card>, Iterator<Card> {
+		Key key = null;
+		Card record;
+		int nextRec;
 
-		public int getSize() {
-			return store.getInt(rec, 12);
+		public IndexCards(Card record) {
+			this.record = record;
+			record.store = store;
+			this.key = null;
+			nextRec = first();
 		}
 
-		public CardsArray add() {
-			int p = store.getInt(rec, 16);
-			idx = getSize();
-			if (p == 0 || idx * 4 >= store.getInt(p, 0)) {
-				store.setInt(p, 0, idx * 4);
-				store.setInt(rec, 16, store.resize(p));
-			}
-			store.setInt(rec, 12, idx + 1);
-			return this;
+		public IndexCards(Card record, String key1) {
+			this.record = record;
+			record.store = store;
+			this.key = new Key() {
+				@Override
+				public int compareTo(int recNr) {
+					if (recNr < 0)
+						return -1;
+					assert store.validate(recNr);
+					record.setRec(recNr);
+					int o = 0;
+					o = RedBlackTree.compare(key1, record.getName());
+					return o;
+				}
+
+				@Override
+				public IndexOperation oper() {
+					return IndexOperation.EQ;
+				}
+			};
+			nextRec = find(this.key);
 		}
 
 		@Override
-		public Iterator<CardsArray> iterator() {
+		public Iterator<Card> iterator() {
 			return this;
 		}
 
 		@Override
 		public boolean hasNext() {
-			return idx + 1 < getSize();
+			return nextRec != 0;
 		}
 
 		@Override
-		public CardsArray next() {
-			idx++;
-			return this;
+		public Card next() {
+			int n = nextRec;
+			nextRec = next(nextRec);
+			if (key != null) {
+				while (nextRec != 0 && key.compareTo(nextRec) != 0) {
+					nextRec = next(nextRec);
+				}
+			}
+			record.setRec(n);
+			return record;
 		}
 
-
-		public void getCard(Card value) {
-			value.setRec(store.getInt(rec, 0));
+		@Override
+		protected boolean readRed(int recNr) {
+			assert store.validate(recNr);
+			return (store.getByte(recNr, 14) & 1) > 0;
 		}
 
-		public Card getCard() {
-			return new Card(store, rec == 0 || idx < 0 ? 0 : store.getInt(rec, idx * 4 + 0));
+		@Override
+		protected void changeRed(int recNr, boolean value) {
+			assert store.validate(recNr);
+			store.setByte(recNr, 14, (store.getByte(rec, 14) & 254) + (value ? 1 : 0));
 		}
 
-		public void setCard(Card value) {
-			store.setInt(rec, idx * 4 + 0, value == null ? 0 : value.getRec());
+		@Override
+		protected int readLeft(int recNr) {
+			assert store.validate(recNr);
+			return store.getInt(recNr, 19);
 		}
 
-		public void output(Write write, int iterate) throws IOException {
-			if (rec == 0 || iterate <= 0)
-				return;
-			write.field("card", "{" + getCard().toKeyString() + "}", true);
+		@Override
+		protected void changeLeft(int recNr, int value) {
+			assert store.validate(recNr);
+			store.setInt(recNr, 19, value);
 		}
 
-		public void parse(Parser parser) {
-			CardsArray record = this;
-		parser.getRelation("card)", () -> {
-			Card rec = new Card(store);
-			boolean found = rec.parseKey(parser);
-			record.setCard(rec);
-			return found;
-		});
+		@Override
+		protected int readRight(int recNr) {
+			assert store.validate(recNr);
+			return store.getInt(recNr, 23);
+		}
+
+		@Override
+		protected void changeRight(int recNr, int value) {
+			assert store.validate(recNr);
+			store.setInt(recNr, 23, value);
+		}
+
+		@Override
+		protected int readTop() {
+			return store.getInt(store.getInt(record.getRec(), 31), 16);
+		}
+
+		@Override
+		protected void changeTop(int value) {
+			store.setInt(store.getInt(record.getRec(), 31), 16, value);
+		}
+
+		@Override
+		protected int compareTo(int a, int b) {
+			Card recA = new Card(store, a);
+			Card recB = new Card(store, b);
+			int o = 0;
+			o = compare(recA.getName(), recB.getName());
+			if (o == 0)
+				return 0;
+			return 0;
+		}
+
+		@Override
+		protected String toString(int rec) {
+			return new Rules(store, rec).toString();
 		}
 	}
 
@@ -292,47 +349,47 @@ public class Rules {
 		@Override
 		protected boolean readRed(int recNr) {
 			assert store.validate(recNr);
-			return (store.getByte(recNr, 16) & 1) > 0;
+			return (store.getByte(recNr, 12) & 1) > 0;
 		}
 
 		@Override
 		protected void changeRed(int recNr, boolean value) {
 			assert store.validate(recNr);
-			store.setByte(recNr, 16, (store.getByte(rec, 16) & 254) + (value ? 1 : 0));
+			store.setByte(recNr, 12, (store.getByte(rec, 12) & 254) + (value ? 1 : 0));
 		}
 
 		@Override
 		protected int readLeft(int recNr) {
 			assert store.validate(recNr);
-			return store.getInt(recNr, 21);
+			return store.getInt(recNr, 17);
 		}
 
 		@Override
 		protected void changeLeft(int recNr, int value) {
 			assert store.validate(recNr);
-			store.setInt(recNr, 21, value);
+			store.setInt(recNr, 17, value);
 		}
 
 		@Override
 		protected int readRight(int recNr) {
 			assert store.validate(recNr);
-			return store.getInt(recNr, 25);
+			return store.getInt(recNr, 21);
 		}
 
 		@Override
 		protected void changeRight(int recNr, int value) {
 			assert store.validate(recNr);
-			store.setInt(recNr, 25, value);
+			store.setInt(recNr, 21, value);
 		}
 
 		@Override
 		protected int readTop() {
-			return store.getInt(0, 16);
+			return store.getInt(0, 20);
 		}
 
 		@Override
 		protected void changeTop(int value) {
-			store.setInt(0, 16, value);
+			store.setInt(0, 20, value);
 		}
 
 		@Override
@@ -360,8 +417,10 @@ public class Rules {
 		for (Race sub : getRaces())
 			sub.output(write, iterate - 1);
 		write.endSub();
-		for (CardsArray sub: getCards())
+		write.sub("cards", false);
+		for (Card sub : getCards())
 			sub.output(write, iterate - 1);
+		write.endSub();
 	}
 
 	public String toKeyString() {
@@ -417,9 +476,8 @@ public class Rules {
 			}
 		if (parser.hasSub("cards"))
 			while (parser.getSub()) {
-				CardsArray sub = new CardsArray();
-				sub.add();
-				sub.parse(parser);
+				Card sub = new Card(store);
+				sub.parse(parser, record);
 			}
 	}
 }

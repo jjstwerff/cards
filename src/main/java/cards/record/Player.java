@@ -153,12 +153,12 @@ public class Player {
 
 		@Override
 		protected int readTop() {
-			return store.getInt(store.getInt(record.getRec(), 27), 48);
+			return store.getInt(store.getInt(record.getRec(), 27), 56);
 		}
 
 		@Override
 		protected void changeTop(int value) {
-			store.setInt(store.getInt(record.getRec(), 27), 48, value);
+			store.setInt(store.getInt(record.getRec(), 27), 56, value);
 		}
 
 		@Override
@@ -269,12 +269,12 @@ public class Player {
 
 		@Override
 		protected int readTop() {
-			return store.getInt(0, 52);
+			return store.getInt(0, 60);
 		}
 
 		@Override
 		protected void changeTop(int value) {
-			store.setInt(0, 52, value);
+			store.setInt(0, 60, value);
 		}
 
 		@Override

@@ -102,12 +102,12 @@ public class Room {
 
 		public void parse(Parser parser) {
 			OpponentArray record = this;
-		parser.getRelation("card)", () -> {
-			Card rec = new Card(store);
-			boolean found = rec.parseKey(parser);
-			record.setCard(rec);
-			return found;
-		});
+			parser.getRelation("card)", () -> {
+				Card rec = new Card(store);
+				boolean found = rec.parseKey(parser);
+				record.setCard(rec);
+				return found;
+			});
 		}
 	}
 
@@ -170,12 +170,12 @@ public class Room {
 
 		public void parse(Parser parser) {
 			ItemsArray record = this;
-		parser.getRelation("card)", () -> {
-			Card rec = new Card(store);
-			boolean found = rec.parseKey(parser);
-			record.setCard(rec);
-			return found;
-		});
+			parser.getRelation("card)", () -> {
+				Card rec = new Card(store);
+				boolean found = rec.parseKey(parser);
+				record.setCard(rec);
+				return found;
+			});
 		}
 	}
 
@@ -279,12 +279,12 @@ public class Room {
 
 		@Override
 		protected int readTop() {
-			return store.getInt(store.getInt(record.getRec(), 31), 20);
+			return store.getInt(store.getInt(record.getRec(), 31), 24);
 		}
 
 		@Override
 		protected void changeTop(int value) {
-			store.setInt(store.getInt(record.getRec(), 31), 20, value);
+			store.setInt(store.getInt(record.getRec(), 31), 24, value);
 		}
 
 		@Override
