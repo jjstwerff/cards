@@ -23,22 +23,22 @@ public class ChangeMember extends Member implements AutoCloseable {
 	}
 
 	public void setGame(Game value) {
-		store.setInt(rec, 8, value == null ? 0 : value.getRec());
+		store.setInt(rec, 4, value == null ? 0 : value.getRec());
 	}
 
 	public void setRole(Member.Role value) {
 		if (value == null)
-				store.setShort(rec, 12, 0);
+				store.setShort(rec, 8, 0);
 			else
-				store.setShort(rec, 12, 1 + value.ordinal());
+				store.setShort(rec, 8, 1 + value.ordinal());
 	}
 
 	public void setXp(int value) {
-		store.setInt(rec, 14, value);
+		store.setInt(rec, 10, value);
 	}
 
 	public void setUpRecord(Player value) {
-		store.setInt(rec, 27, value == null ? 0 : value.getRec());
+		store.setInt(rec, 23, value == null ? 0 : value.getRec());
 	}
 
 	@Override

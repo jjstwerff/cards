@@ -13,7 +13,7 @@ public class ChangePlayer extends Player implements AutoCloseable {
 		setCreation(null);
 		setLast(null);
 		setName(null);
-		store.setInt(rec, 24, 0);
+		store.setInt(rec, 24, 0); // SET member
 	}
 
 	public ChangePlayer(Player current) {

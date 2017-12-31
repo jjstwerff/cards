@@ -12,8 +12,8 @@ public class ChangeMap extends Map implements AutoCloseable {
 		setX(0);
 		setY(0);
 		setZ(0);
+		store.setInt(rec, 16, 0); // ARRAY data
 		store.setInt(rec, 20, 0);
-		store.setInt(rec, 24, 0);
 		setUpRecord(null);
 		setUpRecord(parent);
 	}
@@ -25,19 +25,19 @@ public class ChangeMap extends Map implements AutoCloseable {
 	}
 
 	public void setX(int value) {
-		store.setInt(rec, 8, value);
+		store.setInt(rec, 4, value);
 	}
 
 	public void setY(int value) {
-		store.setInt(rec, 12, value);
+		store.setInt(rec, 8, value);
 	}
 
 	public void setZ(int value) {
-		store.setInt(rec, 16, value);
+		store.setInt(rec, 12, value);
 	}
 
 	public void setUpRecord(Area value) {
-		store.setInt(rec, 37, value == null ? 0 : value.getRec());
+		store.setInt(rec, 33, value == null ? 0 : value.getRec());
 	}
 
 	@Override

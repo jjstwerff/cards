@@ -1,32 +1,32 @@
 Records
-name=Area, parent=Game, size=45, related=true
-  name=name, type=STRING, pos=64, key=true
-  name=rooms, type=SET, related=Room, pos=96
-  name=encounter, type=ARRAY, related=Cards, pos=128
-  name=goal, type=SET, related=Goal, pos=192
-  name=maps, type=SET, related=Map, pos=224
-  name=upRecord, type=RELATION, related=Game, pos=328
-name=Card, parent=Rules, size=35, related=true
-  name=name, type=STRING, pos=64, key=true
-  name=set, type=ENUMERATE, pos=96
-  name=stats, type=ARRAY, related=CardStatistic, pos=112
-  name=upRecord, type=RELATION, related=Rules, pos=248
-name=CardStatistic, size=5, array=true
+name=Area, parent=Game, size=41, related=true, full=true
+  name=name, type=STRING, pos=32, key=true
+  name=rooms, type=SET, related=Room, pos=64
+  name=encounter, type=ARRAY, related=Cards, pos=96
+  name=goal, type=SET, related=Goal, pos=160
+  name=maps, type=SET, related=Map, pos=192
+  name=upRecord, type=RELATION, related=Game, pos=296
+name=Card, parent=Rules, size=31, related=true, full=true
+  name=name, type=STRING, pos=32, key=true
+  name=set, type=ENUMERATE, pos=64
+  name=stats, type=ARRAY, related=CardStatistic, pos=80
+  name=upRecord, type=RELATION, related=Rules, pos=216
+name=CardStatistic, size=5
   name=statistic, type=RELATION, related=Statistic, pos=0
   name=value, type=BYTE, pos=32
-name=Cards, size=4, array=true
+name=Cards, size=4
   name=card, type=RELATION, related=Card, pos=0
-name=Character, parent=Game, size=29, related=true
-  name=name, type=STRING, pos=64, key=true
-  name=skills, type=SET, related=Skill, pos=96
-  name=upRecord, type=RELATION, related=Game, pos=200
-name=Connect, parent=Room, size=39
-  name=nr, type=INTEGER, pos=64, key=true
-  name=type, type=ENUMERATE, pos=96
-  name=checks, type=ARRAY, related=Cards, pos=112
-  name=upRecord, type=RELATION, related=Room, pos=248
-  name=to, type=RELATION, related=Room, pos=280
-name=Element, size=8, array=true
+name=Character, parent=Game, size=25, related=true, full=true
+  name=name, type=STRING, pos=32, key=true
+  name=skills, type=SET, related=Skill, pos=64
+  name=upRecord, type=RELATION, related=Game, pos=168
+name=Connect, parent=Room, size=35, full=true
+  name=nr, type=INTEGER, pos=32, key=true
+  name=type, type=ENUMERATE, pos=64
+  name=checks, type=ARRAY, related=Cards, pos=80
+  name=upRecord, type=RELATION, related=Room, pos=216
+  name=to, type=RELATION, related=Room, pos=248
+name=Element, size=8
   name=wallL, type=BYTE, pos=0
   name=wallT, type=BYTE, pos=8
   name=wallR, type=BYTE, pos=16
@@ -34,100 +34,100 @@ name=Element, size=8, array=true
   name=item, type=BYTE, pos=32
   name=rotation, type=BYTE, pos=40
   name=height, type=SHORT, pos=48
-name=Game, size=29, related=true
+name=Game, size=29, related=true, full=true
   name=name, type=STRING, pos=32, key=true
   name=areas, type=SET, related=Area, pos=64
   name=rules, type=RELATION, related=Rules, pos=96
   name=characters, type=SET, related=Character, pos=128
-name=Goal, parent=Area, size=33
-  name=name, type=STRING, pos=64, key=true
-  name=type, type=ENUMERATE, pos=96
-  name=XP, type=INTEGER, pos=112
-  name=gained, type=ENUMERATE, pos=144
-  name=upRecord, type=RELATION, related=Area, pos=232
-name=Map, parent=Area, size=41
-  name=X, type=INTEGER, pos=64, key=true
-  name=Y, type=INTEGER, pos=96, key=true
-  name=Z, type=INTEGER, pos=128, key=true
-  name=data, type=ARRAY, related=Element, pos=160
-  name=upRecord, type=RELATION, related=Area, pos=296
-name=Member, parent=Player, size=31
-  name=game, type=RELATION, related=Game, pos=64, key=true
-  name=role, type=ENUMERATE, pos=96
-  name=xp, type=INTEGER, pos=112
-  name=upRecord, type=RELATION, related=Player, pos=216
-name=Player, size=37, related=true
+name=Goal, parent=Area, size=29, full=true
+  name=name, type=STRING, pos=32, key=true
+  name=type, type=ENUMERATE, pos=64
+  name=XP, type=INTEGER, pos=80
+  name=gained, type=ENUMERATE, pos=112
+  name=upRecord, type=RELATION, related=Area, pos=200
+name=Map, parent=Area, size=37, full=true
+  name=X, type=INTEGER, pos=32, key=true
+  name=Y, type=INTEGER, pos=64, key=true
+  name=Z, type=INTEGER, pos=96, key=true
+  name=data, type=ARRAY, related=Element, pos=128
+  name=upRecord, type=RELATION, related=Area, pos=264
+name=Member, parent=Player, size=27, full=true
+  name=game, type=RELATION, related=Game, pos=32, key=true
+  name=role, type=ENUMERATE, pos=64
+  name=xp, type=INTEGER, pos=80
+  name=upRecord, type=RELATION, related=Player, pos=184
+name=Player, size=37, related=true, full=true
   name=creation, type=DATE, pos=32
   name=last, type=DATE, pos=96
   name=name, type=STRING, pos=160, key=true
   name=member, type=SET, related=Member, pos=192
-name=Race, parent=Rules, size=33
-  name=name, type=STRING, pos=64, key=true
-  name=cards, type=ARRAY, related=Cards, pos=96
-  name=upRecord, type=RELATION, related=Rules, pos=232
-name=Room, parent=Area, size=45, related=true
-  name=name, type=STRING, pos=64, key=true
-  name=opponent, type=ARRAY, related=Cards, pos=96
-  name=items, type=ARRAY, related=Cards, pos=160
-  name=connection, type=SET, related=Connect, pos=224
-  name=upRecord, type=RELATION, related=Area, pos=328
-name=Rules, size=25, related=true
+name=Race, parent=Rules, size=29, full=true
+  name=name, type=STRING, pos=32, key=true
+  name=cards, type=ARRAY, related=Cards, pos=64
+  name=upRecord, type=RELATION, related=Rules, pos=200
+name=Room, parent=Area, size=41, related=true, full=true
+  name=name, type=STRING, pos=32, key=true
+  name=opponent, type=ARRAY, related=Cards, pos=64
+  name=items, type=ARRAY, related=Cards, pos=128
+  name=connection, type=SET, related=Connect, pos=192
+  name=upRecord, type=RELATION, related=Area, pos=296
+name=Rules, size=25, related=true, full=true
   name=name, type=STRING, pos=32, key=true
   name=races, type=SET, related=Race, pos=64
   name=cards, type=SET, related=Card, pos=96
-name=Skill, parent=Character, size=27
-  name=card, type=RELATION, related=Card, pos=64, key=true
-  name=state, type=ENUMERATE, pos=96
-  name=upRecord, type=RELATION, related=Character, pos=184
-name=Statistic, size=30, related=true
+name=Skill, parent=Character, size=23, full=true
+  name=card, type=RELATION, related=Card, pos=32, key=true
+  name=state, type=ENUMERATE, pos=64
+  name=upRecord, type=RELATION, related=Character, pos=152
+name=Statistic, size=30, related=true, full=true
   name=name, type=STRING, pos=32, key=true
   name=nr, type=INTEGER, pos=64
 
 Indexes
 name=statisticName, record=Statistic, fields=[
 	field=name
-]
+], fieldPos=104, flagPos=96, parentPos=4, primary=true
 name=statisticNr, record=Statistic, fields=[
 	field=nr
-]
+], fieldPos=176, flagPos=168, parentPos=8
 name=races, record=Race, fields=[
 	field=name
-]
+], fieldPos=136, flagPos=128, parentPos=8, primary=true
 name=cards, record=Card, fields=[
 	field=name
-]
+], fieldPos=152, flagPos=144, parentPos=12, primary=true
 name=rulesName, record=Rules, fields=[
 	field=name
-]
+], fieldPos=136, flagPos=128, parentPos=12, primary=true
 name=connection, record=Connect, fields=[
 	field=nr
-]
+], fieldPos=152, flagPos=144, parentPos=24, primary=true
 name=rooms, record=Room, fields=[
 	field=name
-]
+], fieldPos=232, flagPos=224, parentPos=8, primary=true
 name=goal, record=Goal, fields=[
 	field=name
-]
+], fieldPos=136, flagPos=128, parentPos=20, primary=true
 name=maps, record=Map, fields=[
 	field=X
 	field=Y
 	field=Z
-]
+], fieldPos=200, flagPos=192, parentPos=24, primary=true
 name=skills, record=Skill, fields=[
 	field=card.name
-]
+], fieldPos=88, flagPos=80, parentPos=8, primary=true
 name=areas, record=Area, fields=[
 	field=name
-]
+], fieldPos=232, flagPos=224, parentPos=8, primary=true
 name=characters, record=Character, fields=[
 	field=name
-]
+], fieldPos=104, flagPos=96, parentPos=16, primary=true
 name=gameName, record=Game, fields=[
 	field=name
-]
+], fieldPos=168, flagPos=160, parentPos=16, primary=true
 name=member, record=Member, fields=[
 	field=game.name
-]
+], fieldPos=120, flagPos=112, parentPos=24, primary=true
 name=playerName, record=Player, fields=[
 	field=name
-]
+], fieldPos=232, flagPos=224, parentPos=20, primary=true

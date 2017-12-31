@@ -5,15 +5,16 @@ import java.io.StringWriter;
 
 import com.betterbe.memorydb.file.Parser;
 import com.betterbe.memorydb.file.Write;
+import com.betterbe.memorydb.structure.RecordInterface;
 import com.betterbe.memorydb.structure.Store;
 
 /**
  * Automatically generated record class for table Goal
  */
-public class Goal {
+public class Goal implements RecordInterface {
 	/* package private */ Store store;
 	protected int rec;
-	/* package private */ static int SIZE = 33;
+	/* package private */ static int SIZE = 29;
 
 	public Goal(Store store) {
 		this.store = store;
@@ -26,6 +27,7 @@ public class Goal {
 		this.rec = rec;
 	}
 
+	@Override
 	public int getRec() {
 		return rec;
 	}
@@ -36,7 +38,7 @@ public class Goal {
 	}
 
 	public String getName() {
-		return rec == 0 ? null : store.getString(store.getInt(rec, 8));
+		return rec == 0 ? null : store.getString(store.getInt(rec, 4));
 	}
 
 	public enum Type {
@@ -44,14 +46,14 @@ public class Goal {
 	};
 
 	public Goal.Type getType() {
-		int data = rec == 0 ? 0 : store.getShort(rec, 12);
+		int data = rec == 0 ? 0 : store.getShort(rec, 8);
 		if (data <= 0)
 			return null;
 		return Type.values()[data - 1];
 	}
 
 	public int getXP() {
-		return rec == 0 ? Integer.MIN_VALUE : store.getInt(rec, 14);
+		return rec == 0 ? Integer.MIN_VALUE : store.getInt(rec, 10);
 	}
 
 	public enum Gained {
@@ -59,20 +61,21 @@ public class Goal {
 	};
 
 	public Goal.Gained getGained() {
-		int data = rec == 0 ? 0 : store.getShort(rec, 18);
+		int data = rec == 0 ? 0 : store.getShort(rec, 14);
 		if (data <= 0)
 			return null;
 		return Gained.values()[data - 1];
 	}
 
 	public void getUpRecord(Area value) {
-		value.setRec(store.getInt(rec, 29));
+		value.setRec(store.getInt(rec, 25));
 	}
 
 	public Area getUpRecord() {
-		return new Area(store, rec == 0 ? 0 : store.getInt(rec, 29));
+		return new Area(store, rec == 0 ? 0 : store.getInt(rec, 25));
 	}
 
+	@Override
 	public void output(Write write, int iterate) throws IOException {
 		if (rec == 0 || iterate <= 0)
 			return;
@@ -80,13 +83,15 @@ public class Goal {
 		write.field("type", getType(), false);
 		write.field("XP", getXP(), false);
 		write.field("gained", getGained(), false);
+		write.endRecord();
 	}
 
-	public String toKeyString() {
+	@Override
+	public String keys() throws IOException {
 		StringBuilder res = new StringBuilder();
 		if (rec == 0)
 			return "";
-		res.append("Area").append("={").append(getUpRecord().toKeyString()).append("}");
+		res.append("Area").append("{").append(getUpRecord().keys()).append("}");
 		res.append(", ");
 		res.append("Name").append("=").append(getName());
 		return res.toString();

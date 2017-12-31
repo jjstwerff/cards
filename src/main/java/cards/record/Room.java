@@ -9,15 +9,16 @@ import com.betterbe.memorydb.file.Write;
 import com.betterbe.memorydb.structure.IndexOperation;
 import com.betterbe.memorydb.structure.Key;
 import com.betterbe.memorydb.structure.RedBlackTree;
+import com.betterbe.memorydb.structure.RecordInterface;
 import com.betterbe.memorydb.structure.Store;
 
 /**
  * Automatically generated record class for table Room
  */
-public class Room {
+public class Room implements RecordInterface {
 	/* package private */ Store store;
 	protected int rec;
-	/* package private */ static int SIZE = 45;
+	/* package private */ static int SIZE = 41;
 
 	public Room(Store store) {
 		this.store = store;
@@ -30,6 +31,7 @@ public class Room {
 		this.rec = rec;
 	}
 
+	@Override
 	public int getRec() {
 		return rec;
 	}
@@ -40,7 +42,7 @@ public class Room {
 	}
 
 	public String getName() {
-		return rec == 0 ? null : store.getString(store.getInt(rec, 8));
+		return rec == 0 ? null : store.getString(store.getInt(rec, 4));
 	}
 
 	public OpponentArray getOpponent() {
@@ -49,19 +51,22 @@ public class Room {
 
 	public class OpponentArray implements Iterable<OpponentArray>, Iterator<OpponentArray>{
 		int idx = -1;
+		int alloc = store.getInt(rec, 12);
+		int size = store.getInt(rec, 8);
 
 		public int getSize() {
-			return store.getInt(rec, 12);
+			return size;
 		}
 
 		public OpponentArray add() {
-			int p = store.getInt(rec, 16);
-			idx = getSize();
-			if (p == 0 || idx * 4 >= store.getInt(p, 0)) {
-				store.setInt(p, 0, idx * 4);
-				store.setInt(rec, 16, store.resize(p));
-			}
-			store.setInt(rec, 12, idx + 1);
+			idx = size;
+			if (alloc == 0)
+				alloc = store.allocate(3);
+			else
+				alloc = store.resize(alloc, 1 + idx * 4 / 8);
+			store.setInt(rec, 12, alloc);
+			size = idx + 1;
+			store.setInt(rec, 8, size);
 			return this;
 		}
 
@@ -72,7 +77,7 @@ public class Room {
 
 		@Override
 		public boolean hasNext() {
-			return idx + 1 < getSize();
+			return idx + 1 < size;
 		}
 
 		@Override
@@ -81,28 +86,29 @@ public class Room {
 			return this;
 		}
 
-
 		public void getCard(Card value) {
 			value.setRec(store.getInt(rec, 0));
 		}
 
 		public Card getCard() {
-			return new Card(store, rec == 0 || idx < 0 ? 0 : store.getInt(rec, idx * 4 + 0));
+			return new Card(store, alloc == 0 || idx < 0 || idx >= size ? 0 : store.getInt(alloc, idx * 4 + 4));
 		}
 
 		public void setCard(Card value) {
-			store.setInt(rec, idx * 4 + 0, value == null ? 0 : value.getRec());
+			if (alloc != 0 && idx >= 0 && idx < size)
+				store.setInt(alloc, idx * 4 + 4, value == null ? 0 : value.getRec());
 		}
 
 		public void output(Write write, int iterate) throws IOException {
 			if (rec == 0 || iterate <= 0)
 				return;
-			write.field("card", "{" + getCard().toKeyString() + "}", true);
+			write.field("card", "{" + getCard().keys() + "}", true);
+			write.endRecord();
 		}
 
 		public void parse(Parser parser) {
 			OpponentArray record = this;
-			parser.getRelation("card)", () -> {
+			parser.getRelation("card", () -> {
 				Card rec = new Card(store);
 				boolean found = rec.parseKey(parser);
 				record.setCard(rec);
@@ -117,19 +123,22 @@ public class Room {
 
 	public class ItemsArray implements Iterable<ItemsArray>, Iterator<ItemsArray>{
 		int idx = -1;
+		int alloc = store.getInt(rec, 20);
+		int size = store.getInt(rec, 16);
 
 		public int getSize() {
-			return store.getInt(rec, 20);
+			return size;
 		}
 
 		public ItemsArray add() {
-			int p = store.getInt(rec, 24);
-			idx = getSize();
-			if (p == 0 || idx * 4 >= store.getInt(p, 0)) {
-				store.setInt(p, 0, idx * 4);
-				store.setInt(rec, 24, store.resize(p));
-			}
-			store.setInt(rec, 20, idx + 1);
+			idx = size;
+			if (alloc == 0)
+				alloc = store.allocate(3);
+			else
+				alloc = store.resize(alloc, 1 + idx * 4 / 8);
+			store.setInt(rec, 20, alloc);
+			size = idx + 1;
+			store.setInt(rec, 16, size);
 			return this;
 		}
 
@@ -140,7 +149,7 @@ public class Room {
 
 		@Override
 		public boolean hasNext() {
-			return idx + 1 < getSize();
+			return idx + 1 < size;
 		}
 
 		@Override
@@ -149,28 +158,29 @@ public class Room {
 			return this;
 		}
 
-
 		public void getCard(Card value) {
 			value.setRec(store.getInt(rec, 0));
 		}
 
 		public Card getCard() {
-			return new Card(store, rec == 0 || idx < 0 ? 0 : store.getInt(rec, idx * 4 + 0));
+			return new Card(store, alloc == 0 || idx < 0 || idx >= size ? 0 : store.getInt(alloc, idx * 4 + 4));
 		}
 
 		public void setCard(Card value) {
-			store.setInt(rec, idx * 4 + 0, value == null ? 0 : value.getRec());
+			if (alloc != 0 && idx >= 0 && idx < size)
+				store.setInt(alloc, idx * 4 + 4, value == null ? 0 : value.getRec());
 		}
 
 		public void output(Write write, int iterate) throws IOException {
 			if (rec == 0 || iterate <= 0)
 				return;
-			write.field("card", "{" + getCard().toKeyString() + "}", true);
+			write.field("card", "{" + getCard().keys() + "}", true);
+			write.endRecord();
 		}
 
 		public void parse(Parser parser) {
 			ItemsArray record = this;
-			parser.getRelation("card)", () -> {
+			parser.getRelation("card", () -> {
 				Card rec = new Card(store);
 				boolean found = rec.parseKey(parser);
 				record.setCard(rec);
@@ -244,13 +254,13 @@ public class Room {
 		@Override
 		protected boolean readRed(int recNr) {
 			assert store.validate(recNr);
-			return (store.getByte(recNr, 14) & 1) > 0;
+			return (store.getByte(recNr, 18) & 1) > 0;
 		}
 
 		@Override
 		protected void changeRed(int recNr, boolean value) {
 			assert store.validate(recNr);
-			store.setByte(recNr, 14, (store.getByte(rec, 14) & 254) + (value ? 1 : 0));
+			store.setByte(recNr, 18, (store.getByte(rec, 18) & 254) + (value ? 1 : 0));
 		}
 
 		@Override
@@ -279,12 +289,12 @@ public class Room {
 
 		@Override
 		protected int readTop() {
-			return store.getInt(store.getInt(record.getRec(), 31), 24);
+			return store.getInt(Room.this.getRec(), 24);
 		}
 
 		@Override
 		protected void changeTop(int value) {
-			store.setInt(store.getInt(record.getRec(), 31), 24, value);
+			store.setInt(Room.this.getRec(), 24, value);
 		}
 
 		@Override
@@ -294,8 +304,8 @@ public class Room {
 			int o = 0;
 			o = compare(recA.getNr(), recB.getNr());
 			if (o == 0)
-				return 0;
-			return 0;
+				return o;
+			return o;
 		}
 
 		@Override
@@ -305,32 +315,39 @@ public class Room {
 	}
 
 	public void getUpRecord(Area value) {
-		value.setRec(store.getInt(rec, 41));
+		value.setRec(store.getInt(rec, 37));
 	}
 
 	public Area getUpRecord() {
-		return new Area(store, rec == 0 ? 0 : store.getInt(rec, 41));
+		return new Area(store, rec == 0 ? 0 : store.getInt(rec, 37));
 	}
 
+	@Override
 	public void output(Write write, int iterate) throws IOException {
 		if (rec == 0 || iterate <= 0)
 			return;
 		write.field("name", getName(), true);
+		write.sub("opponent", false);
 		for (OpponentArray sub: getOpponent())
 			sub.output(write, iterate - 1);
+		write.endSub();
+		write.sub("items", false);
 		for (ItemsArray sub: getItems())
 			sub.output(write, iterate - 1);
+		write.endSub();
 		write.sub("connection", false);
 		for (Connect sub : getConnection())
 			sub.output(write, iterate - 1);
 		write.endSub();
+		write.endRecord();
 	}
 
-	public String toKeyString() {
+	@Override
+	public String keys() throws IOException {
 		StringBuilder res = new StringBuilder();
 		if (rec == 0)
 			return "";
-		res.append("Area").append("={").append(getUpRecord().toKeyString()).append("}");
+		res.append("Area").append("{").append(getUpRecord().keys()).append("}");
 		res.append(", ");
 		res.append("Name").append("=").append(getName());
 		return res.toString();
@@ -379,22 +396,21 @@ public class Room {
 	}
 
 	private void parseFields(Parser parser, ChangeRoom record) {
-		if (parser.hasSub("opponent"))
+		if (parser.hasSub("opponent")) {
+			OpponentArray sub = record.new OpponentArray();
 			while (parser.getSub()) {
-				OpponentArray sub = new OpponentArray();
 				sub.add();
 				sub.parse(parser);
 			}
-		if (parser.hasSub("items"))
+		}
+		if (parser.hasSub("items")) {
+			ItemsArray sub = record.new ItemsArray();
 			while (parser.getSub()) {
-				ItemsArray sub = new ItemsArray();
 				sub.add();
 				sub.parse(parser);
 			}
+		}
 		if (parser.hasSub("connection"))
-			while (parser.getSub()) {
-				Connect sub = new Connect(store);
-				sub.parse(parser, record);
-			}
+			new Connect(store).parse(parser, record);
 	}
 }

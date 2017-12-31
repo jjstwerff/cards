@@ -9,15 +9,16 @@ import com.betterbe.memorydb.file.Write;
 import com.betterbe.memorydb.structure.IndexOperation;
 import com.betterbe.memorydb.structure.Key;
 import com.betterbe.memorydb.structure.RedBlackTree;
+import com.betterbe.memorydb.structure.RecordInterface;
 import com.betterbe.memorydb.structure.Store;
 
 /**
  * Automatically generated record class for table Character
  */
-public class Character {
+public class Character implements RecordInterface {
 	/* package private */ Store store;
 	protected int rec;
-	/* package private */ static int SIZE = 29;
+	/* package private */ static int SIZE = 25;
 
 	public Character(Store store) {
 		this.store = store;
@@ -30,6 +31,7 @@ public class Character {
 		this.rec = rec;
 	}
 
+	@Override
 	public int getRec() {
 		return rec;
 	}
@@ -40,7 +42,7 @@ public class Character {
 	}
 
 	public String getName() {
-		return rec == 0 ? null : store.getString(store.getInt(rec, 8));
+		return rec == 0 ? null : store.getString(store.getInt(rec, 4));
 	}
 
 	public IndexSkills getSkills() {
@@ -108,13 +110,13 @@ public class Character {
 		@Override
 		protected boolean readRed(int recNr) {
 			assert store.validate(recNr);
-			return (store.getByte(recNr, 6) & 1) > 0;
+			return (store.getByte(recNr, 10) & 1) > 0;
 		}
 
 		@Override
 		protected void changeRed(int recNr, boolean value) {
 			assert store.validate(recNr);
-			store.setByte(recNr, 6, (store.getByte(rec, 6) & 254) + (value ? 1 : 0));
+			store.setByte(recNr, 10, (store.getByte(rec, 10) & 254) + (value ? 1 : 0));
 		}
 
 		@Override
@@ -143,12 +145,12 @@ public class Character {
 
 		@Override
 		protected int readTop() {
-			return store.getInt(store.getInt(record.getRec(), 23), 40);
+			return store.getInt(Character.this.getRec(), 8);
 		}
 
 		@Override
 		protected void changeTop(int value) {
-			store.setInt(store.getInt(record.getRec(), 23), 40, value);
+			store.setInt(Character.this.getRec(), 8, value);
 		}
 
 		@Override
@@ -158,8 +160,8 @@ public class Character {
 			int o = 0;
 			o = compare(recA.getCard().getName(), recB.getCard().getName());
 			if (o == 0)
-				return 0;
-			return 0;
+				return o;
+			return o;
 		}
 
 		@Override
@@ -169,13 +171,14 @@ public class Character {
 	}
 
 	public void getUpRecord(Game value) {
-		value.setRec(store.getInt(rec, 25));
+		value.setRec(store.getInt(rec, 21));
 	}
 
 	public Game getUpRecord() {
-		return new Game(store, rec == 0 ? 0 : store.getInt(rec, 25));
+		return new Game(store, rec == 0 ? 0 : store.getInt(rec, 21));
 	}
 
+	@Override
 	public void output(Write write, int iterate) throws IOException {
 		if (rec == 0 || iterate <= 0)
 			return;
@@ -184,13 +187,15 @@ public class Character {
 		for (Skill sub : getSkills())
 			sub.output(write, iterate - 1);
 		write.endSub();
+		write.endRecord();
 	}
 
-	public String toKeyString() {
+	@Override
+	public String keys() throws IOException {
 		StringBuilder res = new StringBuilder();
 		if (rec == 0)
 			return "";
-		res.append("Game").append("={").append(getUpRecord().toKeyString()).append("}");
+		res.append("Game").append("{").append(getUpRecord().keys()).append("}");
 		res.append(", ");
 		res.append("Name").append("=").append(getName());
 		return res.toString();
@@ -240,9 +245,6 @@ public class Character {
 
 	private void parseFields(Parser parser, ChangeCharacter record) {
 		if (parser.hasSub("skills"))
-			while (parser.getSub()) {
-				Skill sub = new Skill(store);
-				sub.parse(parser, record);
-			}
+			new Skill(store).parse(parser, record);
 	}
 }

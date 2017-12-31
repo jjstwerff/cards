@@ -6,15 +6,16 @@ import java.util.Iterator;
 
 import com.betterbe.memorydb.file.Parser;
 import com.betterbe.memorydb.file.Write;
+import com.betterbe.memorydb.structure.RecordInterface;
 import com.betterbe.memorydb.structure.Store;
 
 /**
  * Automatically generated record class for table Map
  */
-public class Map {
+public class Map implements RecordInterface {
 	/* package private */ Store store;
 	protected int rec;
-	/* package private */ static int SIZE = 41;
+	/* package private */ static int SIZE = 37;
 
 	public Map(Store store) {
 		this.store = store;
@@ -27,6 +28,7 @@ public class Map {
 		this.rec = rec;
 	}
 
+	@Override
 	public int getRec() {
 		return rec;
 	}
@@ -37,15 +39,15 @@ public class Map {
 	}
 
 	public int getX() {
-		return rec == 0 ? Integer.MIN_VALUE : store.getInt(rec, 8);
+		return rec == 0 ? Integer.MIN_VALUE : store.getInt(rec, 4);
 	}
 
 	public int getY() {
-		return rec == 0 ? Integer.MIN_VALUE : store.getInt(rec, 12);
+		return rec == 0 ? Integer.MIN_VALUE : store.getInt(rec, 8);
 	}
 
 	public int getZ() {
-		return rec == 0 ? Integer.MIN_VALUE : store.getInt(rec, 16);
+		return rec == 0 ? Integer.MIN_VALUE : store.getInt(rec, 12);
 	}
 
 	public DataArray getData() {
@@ -54,19 +56,22 @@ public class Map {
 
 	public class DataArray implements Iterable<DataArray>, Iterator<DataArray>{
 		int idx = -1;
+		int alloc = store.getInt(rec, 20);
+		int size = store.getInt(rec, 16);
 
 		public int getSize() {
-			return store.getInt(rec, 20);
+			return size;
 		}
 
 		public DataArray add() {
-			int p = store.getInt(rec, 24);
-			idx = getSize();
-			if (p == 0 || idx * 8 >= store.getInt(p, 0)) {
-				store.setInt(p, 0, idx * 8);
-				store.setInt(rec, 24, store.resize(p));
-			}
-			store.setInt(rec, 20, idx + 1);
+			idx = size;
+			if (alloc == 0)
+				alloc = store.allocate(5);
+			else
+				alloc = store.resize(alloc, 1 + idx * 8 / 8);
+			store.setInt(rec, 20, alloc);
+			size = idx + 1;
+			store.setInt(rec, 16, size);
 			return this;
 		}
 
@@ -77,7 +82,7 @@ public class Map {
 
 		@Override
 		public boolean hasNext() {
-			return idx + 1 < getSize();
+			return idx + 1 < size;
 		}
 
 		@Override
@@ -86,61 +91,67 @@ public class Map {
 			return this;
 		}
 
-
 		public byte getWallL() {
-			return rec == 0 ? 0 : store.getByte(rec, idx * 8 + 0);
+			return alloc == 0 || idx < 0 || idx >= size ? 0 : store.getByte(alloc, idx * 8 + 4);
 		}
 
 		public void setWallL(byte value) {
-			store.setByte(rec, idx * 8 + 0, value);
+			if (alloc != 0 && idx >= 0 && idx < size)
+				store.setByte(alloc, idx * 8 + 4, value);
 		}
 
 		public byte getWallT() {
-			return rec == 0 ? 0 : store.getByte(rec, idx * 8 + 1);
+			return alloc == 0 || idx < 0 || idx >= size ? 0 : store.getByte(alloc, idx * 8 + 5);
 		}
 
 		public void setWallT(byte value) {
-			store.setByte(rec, idx * 8 + 1, value);
+			if (alloc != 0 && idx >= 0 && idx < size)
+				store.setByte(alloc, idx * 8 + 5, value);
 		}
 
 		public byte getWallR() {
-			return rec == 0 ? 0 : store.getByte(rec, idx * 8 + 2);
+			return alloc == 0 || idx < 0 || idx >= size ? 0 : store.getByte(alloc, idx * 8 + 6);
 		}
 
 		public void setWallR(byte value) {
-			store.setByte(rec, idx * 8 + 2, value);
+			if (alloc != 0 && idx >= 0 && idx < size)
+				store.setByte(alloc, idx * 8 + 6, value);
 		}
 
 		public byte getFloor() {
-			return rec == 0 ? 0 : store.getByte(rec, idx * 8 + 3);
+			return alloc == 0 || idx < 0 || idx >= size ? 0 : store.getByte(alloc, idx * 8 + 7);
 		}
 
 		public void setFloor(byte value) {
-			store.setByte(rec, idx * 8 + 3, value);
+			if (alloc != 0 && idx >= 0 && idx < size)
+				store.setByte(alloc, idx * 8 + 7, value);
 		}
 
 		public byte getItem() {
-			return rec == 0 ? 0 : store.getByte(rec, idx * 8 + 4);
+			return alloc == 0 || idx < 0 || idx >= size ? 0 : store.getByte(alloc, idx * 8 + 8);
 		}
 
 		public void setItem(byte value) {
-			store.setByte(rec, idx * 8 + 4, value);
+			if (alloc != 0 && idx >= 0 && idx < size)
+				store.setByte(alloc, idx * 8 + 8, value);
 		}
 
 		public byte getRotation() {
-			return rec == 0 ? 0 : store.getByte(rec, idx * 8 + 5);
+			return alloc == 0 || idx < 0 || idx >= size ? 0 : store.getByte(alloc, idx * 8 + 9);
 		}
 
 		public void setRotation(byte value) {
-			store.setByte(rec, idx * 8 + 5, value);
+			if (alloc != 0 && idx >= 0 && idx < size)
+				store.setByte(alloc, idx * 8 + 9, value);
 		}
 
 		public short getHeight() {
-			return rec == 0 ? Short.MIN_VALUE : store.getShort(rec, idx * 8 + 6);
+			return alloc == 0 || idx < 0 || idx >= size ? Short.MIN_VALUE : store.getShort(alloc, idx * 8 + 10);
 		}
 
 		public void setHeight(short value) {
-			store.setShort(rec, idx * 8 + 6, value);
+			if (alloc != 0 && idx >= 0 && idx < size)
+				store.setShort(alloc, idx * 8 + 10, value);
 		}
 
 		public void output(Write write, int iterate) throws IOException {
@@ -153,6 +164,7 @@ public class Map {
 			write.field("item", getItem(), false);
 			write.field("rotation", getRotation(), false);
 			write.field("height", getHeight(), false);
+			write.endRecord();
 		}
 
 		public void parse(Parser parser) {
@@ -168,28 +180,33 @@ public class Map {
 	}
 
 	public void getUpRecord(Area value) {
-		value.setRec(store.getInt(rec, 37));
+		value.setRec(store.getInt(rec, 33));
 	}
 
 	public Area getUpRecord() {
-		return new Area(store, rec == 0 ? 0 : store.getInt(rec, 37));
+		return new Area(store, rec == 0 ? 0 : store.getInt(rec, 33));
 	}
 
+	@Override
 	public void output(Write write, int iterate) throws IOException {
 		if (rec == 0 || iterate <= 0)
 			return;
 		write.field("X", getX(), true);
 		write.field("Y", getY(), false);
 		write.field("Z", getZ(), false);
+		write.sub("data", false);
 		for (DataArray sub: getData())
 			sub.output(write, iterate - 1);
+		write.endSub();
+		write.endRecord();
 	}
 
-	public String toKeyString() {
+	@Override
+	public String keys() throws IOException {
 		StringBuilder res = new StringBuilder();
 		if (rec == 0)
 			return "";
-		res.append("Area").append("={").append(getUpRecord().toKeyString()).append("}");
+		res.append("Area").append("{").append(getUpRecord().keys()).append("}");
 		res.append(", ");
 		res.append("X").append("=").append(getX());
 		res.append(", ");
@@ -248,11 +265,12 @@ public class Map {
 	}
 
 	private void parseFields(Parser parser, ChangeMap record) {
-		if (parser.hasSub("data"))
+		if (parser.hasSub("data")) {
+			DataArray sub = record.new DataArray();
 			while (parser.getSub()) {
-				DataArray sub = new DataArray();
 				sub.add();
 				sub.parse(parser);
 			}
+		}
 	}
 }

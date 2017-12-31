@@ -9,12 +9,13 @@ import com.betterbe.memorydb.file.Write;
 import com.betterbe.memorydb.structure.IndexOperation;
 import com.betterbe.memorydb.structure.Key;
 import com.betterbe.memorydb.structure.RedBlackTree;
+import com.betterbe.memorydb.structure.RecordInterface;
 import com.betterbe.memorydb.structure.Store;
 
 /**
  * Automatically generated record class for table Rules
  */
-public class Rules {
+public class Rules implements RecordInterface {
 	/* package private */ Store store;
 	protected int rec;
 	/* package private */ static int SIZE = 25;
@@ -30,6 +31,7 @@ public class Rules {
 		this.rec = rec;
 	}
 
+	@Override
 	public int getRec() {
 		return rec;
 	}
@@ -108,13 +110,13 @@ public class Rules {
 		@Override
 		protected boolean readRed(int recNr) {
 			assert store.validate(recNr);
-			return (store.getByte(recNr, 12) & 1) > 0;
+			return (store.getByte(recNr, 16) & 1) > 0;
 		}
 
 		@Override
 		protected void changeRed(int recNr, boolean value) {
 			assert store.validate(recNr);
-			store.setByte(recNr, 12, (store.getByte(rec, 12) & 254) + (value ? 1 : 0));
+			store.setByte(recNr, 16, (store.getByte(rec, 16) & 254) + (value ? 1 : 0));
 		}
 
 		@Override
@@ -143,12 +145,12 @@ public class Rules {
 
 		@Override
 		protected int readTop() {
-			return store.getInt(store.getInt(record.getRec(), 29), 12);
+			return store.getInt(Rules.this.getRec(), 8);
 		}
 
 		@Override
 		protected void changeTop(int value) {
-			store.setInt(store.getInt(record.getRec(), 29), 12, value);
+			store.setInt(Rules.this.getRec(), 8, value);
 		}
 
 		@Override
@@ -158,8 +160,8 @@ public class Rules {
 			int o = 0;
 			o = compare(recA.getName(), recB.getName());
 			if (o == 0)
-				return 0;
-			return 0;
+				return o;
+			return o;
 		}
 
 		@Override
@@ -233,13 +235,13 @@ public class Rules {
 		@Override
 		protected boolean readRed(int recNr) {
 			assert store.validate(recNr);
-			return (store.getByte(recNr, 14) & 1) > 0;
+			return (store.getByte(recNr, 18) & 1) > 0;
 		}
 
 		@Override
 		protected void changeRed(int recNr, boolean value) {
 			assert store.validate(recNr);
-			store.setByte(recNr, 14, (store.getByte(rec, 14) & 254) + (value ? 1 : 0));
+			store.setByte(recNr, 18, (store.getByte(rec, 18) & 254) + (value ? 1 : 0));
 		}
 
 		@Override
@@ -268,12 +270,12 @@ public class Rules {
 
 		@Override
 		protected int readTop() {
-			return store.getInt(store.getInt(record.getRec(), 31), 16);
+			return store.getInt(Rules.this.getRec(), 12);
 		}
 
 		@Override
 		protected void changeTop(int value) {
-			store.setInt(store.getInt(record.getRec(), 31), 16, value);
+			store.setInt(Rules.this.getRec(), 12, value);
 		}
 
 		@Override
@@ -283,8 +285,8 @@ public class Rules {
 			int o = 0;
 			o = compare(recA.getName(), recB.getName());
 			if (o == 0)
-				return 0;
-			return 0;
+				return o;
+			return o;
 		}
 
 		@Override
@@ -349,13 +351,13 @@ public class Rules {
 		@Override
 		protected boolean readRed(int recNr) {
 			assert store.validate(recNr);
-			return (store.getByte(recNr, 12) & 1) > 0;
+			return (store.getByte(recNr, 16) & 1) > 0;
 		}
 
 		@Override
 		protected void changeRed(int recNr, boolean value) {
 			assert store.validate(recNr);
-			store.setByte(recNr, 12, (store.getByte(rec, 12) & 254) + (value ? 1 : 0));
+			store.setByte(recNr, 16, (store.getByte(rec, 16) & 254) + (value ? 1 : 0));
 		}
 
 		@Override
@@ -384,12 +386,12 @@ public class Rules {
 
 		@Override
 		protected int readTop() {
-			return store.getInt(0, 20);
+			return store.getInt(0, 12);
 		}
 
 		@Override
 		protected void changeTop(int value) {
-			store.setInt(0, 20, value);
+			store.setInt(0, 12, value);
 		}
 
 		@Override
@@ -409,6 +411,7 @@ public class Rules {
 		}
 	}
 
+	@Override
 	public void output(Write write, int iterate) throws IOException {
 		if (rec == 0 || iterate <= 0)
 			return;
@@ -421,9 +424,11 @@ public class Rules {
 		for (Card sub : getCards())
 			sub.output(write, iterate - 1);
 		write.endSub();
+		write.endRecord();
 	}
 
-	public String toKeyString() {
+	@Override
+	public String keys() throws IOException {
 		StringBuilder res = new StringBuilder();
 		if (rec == 0)
 			return "";
@@ -470,14 +475,8 @@ public class Rules {
 
 	private void parseFields(Parser parser, ChangeRules record) {
 		if (parser.hasSub("races"))
-			while (parser.getSub()) {
-				Race sub = new Race(store);
-				sub.parse(parser, record);
-			}
+			new Race(store).parse(parser, record);
 		if (parser.hasSub("cards"))
-			while (parser.getSub()) {
-				Card sub = new Card(store);
-				sub.parse(parser, record);
-			}
+			new Card(store).parse(parser, record);
 	}
 }

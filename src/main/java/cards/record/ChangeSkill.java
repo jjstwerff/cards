@@ -22,18 +22,18 @@ public class ChangeSkill extends Skill implements AutoCloseable {
 	}
 
 	public void setCard(Card value) {
-		store.setInt(rec, 8, value == null ? 0 : value.getRec());
+		store.setInt(rec, 4, value == null ? 0 : value.getRec());
 	}
 
 	public void setState(Skill.State value) {
 		if (value == null)
-				store.setShort(rec, 12, 0);
+				store.setShort(rec, 8, 0);
 			else
-				store.setShort(rec, 12, 1 + value.ordinal());
+				store.setShort(rec, 8, 1 + value.ordinal());
 	}
 
 	public void setUpRecord(Character value) {
-		store.setInt(rec, 23, value == null ? 0 : value.getRec());
+		store.setInt(rec, 19, value == null ? 0 : value.getRec());
 	}
 
 	@Override

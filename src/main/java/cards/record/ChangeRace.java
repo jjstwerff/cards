@@ -10,8 +10,8 @@ public class ChangeRace extends Race implements AutoCloseable {
 		super(parent.store, parent.store.allocate(Race.SIZE));
 		this.parent = parent;
 		setName(null);
+		store.setInt(rec, 8, 0); // ARRAY cards
 		store.setInt(rec, 12, 0);
-		store.setInt(rec, 16, 0);
 		setUpRecord(null);
 		setUpRecord(parent);
 	}
@@ -23,11 +23,11 @@ public class ChangeRace extends Race implements AutoCloseable {
 	}
 
 	public void setName(String value) {
-		store.setInt(rec, 8, store.putString(value));
+		store.setInt(rec, 4, store.putString(value));
 	}
 
 	public void setUpRecord(Rules value) {
-		store.setInt(rec, 29, value == null ? 0 : value.getRec());
+		store.setInt(rec, 25, value == null ? 0 : value.getRec());
 	}
 
 	@Override

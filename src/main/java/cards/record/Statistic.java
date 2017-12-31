@@ -9,12 +9,13 @@ import com.betterbe.memorydb.file.Write;
 import com.betterbe.memorydb.structure.IndexOperation;
 import com.betterbe.memorydb.structure.Key;
 import com.betterbe.memorydb.structure.RedBlackTree;
+import com.betterbe.memorydb.structure.RecordInterface;
 import com.betterbe.memorydb.structure.Store;
 
 /**
  * Automatically generated record class for table Statistic
  */
-public class Statistic {
+public class Statistic implements RecordInterface {
 	/* package private */ Store store;
 	protected int rec;
 	/* package private */ static int SIZE = 30;
@@ -30,6 +31,7 @@ public class Statistic {
 		this.rec = rec;
 	}
 
+	@Override
 	public int getRec() {
 		return rec;
 	}
@@ -103,13 +105,13 @@ public class Statistic {
 		@Override
 		protected boolean readRed(int recNr) {
 			assert store.validate(recNr);
-			return (store.getByte(recNr, 8) & 1) > 0;
+			return (store.getByte(recNr, 12) & 1) > 0;
 		}
 
 		@Override
 		protected void changeRed(int recNr, boolean value) {
 			assert store.validate(recNr);
-			store.setByte(recNr, 8, (store.getByte(rec, 8) & 254) + (value ? 1 : 0));
+			store.setByte(recNr, 12, (store.getByte(rec, 12) & 254) + (value ? 1 : 0));
 		}
 
 		@Override
@@ -279,14 +281,17 @@ public class Statistic {
 		}
 	}
 
+	@Override
 	public void output(Write write, int iterate) throws IOException {
 		if (rec == 0 || iterate <= 0)
 			return;
 		write.field("name", getName(), true);
 		write.field("nr", getNr(), false);
+		write.endRecord();
 	}
 
-	public String toKeyString() {
+	@Override
+	public String keys() throws IOException {
 		StringBuilder res = new StringBuilder();
 		if (rec == 0)
 			return "";

@@ -6,15 +6,16 @@ import java.util.Iterator;
 
 import com.betterbe.memorydb.file.Parser;
 import com.betterbe.memorydb.file.Write;
+import com.betterbe.memorydb.structure.RecordInterface;
 import com.betterbe.memorydb.structure.Store;
 
 /**
  * Automatically generated record class for table Race
  */
-public class Race {
+public class Race implements RecordInterface {
 	/* package private */ Store store;
 	protected int rec;
-	/* package private */ static int SIZE = 33;
+	/* package private */ static int SIZE = 29;
 
 	public Race(Store store) {
 		this.store = store;
@@ -27,6 +28,7 @@ public class Race {
 		this.rec = rec;
 	}
 
+	@Override
 	public int getRec() {
 		return rec;
 	}
@@ -37,7 +39,7 @@ public class Race {
 	}
 
 	public String getName() {
-		return rec == 0 ? null : store.getString(store.getInt(rec, 8));
+		return rec == 0 ? null : store.getString(store.getInt(rec, 4));
 	}
 
 	public CardsArray getCards() {
@@ -46,19 +48,22 @@ public class Race {
 
 	public class CardsArray implements Iterable<CardsArray>, Iterator<CardsArray>{
 		int idx = -1;
+		int alloc = store.getInt(rec, 12);
+		int size = store.getInt(rec, 8);
 
 		public int getSize() {
-			return store.getInt(rec, 12);
+			return size;
 		}
 
 		public CardsArray add() {
-			int p = store.getInt(rec, 16);
-			idx = getSize();
-			if (p == 0 || idx * 4 >= store.getInt(p, 0)) {
-				store.setInt(p, 0, idx * 4);
-				store.setInt(rec, 16, store.resize(p));
-			}
-			store.setInt(rec, 12, idx + 1);
+			idx = size;
+			if (alloc == 0)
+				alloc = store.allocate(3);
+			else
+				alloc = store.resize(alloc, 1 + idx * 4 / 8);
+			store.setInt(rec, 12, alloc);
+			size = idx + 1;
+			store.setInt(rec, 8, size);
 			return this;
 		}
 
@@ -69,7 +74,7 @@ public class Race {
 
 		@Override
 		public boolean hasNext() {
-			return idx + 1 < getSize();
+			return idx + 1 < size;
 		}
 
 		@Override
@@ -78,28 +83,29 @@ public class Race {
 			return this;
 		}
 
-
 		public void getCard(Card value) {
 			value.setRec(store.getInt(rec, 0));
 		}
 
 		public Card getCard() {
-			return new Card(store, rec == 0 || idx < 0 ? 0 : store.getInt(rec, idx * 4 + 0));
+			return new Card(store, alloc == 0 || idx < 0 || idx >= size ? 0 : store.getInt(alloc, idx * 4 + 4));
 		}
 
 		public void setCard(Card value) {
-			store.setInt(rec, idx * 4 + 0, value == null ? 0 : value.getRec());
+			if (alloc != 0 && idx >= 0 && idx < size)
+				store.setInt(alloc, idx * 4 + 4, value == null ? 0 : value.getRec());
 		}
 
 		public void output(Write write, int iterate) throws IOException {
 			if (rec == 0 || iterate <= 0)
 				return;
-			write.field("card", "{" + getCard().toKeyString() + "}", true);
+			write.field("card", "{" + getCard().keys() + "}", true);
+			write.endRecord();
 		}
 
 		public void parse(Parser parser) {
 			CardsArray record = this;
-			parser.getRelation("card)", () -> {
+			parser.getRelation("card", () -> {
 				Card rec = new Card(store);
 				boolean found = rec.parseKey(parser);
 				record.setCard(rec);
@@ -109,26 +115,31 @@ public class Race {
 	}
 
 	public void getUpRecord(Rules value) {
-		value.setRec(store.getInt(rec, 29));
+		value.setRec(store.getInt(rec, 25));
 	}
 
 	public Rules getUpRecord() {
-		return new Rules(store, rec == 0 ? 0 : store.getInt(rec, 29));
+		return new Rules(store, rec == 0 ? 0 : store.getInt(rec, 25));
 	}
 
+	@Override
 	public void output(Write write, int iterate) throws IOException {
 		if (rec == 0 || iterate <= 0)
 			return;
 		write.field("name", getName(), true);
+		write.sub("cards", false);
 		for (CardsArray sub: getCards())
 			sub.output(write, iterate - 1);
+		write.endSub();
+		write.endRecord();
 	}
 
-	public String toKeyString() {
+	@Override
+	public String keys() throws IOException {
 		StringBuilder res = new StringBuilder();
 		if (rec == 0)
 			return "";
-		res.append("Rules").append("={").append(getUpRecord().toKeyString()).append("}");
+		res.append("Rules").append("{").append(getUpRecord().keys()).append("}");
 		res.append(", ");
 		res.append("Name").append("=").append(getName());
 		return res.toString();
@@ -177,11 +188,12 @@ public class Race {
 	}
 
 	private void parseFields(Parser parser, ChangeRace record) {
-		if (parser.hasSub("cards"))
+		if (parser.hasSub("cards")) {
+			CardsArray sub = record.new CardsArray();
 			while (parser.getSub()) {
-				CardsArray sub = new CardsArray();
 				sub.add();
 				sub.parse(parser);
 			}
+		}
 	}
 }

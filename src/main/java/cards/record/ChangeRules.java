@@ -9,8 +9,8 @@ public class ChangeRules extends Rules implements AutoCloseable {
 	public ChangeRules(Store store) {
 		super(store, store.allocate(Rules.SIZE));
 		setName(null);
-		store.setInt(rec, 8, 0);
-		store.setInt(rec, 12, 0);
+		store.setInt(rec, 8, 0); // SET races
+		store.setInt(rec, 12, 0); // SET cards
 	}
 
 	public ChangeRules(Rules current) {

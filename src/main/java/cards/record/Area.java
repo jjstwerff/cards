@@ -9,15 +9,16 @@ import com.betterbe.memorydb.file.Write;
 import com.betterbe.memorydb.structure.IndexOperation;
 import com.betterbe.memorydb.structure.Key;
 import com.betterbe.memorydb.structure.RedBlackTree;
+import com.betterbe.memorydb.structure.RecordInterface;
 import com.betterbe.memorydb.structure.Store;
 
 /**
  * Automatically generated record class for table Area
  */
-public class Area {
+public class Area implements RecordInterface {
 	/* package private */ Store store;
 	protected int rec;
-	/* package private */ static int SIZE = 45;
+	/* package private */ static int SIZE = 41;
 
 	public Area(Store store) {
 		this.store = store;
@@ -30,6 +31,7 @@ public class Area {
 		this.rec = rec;
 	}
 
+	@Override
 	public int getRec() {
 		return rec;
 	}
@@ -40,7 +42,7 @@ public class Area {
 	}
 
 	public String getName() {
-		return rec == 0 ? null : store.getString(store.getInt(rec, 8));
+		return rec == 0 ? null : store.getString(store.getInt(rec, 4));
 	}
 
 	public IndexRooms getRooms() {
@@ -108,13 +110,13 @@ public class Area {
 		@Override
 		protected boolean readRed(int recNr) {
 			assert store.validate(recNr);
-			return (store.getByte(recNr, 24) & 1) > 0;
+			return (store.getByte(recNr, 28) & 1) > 0;
 		}
 
 		@Override
 		protected void changeRed(int recNr, boolean value) {
 			assert store.validate(recNr);
-			store.setByte(recNr, 24, (store.getByte(rec, 24) & 254) + (value ? 1 : 0));
+			store.setByte(recNr, 28, (store.getByte(rec, 28) & 254) + (value ? 1 : 0));
 		}
 
 		@Override
@@ -143,12 +145,12 @@ public class Area {
 
 		@Override
 		protected int readTop() {
-			return store.getInt(store.getInt(record.getRec(), 41), 28);
+			return store.getInt(Area.this.getRec(), 8);
 		}
 
 		@Override
 		protected void changeTop(int value) {
-			store.setInt(store.getInt(record.getRec(), 41), 28, value);
+			store.setInt(Area.this.getRec(), 8, value);
 		}
 
 		@Override
@@ -158,8 +160,8 @@ public class Area {
 			int o = 0;
 			o = compare(recA.getName(), recB.getName());
 			if (o == 0)
-				return 0;
-			return 0;
+				return o;
+			return o;
 		}
 
 		@Override
@@ -174,19 +176,22 @@ public class Area {
 
 	public class EncounterArray implements Iterable<EncounterArray>, Iterator<EncounterArray>{
 		int idx = -1;
+		int alloc = store.getInt(rec, 16);
+		int size = store.getInt(rec, 12);
 
 		public int getSize() {
-			return store.getInt(rec, 16);
+			return size;
 		}
 
 		public EncounterArray add() {
-			int p = store.getInt(rec, 20);
-			idx = getSize();
-			if (p == 0 || idx * 4 >= store.getInt(p, 0)) {
-				store.setInt(p, 0, idx * 4);
-				store.setInt(rec, 20, store.resize(p));
-			}
-			store.setInt(rec, 16, idx + 1);
+			idx = size;
+			if (alloc == 0)
+				alloc = store.allocate(3);
+			else
+				alloc = store.resize(alloc, 1 + idx * 4 / 8);
+			store.setInt(rec, 16, alloc);
+			size = idx + 1;
+			store.setInt(rec, 12, size);
 			return this;
 		}
 
@@ -197,7 +202,7 @@ public class Area {
 
 		@Override
 		public boolean hasNext() {
-			return idx + 1 < getSize();
+			return idx + 1 < size;
 		}
 
 		@Override
@@ -206,28 +211,29 @@ public class Area {
 			return this;
 		}
 
-
 		public void getCard(Card value) {
 			value.setRec(store.getInt(rec, 0));
 		}
 
 		public Card getCard() {
-			return new Card(store, rec == 0 || idx < 0 ? 0 : store.getInt(rec, idx * 4 + 0));
+			return new Card(store, alloc == 0 || idx < 0 || idx >= size ? 0 : store.getInt(alloc, idx * 4 + 4));
 		}
 
 		public void setCard(Card value) {
-			store.setInt(rec, idx * 4 + 0, value == null ? 0 : value.getRec());
+			if (alloc != 0 && idx >= 0 && idx < size)
+				store.setInt(alloc, idx * 4 + 4, value == null ? 0 : value.getRec());
 		}
 
 		public void output(Write write, int iterate) throws IOException {
 			if (rec == 0 || iterate <= 0)
 				return;
-			write.field("card", "{" + getCard().toKeyString() + "}", true);
+			write.field("card", "{" + getCard().keys() + "}", true);
+			write.endRecord();
 		}
 
 		public void parse(Parser parser) {
 			EncounterArray record = this;
-			parser.getRelation("card)", () -> {
+			parser.getRelation("card", () -> {
 				Card rec = new Card(store);
 				boolean found = rec.parseKey(parser);
 				record.setCard(rec);
@@ -301,13 +307,13 @@ public class Area {
 		@Override
 		protected boolean readRed(int recNr) {
 			assert store.validate(recNr);
-			return (store.getByte(recNr, 12) & 1) > 0;
+			return (store.getByte(recNr, 16) & 1) > 0;
 		}
 
 		@Override
 		protected void changeRed(int recNr, boolean value) {
 			assert store.validate(recNr);
-			store.setByte(recNr, 12, (store.getByte(rec, 12) & 254) + (value ? 1 : 0));
+			store.setByte(recNr, 16, (store.getByte(rec, 16) & 254) + (value ? 1 : 0));
 		}
 
 		@Override
@@ -336,12 +342,12 @@ public class Area {
 
 		@Override
 		protected int readTop() {
-			return store.getInt(store.getInt(record.getRec(), 29), 32);
+			return store.getInt(Area.this.getRec(), 20);
 		}
 
 		@Override
 		protected void changeTop(int value) {
-			store.setInt(store.getInt(record.getRec(), 29), 32, value);
+			store.setInt(Area.this.getRec(), 20, value);
 		}
 
 		@Override
@@ -351,8 +357,8 @@ public class Area {
 			int o = 0;
 			o = compare(recA.getName(), recB.getName());
 			if (o == 0)
-				return 0;
-			return 0;
+				return o;
+			return o;
 		}
 
 		@Override
@@ -481,13 +487,13 @@ public class Area {
 		@Override
 		protected boolean readRed(int recNr) {
 			assert store.validate(recNr);
-			return (store.getByte(recNr, 20) & 1) > 0;
+			return (store.getByte(recNr, 24) & 1) > 0;
 		}
 
 		@Override
 		protected void changeRed(int recNr, boolean value) {
 			assert store.validate(recNr);
-			store.setByte(recNr, 20, (store.getByte(rec, 20) & 254) + (value ? 1 : 0));
+			store.setByte(recNr, 24, (store.getByte(rec, 24) & 254) + (value ? 1 : 0));
 		}
 
 		@Override
@@ -516,12 +522,12 @@ public class Area {
 
 		@Override
 		protected int readTop() {
-			return store.getInt(store.getInt(record.getRec(), 37), 36);
+			return store.getInt(Area.this.getRec(), 24);
 		}
 
 		@Override
 		protected void changeTop(int value) {
-			store.setInt(store.getInt(record.getRec(), 37), 36, value);
+			store.setInt(Area.this.getRec(), 24, value);
 		}
 
 		@Override
@@ -531,14 +537,14 @@ public class Area {
 			int o = 0;
 			o = compare(recA.getX(), recB.getX());
 			if (o == 0)
-				return 0;
+				return o;
 			o = compare(recA.getY(), recB.getY());
 			if (o == 0)
-				return 0;
+				return o;
 			o = compare(recA.getZ(), recB.getZ());
 			if (o == 0)
-				return 0;
-			return 0;
+				return o;
+			return o;
 		}
 
 		@Override
@@ -548,13 +554,14 @@ public class Area {
 	}
 
 	public void getUpRecord(Game value) {
-		value.setRec(store.getInt(rec, 41));
+		value.setRec(store.getInt(rec, 37));
 	}
 
 	public Game getUpRecord() {
-		return new Game(store, rec == 0 ? 0 : store.getInt(rec, 41));
+		return new Game(store, rec == 0 ? 0 : store.getInt(rec, 37));
 	}
 
+	@Override
 	public void output(Write write, int iterate) throws IOException {
 		if (rec == 0 || iterate <= 0)
 			return;
@@ -563,8 +570,10 @@ public class Area {
 		for (Room sub : getRooms())
 			sub.output(write, iterate - 1);
 		write.endSub();
+		write.sub("encounter", false);
 		for (EncounterArray sub: getEncounter())
 			sub.output(write, iterate - 1);
+		write.endSub();
 		write.sub("goal", false);
 		for (Goal sub : getGoal())
 			sub.output(write, iterate - 1);
@@ -573,13 +582,15 @@ public class Area {
 		for (Map sub : getMaps())
 			sub.output(write, iterate - 1);
 		write.endSub();
+		write.endRecord();
 	}
 
-	public String toKeyString() {
+	@Override
+	public String keys() throws IOException {
 		StringBuilder res = new StringBuilder();
 		if (rec == 0)
 			return "";
-		res.append("Game").append("={").append(getUpRecord().toKeyString()).append("}");
+		res.append("Game").append("{").append(getUpRecord().keys()).append("}");
 		res.append(", ");
 		res.append("Name").append("=").append(getName());
 		return res.toString();
@@ -629,25 +640,17 @@ public class Area {
 
 	private void parseFields(Parser parser, ChangeArea record) {
 		if (parser.hasSub("rooms"))
+			new Room(store).parse(parser, record);
+		if (parser.hasSub("encounter")) {
+			EncounterArray sub = record.new EncounterArray();
 			while (parser.getSub()) {
-				Room sub = new Room(store);
-				sub.parse(parser, record);
-			}
-		if (parser.hasSub("encounter"))
-			while (parser.getSub()) {
-				EncounterArray sub = new EncounterArray();
 				sub.add();
 				sub.parse(parser);
 			}
+		}
 		if (parser.hasSub("goal"))
-			while (parser.getSub()) {
-				Goal sub = new Goal(store);
-				sub.parse(parser, record);
-			}
+			new Goal(store).parse(parser, record);
 		if (parser.hasSub("maps"))
-			while (parser.getSub()) {
-				Map sub = new Map(store);
-				sub.parse(parser, record);
-			}
+			new Map(store).parse(parser, record);
 	}
 }

@@ -9,6 +9,7 @@ import com.betterbe.memorydb.file.Write;
 import com.betterbe.memorydb.structure.IndexOperation;
 import com.betterbe.memorydb.structure.Key;
 import com.betterbe.memorydb.structure.RedBlackTree;
+import com.betterbe.memorydb.structure.RecordInterface;
 import com.betterbe.memorydb.structure.Store;
 import com.betterbe.memorydb.structure.DateTime;
 import java.time.LocalDateTime;
@@ -16,7 +17,7 @@ import java.time.LocalDateTime;
 /**
  * Automatically generated record class for table Player
  */
-public class Player {
+public class Player implements RecordInterface {
 	/* package private */ Store store;
 	protected int rec;
 	/* package private */ static int SIZE = 37;
@@ -32,6 +33,7 @@ public class Player {
 		this.rec = rec;
 	}
 
+	@Override
 	public int getRec() {
 		return rec;
 	}
@@ -118,13 +120,13 @@ public class Player {
 		@Override
 		protected boolean readRed(int recNr) {
 			assert store.validate(recNr);
-			return (store.getByte(recNr, 10) & 1) > 0;
+			return (store.getByte(recNr, 14) & 1) > 0;
 		}
 
 		@Override
 		protected void changeRed(int recNr, boolean value) {
 			assert store.validate(recNr);
-			store.setByte(recNr, 10, (store.getByte(rec, 10) & 254) + (value ? 1 : 0));
+			store.setByte(recNr, 14, (store.getByte(rec, 14) & 254) + (value ? 1 : 0));
 		}
 
 		@Override
@@ -153,12 +155,12 @@ public class Player {
 
 		@Override
 		protected int readTop() {
-			return store.getInt(store.getInt(record.getRec(), 27), 56);
+			return store.getInt(Player.this.getRec(), 24);
 		}
 
 		@Override
 		protected void changeTop(int value) {
-			store.setInt(store.getInt(record.getRec(), 27), 56, value);
+			store.setInt(Player.this.getRec(), 24, value);
 		}
 
 		@Override
@@ -168,8 +170,8 @@ public class Player {
 			int o = 0;
 			o = compare(recA.getGame().getName(), recB.getGame().getName());
 			if (o == 0)
-				return 0;
-			return 0;
+				return o;
+			return o;
 		}
 
 		@Override
@@ -234,13 +236,13 @@ public class Player {
 		@Override
 		protected boolean readRed(int recNr) {
 			assert store.validate(recNr);
-			return (store.getByte(recNr, 24) & 1) > 0;
+			return (store.getByte(recNr, 28) & 1) > 0;
 		}
 
 		@Override
 		protected void changeRed(int recNr, boolean value) {
 			assert store.validate(recNr);
-			store.setByte(recNr, 24, (store.getByte(rec, 24) & 254) + (value ? 1 : 0));
+			store.setByte(recNr, 28, (store.getByte(rec, 28) & 254) + (value ? 1 : 0));
 		}
 
 		@Override
@@ -269,12 +271,12 @@ public class Player {
 
 		@Override
 		protected int readTop() {
-			return store.getInt(0, 60);
+			return store.getInt(0, 20);
 		}
 
 		@Override
 		protected void changeTop(int value) {
-			store.setInt(0, 60, value);
+			store.setInt(0, 20, value);
 		}
 
 		@Override
@@ -294,6 +296,7 @@ public class Player {
 		}
 	}
 
+	@Override
 	public void output(Write write, int iterate) throws IOException {
 		if (rec == 0 || iterate <= 0)
 			return;
@@ -304,9 +307,11 @@ public class Player {
 		for (Member sub : getMember())
 			sub.output(write, iterate - 1);
 		write.endSub();
+		write.endRecord();
 	}
 
-	public String toKeyString() {
+	@Override
+	public String keys() throws IOException {
 		StringBuilder res = new StringBuilder();
 		if (rec == 0)
 			return "";
@@ -355,9 +360,6 @@ public class Player {
 		record.setCreation(DateTime.of(parser.getString("creation")));
 		record.setLast(DateTime.of(parser.getString("last")));
 		if (parser.hasSub("member"))
-			while (parser.getSub()) {
-				Member sub = new Member(store);
-				sub.parse(parser, record);
-			}
+			new Member(store).parse(parser, record);
 	}
 }

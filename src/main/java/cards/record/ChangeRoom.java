@@ -10,11 +10,11 @@ public class ChangeRoom extends Room implements AutoCloseable {
 		super(parent.store, parent.store.allocate(Room.SIZE));
 		this.parent = parent;
 		setName(null);
+		store.setInt(rec, 8, 0); // ARRAY opponent
 		store.setInt(rec, 12, 0);
-		store.setInt(rec, 16, 0);
+		store.setInt(rec, 16, 0); // ARRAY items
 		store.setInt(rec, 20, 0);
-		store.setInt(rec, 24, 0);
-		store.setInt(rec, 28, 0);
+		store.setInt(rec, 24, 0); // SET connection
 		setUpRecord(null);
 		setUpRecord(parent);
 	}
@@ -26,11 +26,11 @@ public class ChangeRoom extends Room implements AutoCloseable {
 	}
 
 	public void setName(String value) {
-		store.setInt(rec, 8, store.putString(value));
+		store.setInt(rec, 4, store.putString(value));
 	}
 
 	public void setUpRecord(Area value) {
-		store.setInt(rec, 41, value == null ? 0 : value.getRec());
+		store.setInt(rec, 37, value == null ? 0 : value.getRec());
 	}
 
 	@Override

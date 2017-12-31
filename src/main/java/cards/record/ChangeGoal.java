@@ -24,29 +24,29 @@ public class ChangeGoal extends Goal implements AutoCloseable {
 	}
 
 	public void setName(String value) {
-		store.setInt(rec, 8, store.putString(value));
+		store.setInt(rec, 4, store.putString(value));
 	}
 
 	public void setType(Goal.Type value) {
 		if (value == null)
-				store.setShort(rec, 12, 0);
+				store.setShort(rec, 8, 0);
 			else
-				store.setShort(rec, 12, 1 + value.ordinal());
+				store.setShort(rec, 8, 1 + value.ordinal());
 	}
 
 	public void setXP(int value) {
-		store.setInt(rec, 14, value);
+		store.setInt(rec, 10, value);
 	}
 
 	public void setGained(Goal.Gained value) {
 		if (value == null)
-				store.setShort(rec, 18, 0);
+				store.setShort(rec, 14, 0);
 			else
-				store.setShort(rec, 18, 1 + value.ordinal());
+				store.setShort(rec, 14, 1 + value.ordinal());
 	}
 
 	public void setUpRecord(Area value) {
-		store.setInt(rec, 29, value == null ? 0 : value.getRec());
+		store.setInt(rec, 25, value == null ? 0 : value.getRec());
 	}
 
 	@Override

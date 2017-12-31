@@ -5,15 +5,16 @@ import java.io.StringWriter;
 
 import com.betterbe.memorydb.file.Parser;
 import com.betterbe.memorydb.file.Write;
+import com.betterbe.memorydb.structure.RecordInterface;
 import com.betterbe.memorydb.structure.Store;
 
 /**
  * Automatically generated record class for table Member
  */
-public class Member {
+public class Member implements RecordInterface {
 	/* package private */ Store store;
 	protected int rec;
-	/* package private */ static int SIZE = 31;
+	/* package private */ static int SIZE = 27;
 
 	public Member(Store store) {
 		this.store = store;
@@ -26,6 +27,7 @@ public class Member {
 		this.rec = rec;
 	}
 
+	@Override
 	public int getRec() {
 		return rec;
 	}
@@ -36,11 +38,11 @@ public class Member {
 	}
 
 	public void getGame(Game value) {
-		value.setRec(store.getInt(rec, 8));
+		value.setRec(store.getInt(rec, 4));
 	}
 
 	public Game getGame() {
-		return new Game(store, rec == 0 ? 0 : store.getInt(rec, 8));
+		return new Game(store, rec == 0 ? 0 : store.getInt(rec, 4));
 	}
 
 	public enum Role {
@@ -48,37 +50,40 @@ public class Member {
 	};
 
 	public Member.Role getRole() {
-		int data = rec == 0 ? 0 : store.getShort(rec, 12);
+		int data = rec == 0 ? 0 : store.getShort(rec, 8);
 		if (data <= 0)
 			return null;
 		return Role.values()[data - 1];
 	}
 
 	public int getXp() {
-		return rec == 0 ? Integer.MIN_VALUE : store.getInt(rec, 14);
+		return rec == 0 ? Integer.MIN_VALUE : store.getInt(rec, 10);
 	}
 
 	public void getUpRecord(Player value) {
-		value.setRec(store.getInt(rec, 27));
+		value.setRec(store.getInt(rec, 23));
 	}
 
 	public Player getUpRecord() {
-		return new Player(store, rec == 0 ? 0 : store.getInt(rec, 27));
+		return new Player(store, rec == 0 ? 0 : store.getInt(rec, 23));
 	}
 
+	@Override
 	public void output(Write write, int iterate) throws IOException {
 		if (rec == 0 || iterate <= 0)
 			return;
-		write.field("game", "{" + getGame().toKeyString() + "}", true);
+		write.field("game", getGame(), true);
 		write.field("role", getRole(), false);
 		write.field("xp", getXp(), false);
+		write.endRecord();
 	}
 
-	public String toKeyString() {
+	@Override
+	public String keys() throws IOException {
 		StringBuilder res = new StringBuilder();
 		if (rec == 0)
 			return "";
-		res.append("Player").append("={").append(getUpRecord().toKeyString()).append("}");
+		res.append("Player").append("{").append(getUpRecord().keys()).append("}");
 		res.append(", ");
 		res.append("GameName").append("=").append(getGame().getName());
 		return res.toString();

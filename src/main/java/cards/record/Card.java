@@ -6,15 +6,16 @@ import java.util.Iterator;
 
 import com.betterbe.memorydb.file.Parser;
 import com.betterbe.memorydb.file.Write;
+import com.betterbe.memorydb.structure.RecordInterface;
 import com.betterbe.memorydb.structure.Store;
 
 /**
  * Automatically generated record class for table Card
  */
-public class Card {
+public class Card implements RecordInterface {
 	/* package private */ Store store;
 	protected int rec;
-	/* package private */ static int SIZE = 35;
+	/* package private */ static int SIZE = 31;
 
 	public Card(Store store) {
 		this.store = store;
@@ -27,6 +28,7 @@ public class Card {
 		this.rec = rec;
 	}
 
+	@Override
 	public int getRec() {
 		return rec;
 	}
@@ -37,7 +39,7 @@ public class Card {
 	}
 
 	public String getName() {
-		return rec == 0 ? null : store.getString(store.getInt(rec, 8));
+		return rec == 0 ? null : store.getString(store.getInt(rec, 4));
 	}
 
 	public enum Set {
@@ -45,7 +47,7 @@ public class Card {
 	};
 
 	public Card.Set getSet() {
-		int data = rec == 0 ? 0 : store.getShort(rec, 12);
+		int data = rec == 0 ? 0 : store.getShort(rec, 8);
 		if (data <= 0)
 			return null;
 		return Set.values()[data - 1];
@@ -57,19 +59,22 @@ public class Card {
 
 	public class StatsArray implements Iterable<StatsArray>, Iterator<StatsArray>{
 		int idx = -1;
+		int alloc = store.getInt(rec, 14);
+		int size = store.getInt(rec, 10);
 
 		public int getSize() {
-			return store.getInt(rec, 14);
+			return size;
 		}
 
 		public StatsArray add() {
-			int p = store.getInt(rec, 18);
-			idx = getSize();
-			if (p == 0 || idx * 5 >= store.getInt(p, 0)) {
-				store.setInt(p, 0, idx * 5);
-				store.setInt(rec, 18, store.resize(p));
-			}
-			store.setInt(rec, 14, idx + 1);
+			idx = size;
+			if (alloc == 0)
+				alloc = store.allocate(3);
+			else
+				alloc = store.resize(alloc, 1 + idx * 5 / 8);
+			store.setInt(rec, 14, alloc);
+			size = idx + 1;
+			store.setInt(rec, 10, size);
 			return this;
 		}
 
@@ -80,7 +85,7 @@ public class Card {
 
 		@Override
 		public boolean hasNext() {
-			return idx + 1 < getSize();
+			return idx + 1 < size;
 		}
 
 		@Override
@@ -89,37 +94,39 @@ public class Card {
 			return this;
 		}
 
-
 		public void getStatistic(Statistic value) {
 			value.setRec(store.getInt(rec, 0));
 		}
 
 		public Statistic getStatistic() {
-			return new Statistic(store, rec == 0 || idx < 0 ? 0 : store.getInt(rec, idx * 5 + 0));
+			return new Statistic(store, alloc == 0 || idx < 0 || idx >= size ? 0 : store.getInt(alloc, idx * 5 + 4));
 		}
 
 		public void setStatistic(Statistic value) {
-			store.setInt(rec, idx * 5 + 0, value == null ? 0 : value.getRec());
+			if (alloc != 0 && idx >= 0 && idx < size)
+				store.setInt(alloc, idx * 5 + 4, value == null ? 0 : value.getRec());
 		}
 
 		public byte getValue() {
-			return rec == 0 ? 0 : store.getByte(rec, idx * 5 + 4);
+			return alloc == 0 || idx < 0 || idx >= size ? 0 : store.getByte(alloc, idx * 5 + 8);
 		}
 
 		public void setValue(byte value) {
-			store.setByte(rec, idx * 5 + 4, value);
+			if (alloc != 0 && idx >= 0 && idx < size)
+				store.setByte(alloc, idx * 5 + 8, value);
 		}
 
 		public void output(Write write, int iterate) throws IOException {
 			if (rec == 0 || iterate <= 0)
 				return;
-			write.field("statistic", "{" + getStatistic().toKeyString() + "}", true);
+			write.field("statistic", "{" + getStatistic().keys() + "}", true);
 			write.field("value", getValue(), false);
+			write.endRecord();
 		}
 
 		public void parse(Parser parser) {
 			StatsArray record = this;
-			parser.getRelation("statistic)", () -> {
+			parser.getRelation("statistic", () -> {
 				Statistic rec = new Statistic(store);
 				boolean found = rec.parseKey(parser);
 				record.setStatistic(rec);
@@ -130,27 +137,32 @@ public class Card {
 	}
 
 	public void getUpRecord(Rules value) {
-		value.setRec(store.getInt(rec, 31));
+		value.setRec(store.getInt(rec, 27));
 	}
 
 	public Rules getUpRecord() {
-		return new Rules(store, rec == 0 ? 0 : store.getInt(rec, 31));
+		return new Rules(store, rec == 0 ? 0 : store.getInt(rec, 27));
 	}
 
+	@Override
 	public void output(Write write, int iterate) throws IOException {
 		if (rec == 0 || iterate <= 0)
 			return;
 		write.field("name", getName(), true);
 		write.field("set", getSet(), false);
+		write.sub("stats", false);
 		for (StatsArray sub: getStats())
 			sub.output(write, iterate - 1);
+		write.endSub();
+		write.endRecord();
 	}
 
-	public String toKeyString() {
+	@Override
+	public String keys() throws IOException {
 		StringBuilder res = new StringBuilder();
 		if (rec == 0)
 			return "";
-		res.append("Rules").append("={").append(getUpRecord().toKeyString()).append("}");
+		res.append("Rules").append("{").append(getUpRecord().keys()).append("}");
 		res.append(", ");
 		res.append("Name").append("=").append(getName());
 		return res.toString();
@@ -200,11 +212,12 @@ public class Card {
 
 	private void parseFields(Parser parser, ChangeCard record) {
 		record.setSet(Set.valueOf(parser.getString("set")));
-		if (parser.hasSub("stats"))
+		if (parser.hasSub("stats")) {
+			StatsArray sub = record.new StatsArray();
 			while (parser.getSub()) {
-				StatsArray sub = new StatsArray();
 				sub.add();
 				sub.parse(parser);
 			}
+		}
 	}
 }

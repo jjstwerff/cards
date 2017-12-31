@@ -5,7 +5,7 @@ import com.betterbe.memorydb.generate.Project;
 import com.betterbe.memorydb.generate.Record;
 import com.betterbe.memorydb.generate.Type;
 
-public class Structure {
+public class CardsStructure {
 	public static void main(String[] args) {
 		Generate.project(getProject());
 		System.out.println("Refresh the project to allow eclipse to see the last changes");
@@ -32,16 +32,16 @@ public class Structure {
 		// LEFT, RIGHT, FORWARDS, BACKWARDS
 		// NUMBER
 
-		Record cardStatistic = project.table("CardStatistic");
+		Record cardStatistic = project.record("CardStatistic");
 		cardStatistic.field("statistic", Type.RELATION, statistic);
 		cardStatistic.field("value", Type.BYTE);
 
 		Record card = project.table("Card");
 		card.field("name", Type.STRING);
-		card.field("set", Type.ENUMERATE).setValues("RACIAL", "BACKGROUND", "MOVE", "WEAPON", "WEARING", "IMPLANT", "ENCOUNTER", "ROOM", "OPPONENT", "COMBAT");
+		card.field("set", Type.ENUMERATE, "RACIAL", "BACKGROUND", "MOVE", "WEAPON", "WEARING", "IMPLANT", "ENCOUNTER", "ROOM", "OPPONENT", "COMBAT");
 		card.field("stats", Type.ARRAY, cardStatistic);
 
-		Record cards = project.table("Cards");
+		Record cards = project.record("Cards");
 		cards.field("card", Type.RELATION, card);
 
 		Record race = project.table("Race");
@@ -56,7 +56,7 @@ public class Structure {
 
 		Record connect = project.table("Connect");
 		connect.field("nr", Type.INTEGER);
-		connect.field("type", Type.ENUMERATE).setValues("DOOR", "CLIMB", "LINE");
+		connect.field("type", Type.ENUMERATE, "DOOR", "CLIMB", "LINE");
 		connect.field("checks", Type.ARRAY, cards);
 
 		Record room = project.table("Room");
@@ -68,11 +68,11 @@ public class Structure {
 
 		Record goal = project.table("Goal");
 		goal.field("name", Type.STRING);
-		goal.field("type", Type.ENUMERATE).setValues("KNOWLEDGE", "WEAPON", "WEARABLE", "STATUS", "IMPLANT");
+		goal.field("type", Type.ENUMERATE, "KNOWLEDGE", "WEAPON", "WEARABLE", "STATUS", "IMPLANT");
 		goal.field("XP", Type.INTEGER);
-		goal.field("gained", Type.ENUMERATE).setValues("STASH", "OVERHEAR", "REWARD");
+		goal.field("gained", Type.ENUMERATE, "STASH", "OVERHEAR", "REWARD");
 
-		Record element = project.table("Element");
+		Record element = project.record("Element");
 		element.field("wallL", Type.BYTE); // OPEN/COMBINED/BRICKS/ROUNDED_BRICKS/CONCRETE/ROUNDED_CONCRETE/METAL/WOOD/STONE/ROUNDED_STONE/ROCK/FENCE/LOW_WALL/LOW_FENCE/TREE_TOP
 		element.field("wallT", Type.BYTE);
 		element.field("wallR", Type.BYTE);
@@ -96,7 +96,7 @@ public class Structure {
 
 		Record skill = project.table("Skill");
 		skill.field("card", Type.RELATION, card);
-		skill.field("state", Type.ENUMERATE).setValues("STASHED", "PARTY", "ACTIVE");
+		skill.field("state", Type.ENUMERATE, "STASHED", "PARTY", "ACTIVE");
 
 		Record character = project.table("Character");
 		character.field("name", Type.STRING);
@@ -111,7 +111,7 @@ public class Structure {
 
 		Record member = project.table("Member");
 		member.field("game", Type.RELATION, game);
-		member.field("role", Type.ENUMERATE).setValues("PLAYER", "MASTER", "OBSERVER");
+		member.field("role", Type.ENUMERATE, "PLAYER", "MASTER", "OBSERVER");
 		member.field("xp", Type.INTEGER);
 
 		Record player = project.table("Player");

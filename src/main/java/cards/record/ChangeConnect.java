@@ -11,8 +11,8 @@ public class ChangeConnect extends Connect implements AutoCloseable {
 		this.parent = parent;
 		setNr(0);
 		setType(null);
+		store.setInt(rec, 10, 0); // ARRAY checks
 		store.setInt(rec, 14, 0);
-		store.setInt(rec, 18, 0);
 		setUpRecord(null);
 		setTo(null);
 		setUpRecord(parent);
@@ -25,22 +25,22 @@ public class ChangeConnect extends Connect implements AutoCloseable {
 	}
 
 	public void setNr(int value) {
-		store.setInt(rec, 8, value);
+		store.setInt(rec, 4, value);
 	}
 
 	public void setType(Connect.Type value) {
 		if (value == null)
-				store.setShort(rec, 12, 0);
+				store.setShort(rec, 8, 0);
 			else
-				store.setShort(rec, 12, 1 + value.ordinal());
+				store.setShort(rec, 8, 1 + value.ordinal());
 	}
 
 	public void setUpRecord(Room value) {
-		store.setInt(rec, 31, value == null ? 0 : value.getRec());
+		store.setInt(rec, 27, value == null ? 0 : value.getRec());
 	}
 
 	public void setTo(Room value) {
-		store.setInt(rec, 35, value == null ? 0 : value.getRec());
+		store.setInt(rec, 31, value == null ? 0 : value.getRec());
 	}
 
 	@Override

@@ -9,9 +9,9 @@ public class ChangeGame extends Game implements AutoCloseable {
 	public ChangeGame(Store store) {
 		super(store, store.allocate(Game.SIZE));
 		setName(null);
-		store.setInt(rec, 8, 0);
+		store.setInt(rec, 8, 0); // SET areas
 		setRules(null);
-		store.setInt(rec, 16, 0);
+		store.setInt(rec, 16, 0); // SET characters
 	}
 
 	public ChangeGame(Game current) {

@@ -5,15 +5,16 @@ import java.io.StringWriter;
 
 import com.betterbe.memorydb.file.Parser;
 import com.betterbe.memorydb.file.Write;
+import com.betterbe.memorydb.structure.RecordInterface;
 import com.betterbe.memorydb.structure.Store;
 
 /**
  * Automatically generated record class for table Skill
  */
-public class Skill {
+public class Skill implements RecordInterface {
 	/* package private */ Store store;
 	protected int rec;
-	/* package private */ static int SIZE = 27;
+	/* package private */ static int SIZE = 23;
 
 	public Skill(Store store) {
 		this.store = store;
@@ -26,6 +27,7 @@ public class Skill {
 		this.rec = rec;
 	}
 
+	@Override
 	public int getRec() {
 		return rec;
 	}
@@ -36,11 +38,11 @@ public class Skill {
 	}
 
 	public void getCard(Card value) {
-		value.setRec(store.getInt(rec, 8));
+		value.setRec(store.getInt(rec, 4));
 	}
 
 	public Card getCard() {
-		return new Card(store, rec == 0 ? 0 : store.getInt(rec, 8));
+		return new Card(store, rec == 0 ? 0 : store.getInt(rec, 4));
 	}
 
 	public enum State {
@@ -48,32 +50,35 @@ public class Skill {
 	};
 
 	public Skill.State getState() {
-		int data = rec == 0 ? 0 : store.getShort(rec, 12);
+		int data = rec == 0 ? 0 : store.getShort(rec, 8);
 		if (data <= 0)
 			return null;
 		return State.values()[data - 1];
 	}
 
 	public void getUpRecord(Character value) {
-		value.setRec(store.getInt(rec, 23));
+		value.setRec(store.getInt(rec, 19));
 	}
 
 	public Character getUpRecord() {
-		return new Character(store, rec == 0 ? 0 : store.getInt(rec, 23));
+		return new Character(store, rec == 0 ? 0 : store.getInt(rec, 19));
 	}
 
+	@Override
 	public void output(Write write, int iterate) throws IOException {
 		if (rec == 0 || iterate <= 0)
 			return;
-		write.field("card", "{" + getCard().toKeyString() + "}", true);
+		write.field("card", getCard(), true);
 		write.field("state", getState(), false);
+		write.endRecord();
 	}
 
-	public String toKeyString() {
+	@Override
+	public String keys() throws IOException {
 		StringBuilder res = new StringBuilder();
 		if (rec == 0)
 			return "";
-		res.append("Character").append("={").append(getUpRecord().toKeyString()).append("}");
+		res.append("Character").append("{").append(getUpRecord().keys()).append("}");
 		res.append(", ");
 		res.append("CardName").append("=").append(getCard().getName());
 		return res.toString();

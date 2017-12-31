@@ -6,15 +6,16 @@ import java.util.Iterator;
 
 import com.betterbe.memorydb.file.Parser;
 import com.betterbe.memorydb.file.Write;
+import com.betterbe.memorydb.structure.RecordInterface;
 import com.betterbe.memorydb.structure.Store;
 
 /**
  * Automatically generated record class for table Connect
  */
-public class Connect {
+public class Connect implements RecordInterface {
 	/* package private */ Store store;
 	protected int rec;
-	/* package private */ static int SIZE = 39;
+	/* package private */ static int SIZE = 35;
 
 	public Connect(Store store) {
 		this.store = store;
@@ -27,6 +28,7 @@ public class Connect {
 		this.rec = rec;
 	}
 
+	@Override
 	public int getRec() {
 		return rec;
 	}
@@ -37,7 +39,7 @@ public class Connect {
 	}
 
 	public int getNr() {
-		return rec == 0 ? Integer.MIN_VALUE : store.getInt(rec, 8);
+		return rec == 0 ? Integer.MIN_VALUE : store.getInt(rec, 4);
 	}
 
 	public enum Type {
@@ -45,7 +47,7 @@ public class Connect {
 	};
 
 	public Connect.Type getType() {
-		int data = rec == 0 ? 0 : store.getShort(rec, 12);
+		int data = rec == 0 ? 0 : store.getShort(rec, 8);
 		if (data <= 0)
 			return null;
 		return Type.values()[data - 1];
@@ -57,19 +59,22 @@ public class Connect {
 
 	public class ChecksArray implements Iterable<ChecksArray>, Iterator<ChecksArray>{
 		int idx = -1;
+		int alloc = store.getInt(rec, 14);
+		int size = store.getInt(rec, 10);
 
 		public int getSize() {
-			return store.getInt(rec, 14);
+			return size;
 		}
 
 		public ChecksArray add() {
-			int p = store.getInt(rec, 18);
-			idx = getSize();
-			if (p == 0 || idx * 4 >= store.getInt(p, 0)) {
-				store.setInt(p, 0, idx * 4);
-				store.setInt(rec, 18, store.resize(p));
-			}
-			store.setInt(rec, 14, idx + 1);
+			idx = size;
+			if (alloc == 0)
+				alloc = store.allocate(3);
+			else
+				alloc = store.resize(alloc, 1 + idx * 4 / 8);
+			store.setInt(rec, 14, alloc);
+			size = idx + 1;
+			store.setInt(rec, 10, size);
 			return this;
 		}
 
@@ -80,7 +85,7 @@ public class Connect {
 
 		@Override
 		public boolean hasNext() {
-			return idx + 1 < getSize();
+			return idx + 1 < size;
 		}
 
 		@Override
@@ -89,28 +94,29 @@ public class Connect {
 			return this;
 		}
 
-
 		public void getCard(Card value) {
 			value.setRec(store.getInt(rec, 0));
 		}
 
 		public Card getCard() {
-			return new Card(store, rec == 0 || idx < 0 ? 0 : store.getInt(rec, idx * 4 + 0));
+			return new Card(store, alloc == 0 || idx < 0 || idx >= size ? 0 : store.getInt(alloc, idx * 4 + 4));
 		}
 
 		public void setCard(Card value) {
-			store.setInt(rec, idx * 4 + 0, value == null ? 0 : value.getRec());
+			if (alloc != 0 && idx >= 0 && idx < size)
+				store.setInt(alloc, idx * 4 + 4, value == null ? 0 : value.getRec());
 		}
 
 		public void output(Write write, int iterate) throws IOException {
 			if (rec == 0 || iterate <= 0)
 				return;
-			write.field("card", "{" + getCard().toKeyString() + "}", true);
+			write.field("card", "{" + getCard().keys() + "}", true);
+			write.endRecord();
 		}
 
 		public void parse(Parser parser) {
 			ChecksArray record = this;
-			parser.getRelation("card)", () -> {
+			parser.getRelation("card", () -> {
 				Card rec = new Card(store);
 				boolean found = rec.parseKey(parser);
 				record.setCard(rec);
@@ -120,36 +126,41 @@ public class Connect {
 	}
 
 	public void getUpRecord(Room value) {
-		value.setRec(store.getInt(rec, 31));
+		value.setRec(store.getInt(rec, 27));
 	}
 
 	public Room getUpRecord() {
-		return new Room(store, rec == 0 ? 0 : store.getInt(rec, 31));
+		return new Room(store, rec == 0 ? 0 : store.getInt(rec, 27));
 	}
 
 	public void getTo(Room value) {
-		value.setRec(store.getInt(rec, 35));
+		value.setRec(store.getInt(rec, 31));
 	}
 
 	public Room getTo() {
-		return new Room(store, rec == 0 ? 0 : store.getInt(rec, 35));
+		return new Room(store, rec == 0 ? 0 : store.getInt(rec, 31));
 	}
 
+	@Override
 	public void output(Write write, int iterate) throws IOException {
 		if (rec == 0 || iterate <= 0)
 			return;
 		write.field("nr", getNr(), true);
 		write.field("type", getType(), false);
+		write.sub("checks", false);
 		for (ChecksArray sub: getChecks())
 			sub.output(write, iterate - 1);
-		write.field("to", "{" + getTo().toKeyString() + "}", false);
+		write.endSub();
+		write.field("to", getTo(), false);
+		write.endRecord();
 	}
 
-	public String toKeyString() {
+	@Override
+	public String keys() throws IOException {
 		StringBuilder res = new StringBuilder();
 		if (rec == 0)
 			return "";
-		res.append("Room").append("={").append(getUpRecord().toKeyString()).append("}");
+		res.append("Room").append("{").append(getUpRecord().keys()).append("}");
 		res.append(", ");
 		res.append("Nr").append("=").append(getNr());
 		return res.toString();
@@ -199,13 +210,14 @@ public class Connect {
 
 	private void parseFields(Parser parser, ChangeConnect record) {
 		record.setType(Type.valueOf(parser.getString("type")));
-		if (parser.hasSub("checks"))
+		if (parser.hasSub("checks")) {
+			ChecksArray sub = record.new ChecksArray();
 			while (parser.getSub()) {
-				ChecksArray sub = new ChecksArray();
 				sub.add();
 				sub.parse(parser);
 			}
-		parser.getRelation("to)", () -> {
+		}
+		parser.getRelation("to", () -> {
 			Room rec = new Room(store);
 			boolean found = rec.parseKey(parser);
 			record.setTo(rec);
