@@ -1,11 +1,32 @@
 - very simple map data structure
-	initial test data
+	top left = 0,0
+	direction= 0:R, 1:RT, 2:TR, 3:T, 4:TL, 5:LT, 6:L, 7:LB, 8:BL, 9:B, 10:BR, 11:RB = each 30 degrees
+	very simple building map.. 1 room
+	base wall material that doesn't morph in any way.. only 1 material
+	second wall material that will become straight
+		line matcher notation: only this matches
+			2 -> direction or -1 = indirect wobble.. allow plus/min 1
+			0 -> direction or -1 = wobble
+		Corners .. not yet
+			B & RT & TL
+			B & LT & TR
+			U & LB & BR
+			U & RB & BL
+		6 directions of 2 steps line.. LT T RT LB B TB identical to walls from center of tiles 
+		indirect wobble line: direction out != direction in .. but 1 off
+			also move points to centre
+			up/down half the wobble diameter
+		direct wobble line: direction out = direction in
+			into straight by moving points to line
+			left/right half the wobble diameter
+		draw this
 - draw single map on canvas.. inside = gray, outside = open
 	for now draw each tile separately
 - show different colors for floor materials
 - add walls as thicker colored lines and doors / windows
 	separate pass
 - indicators of player/NPC/item positions
+- very simple editor.. show current position/rotation.. allow to change current material/walls in directions
 - multiple levels and stairs.. including roofs.. do not show levels above the player
 - show as web-GL object
 - semi-transparent levels above the player
