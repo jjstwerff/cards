@@ -17,5 +17,8 @@ public class TestMap extends Tests {
 		game.parse(new DBParser(resource(this, "testMap.txt")));
 		game = game.new IndexGameName().iterator().next();
 		Assert.assertEquals(content(this, "testMap2.txt"), game.toString());
+
+		Draw draw = new Draw(game.getAreas().next());
+		Assert.assertEquals(content(this, "testMap.html"), draw.dump());
 	}
 }
