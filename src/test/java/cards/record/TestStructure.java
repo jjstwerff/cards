@@ -10,6 +10,6 @@ import junit.framework.Assert;
 public class TestStructure extends Tests {
 	@Test
 	public void testProjectStructure() {
-		Assert.assertEquals(content(this, "cards.record.testProjectStructure.txt"), CardsStructure.getProject().toString());
+		Assert.assertEquals(content(this, "testProjectStructure.txt"), CardsStructure.getProject().toString());
 	}
 }

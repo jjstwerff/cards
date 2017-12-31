@@ -12,8 +12,9 @@ public class ChangeMap extends Map implements AutoCloseable {
 		setX(0);
 		setY(0);
 		setZ(0);
-		store.setInt(rec, 16, 0); // ARRAY data
-		store.setInt(rec, 20, 0);
+		setL(0);
+		store.setInt(rec, 20, 0); // ARRAY d
+		store.setInt(rec, 24, 0);
 		setUpRecord(null);
 		setUpRecord(parent);
 	}
@@ -36,8 +37,12 @@ public class ChangeMap extends Map implements AutoCloseable {
 		store.setInt(rec, 12, value);
 	}
 
+	public void setL(int value) {
+		store.setInt(rec, 16, value);
+	}
+
 	public void setUpRecord(Area value) {
-		store.setInt(rec, 33, value == null ? 0 : value.getRec());
+		store.setInt(rec, 37, value == null ? 0 : value.getRec());
 	}
 
 	@Override

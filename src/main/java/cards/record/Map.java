@@ -15,7 +15,7 @@ import com.betterbe.memorydb.structure.Store;
 public class Map implements RecordInterface {
 	/* package private */ Store store;
 	protected int rec;
-	/* package private */ static int SIZE = 37;
+	/* package private */ static int SIZE = 41;
 
 	public Map(Store store) {
 		this.store = store;
@@ -50,33 +50,37 @@ public class Map implements RecordInterface {
 		return rec == 0 ? Integer.MIN_VALUE : store.getInt(rec, 12);
 	}
 
-	public DataArray getData() {
-		return new DataArray();
+	public int getL() {
+		return rec == 0 ? Integer.MIN_VALUE : store.getInt(rec, 16);
 	}
 
-	public class DataArray implements Iterable<DataArray>, Iterator<DataArray>{
+	public DArray getD() {
+		return new DArray();
+	}
+
+	public class DArray implements Iterable<DArray>, Iterator<DArray>{
 		int idx = -1;
-		int alloc = store.getInt(rec, 20);
-		int size = store.getInt(rec, 16);
+		int alloc = store.getInt(rec, 24);
+		int size = store.getInt(rec, 20);
 
 		public int getSize() {
 			return size;
 		}
 
-		public DataArray add() {
+		public DArray add() {
 			idx = size;
 			if (alloc == 0)
 				alloc = store.allocate(5);
 			else
 				alloc = store.resize(alloc, 1 + idx * 8 / 8);
-			store.setInt(rec, 20, alloc);
+			store.setInt(rec, 24, alloc);
 			size = idx + 1;
-			store.setInt(rec, 16, size);
+			store.setInt(rec, 20, size);
 			return this;
 		}
 
 		@Override
-		public Iterator<DataArray> iterator() {
+		public Iterator<DArray> iterator() {
 			return this;
 		}
 
@@ -86,70 +90,70 @@ public class Map implements RecordInterface {
 		}
 
 		@Override
-		public DataArray next() {
+		public DArray next() {
 			idx++;
 			return this;
 		}
 
-		public byte getWallL() {
+		public byte getL() {
 			return alloc == 0 || idx < 0 || idx >= size ? 0 : store.getByte(alloc, idx * 8 + 4);
 		}
 
-		public void setWallL(byte value) {
+		public void setL(byte value) {
 			if (alloc != 0 && idx >= 0 && idx < size)
 				store.setByte(alloc, idx * 8 + 4, value);
 		}
 
-		public byte getWallT() {
+		public byte getT() {
 			return alloc == 0 || idx < 0 || idx >= size ? 0 : store.getByte(alloc, idx * 8 + 5);
 		}
 
-		public void setWallT(byte value) {
+		public void setT(byte value) {
 			if (alloc != 0 && idx >= 0 && idx < size)
 				store.setByte(alloc, idx * 8 + 5, value);
 		}
 
-		public byte getWallR() {
+		public byte getR() {
 			return alloc == 0 || idx < 0 || idx >= size ? 0 : store.getByte(alloc, idx * 8 + 6);
 		}
 
-		public void setWallR(byte value) {
+		public void setR(byte value) {
 			if (alloc != 0 && idx >= 0 && idx < size)
 				store.setByte(alloc, idx * 8 + 6, value);
 		}
 
-		public byte getFloor() {
+		public byte getF() {
 			return alloc == 0 || idx < 0 || idx >= size ? 0 : store.getByte(alloc, idx * 8 + 7);
 		}
 
-		public void setFloor(byte value) {
+		public void setF(byte value) {
 			if (alloc != 0 && idx >= 0 && idx < size)
 				store.setByte(alloc, idx * 8 + 7, value);
 		}
 
-		public byte getItem() {
+		public byte getI() {
 			return alloc == 0 || idx < 0 || idx >= size ? 0 : store.getByte(alloc, idx * 8 + 8);
 		}
 
-		public void setItem(byte value) {
+		public void setI(byte value) {
 			if (alloc != 0 && idx >= 0 && idx < size)
 				store.setByte(alloc, idx * 8 + 8, value);
 		}
 
-		public byte getRotation() {
+		public byte getD() {
 			return alloc == 0 || idx < 0 || idx >= size ? 0 : store.getByte(alloc, idx * 8 + 9);
 		}
 
-		public void setRotation(byte value) {
+		public void setD(byte value) {
 			if (alloc != 0 && idx >= 0 && idx < size)
 				store.setByte(alloc, idx * 8 + 9, value);
 		}
 
-		public short getHeight() {
+		public short getH() {
 			return alloc == 0 || idx < 0 || idx >= size ? Short.MIN_VALUE : store.getShort(alloc, idx * 8 + 10);
 		}
 
-		public void setHeight(short value) {
+		public void setH(short value) {
 			if (alloc != 0 && idx >= 0 && idx < size)
 				store.setShort(alloc, idx * 8 + 10, value);
 		}
@@ -157,45 +161,46 @@ public class Map implements RecordInterface {
 		public void output(Write write, int iterate) throws IOException {
 			if (rec == 0 || iterate <= 0)
 				return;
-			write.field("wallL", getWallL(), true);
-			write.field("wallT", getWallT(), false);
-			write.field("wallR", getWallR(), false);
-			write.field("floor", getFloor(), false);
-			write.field("item", getItem(), false);
-			write.field("rotation", getRotation(), false);
-			write.field("height", getHeight(), false);
+			write.field("l", getL(), true);
+			write.field("t", getT(), false);
+			write.field("r", getR(), false);
+			write.field("f", getF(), false);
+			write.field("i", getI(), false);
+			write.field("d", getD(), false);
+			write.field("h", getH(), false);
 			write.endRecord();
 		}
 
 		public void parse(Parser parser) {
-			DataArray record = this;
-			record.setWallL((byte) parser.getInt("wallL"));
-			record.setWallT((byte) parser.getInt("wallT"));
-			record.setWallR((byte) parser.getInt("wallR"));
-			record.setFloor((byte) parser.getInt("floor"));
-			record.setItem((byte) parser.getInt("item"));
-			record.setRotation((byte) parser.getInt("rotation"));
-			record.setHeight((short) parser.getInt("height"));
+			DArray record = this;
+			record.setL((byte) parser.getInt("l"));
+			record.setT((byte) parser.getInt("t"));
+			record.setR((byte) parser.getInt("r"));
+			record.setF((byte) parser.getInt("f"));
+			record.setI((byte) parser.getInt("i"));
+			record.setD((byte) parser.getInt("d"));
+			record.setH((short) parser.getInt("h"));
 		}
 	}
 
 	public void getUpRecord(Area value) {
-		value.setRec(store.getInt(rec, 33));
+		value.setRec(store.getInt(rec, 37));
 	}
 
 	public Area getUpRecord() {
-		return new Area(store, rec == 0 ? 0 : store.getInt(rec, 33));
+		return new Area(store, rec == 0 ? 0 : store.getInt(rec, 37));
 	}
 
 	@Override
 	public void output(Write write, int iterate) throws IOException {
 		if (rec == 0 || iterate <= 0)
 			return;
-		write.field("X", getX(), true);
-		write.field("Y", getY(), false);
-		write.field("Z", getZ(), false);
-		write.sub("data", false);
-		for (DataArray sub: getData())
+		write.field("x", getX(), true);
+		write.field("y", getY(), false);
+		write.field("z", getZ(), false);
+		write.field("l", getL(), false);
+		write.sub("d", false);
+		for (DArray sub: getD())
 			sub.output(write, iterate - 1);
 		write.endSub();
 		write.endRecord();
@@ -229,15 +234,15 @@ public class Map implements RecordInterface {
 
 	public void parse(Parser parser, Area parent) {
 		while (parser.getSub()) {
-			int X = parser.getInt("X");
-			int Y = parser.getInt("Y");
-			int Z = parser.getInt("Z");
-			Area.IndexMaps idx = parent.new IndexMaps(this, X, Y, Z);
+			int x = parser.getInt("x");
+			int y = parser.getInt("y");
+			int z = parser.getInt("z");
+			Area.IndexMaps idx = parent.new IndexMaps(this, x, y, z);
 			if (idx.nextRec == 0) {
 				try (ChangeMap record = new ChangeMap(parent)) {
-					record.setX(X);
-					record.setY(Y);
-					record.setZ(Z);
+					record.setX(x);
+					record.setY(y);
+					record.setZ(z);
 					parseFields(parser, record);
 				}
 			} else {
@@ -255,18 +260,19 @@ public class Map implements RecordInterface {
 			parent.parseKey(parser);
 			return true;
 		});
-		int X = parser.getInt("X");
-		int Y = parser.getInt("Y");
-		int Z = parser.getInt("Z");
-		Area.IndexMaps idx = parent.new IndexMaps(this, X, Y, Z);
+		int x = parser.getInt("x");
+		int y = parser.getInt("y");
+		int z = parser.getInt("z");
+		Area.IndexMaps idx = parent.new IndexMaps(this, x, y, z);
 		parser.finishRelation();
 		rec = idx.nextRec;
 		return idx.nextRec != 0;
 	}
 
 	private void parseFields(Parser parser, ChangeMap record) {
-		if (parser.hasSub("data")) {
-			DataArray sub = record.new DataArray();
+		record.setL(parser.getInt("l"));
+		if (parser.hasSub("d")) {
+			DArray sub = record.new DArray();
 			while (parser.getSub()) {
 				sub.add();
 				sub.parse(parser);

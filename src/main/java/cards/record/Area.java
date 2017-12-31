@@ -487,37 +487,37 @@ public class Area implements RecordInterface {
 		@Override
 		protected boolean readRed(int recNr) {
 			assert store.validate(recNr);
-			return (store.getByte(recNr, 24) & 1) > 0;
+			return (store.getByte(recNr, 28) & 1) > 0;
 		}
 
 		@Override
 		protected void changeRed(int recNr, boolean value) {
 			assert store.validate(recNr);
-			store.setByte(recNr, 24, (store.getByte(rec, 24) & 254) + (value ? 1 : 0));
+			store.setByte(recNr, 28, (store.getByte(rec, 28) & 254) + (value ? 1 : 0));
 		}
 
 		@Override
 		protected int readLeft(int recNr) {
 			assert store.validate(recNr);
-			return store.getInt(recNr, 25);
+			return store.getInt(recNr, 29);
 		}
 
 		@Override
 		protected void changeLeft(int recNr, int value) {
 			assert store.validate(recNr);
-			store.setInt(recNr, 25, value);
+			store.setInt(recNr, 29, value);
 		}
 
 		@Override
 		protected int readRight(int recNr) {
 			assert store.validate(recNr);
-			return store.getInt(recNr, 29);
+			return store.getInt(recNr, 33);
 		}
 
 		@Override
 		protected void changeRight(int recNr, int value) {
 			assert store.validate(recNr);
-			store.setInt(recNr, 29, value);
+			store.setInt(recNr, 33, value);
 		}
 
 		@Override

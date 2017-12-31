@@ -1,0 +1,10 @@
+name=TestMap, areas=[
+  name=Building, maps=[
+    x=0, y=0, z=0, l=4, d=[
+      l=0, t=0, r=0, f=0, i=0, d=0, h=0
+      l=0, t=0, r=0, f=0, i=0, d=0, h=0
+      l=0, t=0, r=0, f=0, i=0, d=0, h=0
+      l=0, t=0, r=0, f=0, i=0, d=0, h=0
+    ]
+  ]
+]

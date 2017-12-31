@@ -27,13 +27,13 @@ name=Connect, parent=Room, size=35, full=true
   name=upRecord, type=RELATION, related=Room, pos=216
   name=to, type=RELATION, related=Room, pos=248
 name=Element, size=8
-  name=wallL, type=BYTE, pos=0
-  name=wallT, type=BYTE, pos=8
-  name=wallR, type=BYTE, pos=16
-  name=floor, type=BYTE, pos=24
-  name=item, type=BYTE, pos=32
-  name=rotation, type=BYTE, pos=40
-  name=height, type=SHORT, pos=48
+  name=l, type=BYTE, pos=0
+  name=t, type=BYTE, pos=8
+  name=r, type=BYTE, pos=16
+  name=f, type=BYTE, pos=24
+  name=i, type=BYTE, pos=32
+  name=d, type=BYTE, pos=40
+  name=h, type=SHORT, pos=48
 name=Game, size=29, related=true, full=true
   name=name, type=STRING, pos=32, key=true
   name=areas, type=SET, related=Area, pos=64
@@ -45,12 +45,13 @@ name=Goal, parent=Area, size=29, full=true
   name=XP, type=INTEGER, pos=80
   name=gained, type=ENUMERATE, pos=112
   name=upRecord, type=RELATION, related=Area, pos=200
-name=Map, parent=Area, size=37, full=true
-  name=X, type=INTEGER, pos=32, key=true
-  name=Y, type=INTEGER, pos=64, key=true
-  name=Z, type=INTEGER, pos=96, key=true
-  name=data, type=ARRAY, related=Element, pos=128
-  name=upRecord, type=RELATION, related=Area, pos=264
+name=Map, parent=Area, size=41, full=true
+  name=x, type=INTEGER, pos=32, key=true
+  name=y, type=INTEGER, pos=64, key=true
+  name=z, type=INTEGER, pos=96, key=true
+  name=l, type=INTEGER, pos=128
+  name=d, type=ARRAY, related=Element, pos=160
+  name=upRecord, type=RELATION, related=Area, pos=296
 name=Member, parent=Player, size=27, full=true
   name=game, type=RELATION, related=Game, pos=32, key=true
   name=role, type=ENUMERATE, pos=64
@@ -109,10 +110,10 @@ name=goal, record=Goal, fields=[
 	field=name
 ], fieldPos=136, flagPos=128, parentPos=20, primary=true
 name=maps, record=Map, fields=[
-	field=X
-	field=Y
-	field=Z
-], fieldPos=200, flagPos=192, parentPos=24, primary=true
+	field=x
+	field=y
+	field=z
+], fieldPos=232, flagPos=224, parentPos=24, primary=true
 name=skills, record=Skill, fields=[
 	field=card.name
 ], fieldPos=88, flagPos=80, parentPos=8, primary=true

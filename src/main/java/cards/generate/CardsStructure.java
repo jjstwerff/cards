@@ -73,26 +73,27 @@ public class CardsStructure {
 		goal.field("gained", Type.ENUMERATE, "STASH", "OVERHEAR", "REWARD");
 
 		Record element = project.record("Element");
-		element.field("wallL", Type.BYTE); // OPEN/COMBINED/BRICKS/ROUNDED_BRICKS/CONCRETE/ROUNDED_CONCRETE/METAL/WOOD/STONE/ROUNDED_STONE/ROCK/FENCE/LOW_WALL/LOW_FENCE/TREE_TOP
-		element.field("wallT", Type.BYTE);
-		element.field("wallR", Type.BYTE);
-		element.field("floor", Type.BYTE); // OPEN/FILLED/DOOR/METAL_DOOR/WINDOW/WOOD/CONCRETE/ASPHALT/GRAVEL/GRASS/DIRT/ROCK/STAIRS/METAL/METAL_STAIRS/TILES/TILED/TREE_TOP
-		element.field("item", Type.BYTE); // PERSON/TABLE/BENCH/CHAIR/BED/BEDROLL/LAMP/ROOM_NR/TREE_TRUNC
-		element.field("rotation", Type.BYTE); // per 5 degrees 72 max
-		element.field("height", Type.SHORT); // per 10cm
+		element.field("l", Type.BYTE); // OPEN/COMBINED/BRICKS/ROUNDED_BRICKS/CONCRETE/ROUNDED_CONCRETE/METAL/WOOD/STONE/ROUNDED_STONE/ROCK/FENCE/LOW_WALL/LOW_FENCE/TREE_TOP
+		element.field("t", Type.BYTE);
+		element.field("r", Type.BYTE);
+		element.field("f", Type.BYTE); // OPEN/FILLED/DOOR/METAL_DOOR/WINDOW/WOOD/CONCRETE/ASPHALT/GRAVEL/GRASS/DIRT/ROCK/STAIRS/METAL/METAL_STAIRS/TILES/TILED/TREE_TOP
+		element.field("i", Type.BYTE); // PERSON/TABLE/BENCH/CHAIR/BED/BEDROLL/LAMP/ROOM_NR/TREE_TRUNC
+		element.field("d", Type.BYTE); // per 5 degrees 72 max
+		element.field("h", Type.SHORT); // per 10cm
 
 		Record map = project.table("Map");
-		map.field("X", Type.INTEGER); // per m
-		map.field("Y", Type.INTEGER); // per m
-		map.field("Z", Type.INTEGER); // no measurement .. just ordering
-		map.field("data", Type.ARRAY, element);
+		map.field("x", Type.INTEGER); // per m
+		map.field("y", Type.INTEGER); // per m
+		map.field("z", Type.INTEGER); // no measurement .. just ordering
+		map.field("l", Type.INTEGER); // length in Y elements
+		map.field("d", Type.ARRAY, element);
 
 		Record area = project.table("Area");
 		area.field("name", Type.STRING);
 		area.field("rooms", room, "name");
 		area.field("encounter", Type.ARRAY, cards);
 		area.field("goal", goal, "name");
-		area.field("maps", map, "X", "Y", "Z");
+		area.field("maps", map, "x", "y", "z");
 
 		Record skill = project.table("Skill");
 		skill.field("card", Type.RELATION, card);
