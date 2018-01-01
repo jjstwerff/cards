@@ -1,5 +1,7 @@
 - very simple map data structure:
-	base wall material that doesn't morph in any way.. only 1 material
+	On a cross move halfway towards the dead end when it exists .. do no draw the dead end itself
+	Show the patterns of the now inconsistent lower block corners.. can we find a pattern to recognize? 
+	Base wall material that doesn't morph in any way.. only 1 material
 - draw single map on canvas.. inside = gray, outside = open
 	for now draw each tile separately
 - show different colors for floor materials

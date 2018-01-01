@@ -83,7 +83,7 @@ public class Draw {
 	private int calcDir(int d0, boolean s0, int d1, boolean s1) {
 		int ca = d0 + d1;
 		if (d0 == 0 && d1 == 4)
-			ca = 8;
+			ca = 8; // TODO inconsistent.. should have been 10
 		if (d0 == 1 && d1 == 5)
 			ca = 12;
 		return (ca + (s1 ? s0 ? 0 : 1 : -1)) % 12;
