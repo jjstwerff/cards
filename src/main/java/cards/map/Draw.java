@@ -6,12 +6,12 @@ import cards.record.Map.DArray;
 
 public class Draw {
 	private final Area area;
-	static int px = 15; // sixth of distance between each line
-	static int py = 26; // better 25,98 distance between half rows
-	static int[] Dx = new int[] { 4, 3, 2, 0, -2, -3, -4, -3, -2, 0, 2, 3 }; // directions x
-	static int[] Dy = new int[] { 0, -1, -2, -2, -2, -1, 0, 1, 2, 2, 2, 1 }; // directions y
-	static int[] dx = new int[] { px * 4, px * 2, -px * 2, -px * 4, -px * 2, px * 2, 0 };
-	static int[] dy = new int[] { 0, -py * 2, -py * 2, 0, py * 2, py * 2, 0 };
+	static final int PX = 15; // sixth of distance between each line
+	static final int PY = 26; // better 25,98 distance between half rows
+	static final int SX = 60; // start of x to prevent negative numbers
+	static final int SY = 104; // start of y to prevent negative numbers
+	static final int[] DX = new int[] { PX * 4, PX * 2, -PX * 2, -PX * 4, -PX * 2, PX * 2, 0 };
+	static final int[] DY = new int[] { 0, -PY * 2, -PY * 2, 0, PY * 2, PY * 2, 0 };
 
 	public Draw(Area area) {
 		this.area = area;
@@ -22,76 +22,97 @@ public class Draw {
 	}
 
 	private int px(int x, int y, int d) {
-		return 60 + x * 6 * px + dx[d];
+		return SX + x * 6 * PX + DX[d];
 	}
 
 	private int py(int x, int y, int d) {
-		return 104 + (y * 2 - x % 2) * py * 2 + dy[d];
+		return SY + (y * 2 - x % 2) * PY * 2 + DY[d];
 	}
 
-	private int px(int v) {
-		return 60 + v * px;
+	int rx(int x, int y) {
+		return SX + x * 6 * PX;
 	}
 
-	/** Find the default Y position of a hex tile */
-	private int py(int v) {
-		return 104 + v * py;
+	int ry(int x, int y) {
+		return SY + (y * 2 - x % 2) * PY * 2;
 	}
 
-	/** Find the wall material on a tile */
-	public int wall(DArray a, int l, int x, int y) {
-		int ax = (x + (y % 4 == 1 ? 6 : 0)) / 6;
-		int ay = (y + 2 + 2 * ((x / 6) % 2)) / 4;
-		int mx = ax * 6;
-		int my = ay * 4 - (ax % 2) * 2;
-		int dx = x - mx;
-		int dy = y - my;
-		System.out.println("(" + x + "," + y + ") a=(" + ax + "," + ay + ") m=(" + mx + "," + my + ") d=(" + dx + "," + dy + ")");
-		/*
-		boolean R = x - mx == 
-		boolean T = (x + 6) % 6 == 0 && (y + 2) % 4 == 0;
-		boolean L = (x + 6) % 6 == 3 && (y + 2) % 4 == 1;
-		
-		switch (d) {
-		case 0:
-			a.setIndex(y * l + x);
-			return a.getR();
-		case 1:
-			a.setIndex(y * l + x);
-			return a.getT();
-		case 2:
-			a.setIndex(y * l + x);
-			return a.getL();
-		case 3:
-			if (x > 0) {
-				a.setIndex((x % 2 == 0 ? y + 1 : y) * l + x - 1);
-				return a.getR();
+	static class Point {
+		DArray a;
+		int l;
+		int x;
+		int y;
+
+		Point(DArray a, int l, int x, int y) {
+			this.a = a;
+			this.l = l;
+			this.x = x;
+			this.y = y;
+		}
+
+		public int rx() {
+			return SX - 2 * PX + (x * 3 + x % 2) * PX;
+		}
+
+		public int ry() {
+			return SY - 2 * PY + (y * 2 - (x / 2) % 2) * 2 * PY;
+		}
+
+		public int match(int wall) {
+			int r = 0;
+			int mx = x / 2;
+			int my = y;
+			if (x % 2 == 0) {
+				a.setIndex(mx + my * l);
+				if (a.getT() == wall)
+					r += 1;
+				if (a.getL() == wall)
+					r += 16;
+				a.setIndex(mx - 1 + (my - mx % 2) * l);
+				if (a.getR() == wall)
+					r += 4;
+			} else {
+				a.setIndex(mx + my * l);
+				if (a.getT() == wall)
+					r += 8;
+				if (a.getR() == wall)
+					r += 32;
+				a.setIndex(mx + 1 + (my - mx % 2) * l);
+				if (a.getL() == wall)
+					r += 2;
 			}
-		case 4:
-			a.setIndex((y + 1) * l + x);
-			return a.getT();
-		case 5:
-			a.setIndex((x % 2 == 0 ? y + 1 : y) * l + x + 1);
-			return a.getL();
-		}*/
-		return 0;
-	}
+			return r;
+		}
 
-	/*
-	private int directions(DArray a, int l, int x, int y, int d) {
-		System.out.println("directions (" + x + "," + y + ":" + d + ")\n");
-		int r = 0;
-		if (wall(a, l, x, y, d) == 2) {
-			System.out.println("first " + (d + 2) % 6 + "\n");
+		public void step(int d) {
+			if (x % 2 == (d + 1) % 2)
+				throw new RuntimeException("Incorrect direction");
+			switch (d) {
+			case 0:
+				x += 1;
+				break;
+			case 1:
+				x += 1;
+				y -= (x / 2) % 2;
+				break;
+			case 2:
+				x -= 1;
+				y -= (x / 2) % 2;
+				break;
+			case 3:
+				x -= 1;
+				break;
+			case 4:
+				x -= 1;
+				y += (x / 2 + 1) % 2;
+				break;
+			case 5:
+				x += 1;
+				y += (x / 2 + 1) % 2;
+				break;
+			}
 		}
-		if (wall(a, l, x, y, (d + 5) % 6) == 2) {
-			System.out.println("first " + (d + 4) % 6 + "\n");
-		}
-		if (wall(a, l, x, y, (d + 5) % 6) == 2) {
-			System.out.println("first " + (d + 4) % 6 + "\n");
-		}
-		return r;
-	}*/
+	}
 
 	public String dump() {
 		StringBuilder bld = new StringBuilder();
