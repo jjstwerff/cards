@@ -1,7 +1,13 @@
 - very simple map data structure
-	top left = 0,0
 	direction= 0:R, 1:RT, 2:TR, 3:T, 4:TL, 5:LT, 6:L, 7:LB, 8:BL, 9:B, 10:BR, 11:RB = each 30 degrees
-	very simple building map.. 1 room
+	coordinate system:
+		t(0,0) = centre of element 0,0
+		p(4,0) p(2,-2) p(-2,-2) p(-4,0) p(-2,2) p(2,2) = points around element 0,0
+		w(3,-1) w(0,-2) w(-3,-1) w(-3,1) w(0,2) w(3,1) = walls around element 0,0.. half way points
+		t(6,-2) = centre of element 1,0
+		t(12,0) = centre of element 2,0
+	directions: (4,0) (3,-1) (2,-2) (0,-2) (-2,-2) (-3,-1) (-4,0) (-3,1) (-2,2) (0,2) (2,2) (3,1)
+
 	base wall material that doesn't morph in any way.. only 1 material
 	second wall material that will become straight
 		line matcher notation: only this matches

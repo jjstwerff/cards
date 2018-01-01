@@ -67,6 +67,10 @@ public class Map implements RecordInterface {
 			return size;
 		}
 
+		public void setIndex(int idx) {
+			this.idx = idx;
+		}
+
 		public DArray add() {
 			idx = size;
 			if (alloc == 0)
