@@ -3,16 +3,51 @@ package cards.map;
 import cards.record.Map.DArray;
 
 public class Point {
-	DArray a;
-	int l;
-	int x;
-	int y;
+	final DArray a;
+	final int l;
+	final int x;
+	final int y;
 
 	public Point(DArray a, int l, int x, int y) {
 		this.a = a;
 		this.l = l;
 		this.x = x;
 		this.y = y;
+	}
+
+	public Point(DArray a, int l, int x, int y, int d) {
+		int px = -1;
+		int py = -1;
+		switch (d) {
+		case 0:
+			px = x * 2 + 2;
+			py = y + (x + 1) % 2;
+			break;
+		case 1:
+			px = x * 2 + 1;
+			py = y;
+			break;
+		case 2:
+			px = x * 2;
+			py = y;
+			break;
+		case 3:
+			px = x * 2 - 1;
+			py = y + (x + 1) % 2;
+			break;
+		case 4:
+			px = x * 2;
+			py = y + 1;
+			break;
+		case 5:
+			px = x * 2;
+			py = y + 1;
+			break;
+		}
+		this.a = a;
+		this.l = l;
+		this.x = px;
+		this.y = py;
 	}
 
 	public Point(Point o) {
@@ -55,33 +90,36 @@ public class Point {
 		return false;
 	}
 
-	public void step(int d) {
+	public Point step(int d) {
 		if (x % 2 == (d + 1) % 2)
 			throw new RuntimeException("Incorrect direction");
+		int px = x;
+		int py = y;
 		switch (d) {
 		case 0:
-			x += 1;
+			px += 1;
 			break;
 		case 1:
-			y -= (x / 2) % 2;
-			x += 1;
+			px += 1;
+			py -= (x / 2) % 2;
 			break;
 		case 2:
-			y -= (x / 2) % 2;
-			x -= 1;
+			px -= 1;
+			py -= (x / 2) % 2;
 			break;
 		case 3:
-			x -= 1;
+			px -= 1;
 			break;
 		case 4:
-			y += (x / 2 + 1) % 2;
-			x -= 1;
+			px -= 1;
+			py += (x / 2 + 1) % 2;
 			break;
 		case 5:
-			y += (x / 2 + 1) % 2;
-			x += 1;
+			px += 1;
+			py += (x / 2 + 1) % 2;
 			break;
 		}
+		return new Point(a, l, px, py);
 	}
 
 	@Override

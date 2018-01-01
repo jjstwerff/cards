@@ -21,16 +21,25 @@ public class TestMap extends Tests {
 		Assert.assertEquals(content(this, "testMap2.txt"), game.toString());
 
 		Draw draw = new Draw(game.getAreas().next());
-		Assert.assertEquals(content(this, "testMap.html"), draw.dump());
 
 		Area area = game.getAreas().next();
 		Map map = area.getMaps().next();
+		Assert.assertEquals("skoso!9", found(draw, map, 4, 0));
 		Assert.assertEquals("sos!oso!3", found(draw, map, 6, 1));
 		Assert.assertEquals("sksk6", found(draw, map, 2, 2));
 		Assert.assertEquals("@", found(draw, map, 3, 2));
 		Assert.assertEquals(".", found(draw, map, 1, 0));
 		Assert.assertEquals("sos!k3", found(draw, map, 3, 1));
 		Assert.assertEquals("sos!k3", found(draw, map, 10, 1));
+		Assert.assertEquals(9, moveDir(draw, map, 4, 0));
+		Assert.assertEquals(3, moveDir(draw, map, 6, 1));
+		Assert.assertEquals(6, moveDir(draw, map, 2, 2));
+		Assert.assertEquals(-1, moveDir(draw, map, 3, 2));
+		Assert.assertEquals(-1, moveDir(draw, map, 1, 0));
+		Assert.assertEquals(3, moveDir(draw, map, 3, 1));
+		Assert.assertEquals(3, moveDir(draw, map, 10, 1));
+
+		Assert.assertEquals(content(this, "testMap.html"), draw.dump());
 	}
 
 	private String found(Draw draw, Map map, int x, int y) {
@@ -40,5 +49,10 @@ public class TestMap extends Tests {
 		if (found != -1)
 			bld.append(Integer.toHexString(found));
 		return bld.toString();
+	}
+
+	private int moveDir(Draw draw, Map map, int x, int y) {
+		Point p = new Point(map.getD(), map.getL(), x, y);
+		return draw.moveDir(p, 2);
 	}
 }
