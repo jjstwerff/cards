@@ -1,4 +1,7 @@
 - very simple map data structure
+	rewrite modLine in terms of Point coordinates
+		use found to determine direction & move point into that direction
+		when good enough create simplified version of found with out directory
 	base wall material that doesn't morph in any way.. only 1 material
 	second wall material that will become straight
 		line matcher notation: only this matches
