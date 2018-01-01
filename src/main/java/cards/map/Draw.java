@@ -69,16 +69,20 @@ public class Draw {
 		if (c == 2) {
 			boolean s0 = next(p.step(d0), wall, (3 + d0) % 6, (3 + d1) % 6);
 			boolean s1 = next(p.step(d1), wall, (3 + d1) % 6, (3 + d0) % 6);
-			int ca = d0 + d1;
-			if (d0 == 0 && d1 == 4)
-				ca = 8;
-			if (d0 == 1 && d1 == 5)
-				ca = 0;
-			rd = ca + (s1 ? s0 ? 0 : 1 : -1);
+			rd = calcDir(d0, s0, d1, s1);
 		} else {
 			// nothing yet on 3 directions
 		}
 		return rd;
+	}
+
+	private int calcDir(int d0, boolean s0, int d1, boolean s1) {
+		int ca = d0 + d1;
+		if (d0 == 0 && d1 == 4)
+			ca = 8;
+		if (d0 == 1 && d1 == 5)
+			ca = 12;
+		return (ca + (s1 ? s0 ? 0 : 1 : -1)) % 12;
 	}
 
 	private boolean next(Point p, int wall, int dwalk, int doth) {
@@ -123,10 +127,7 @@ public class Draw {
 			}
 			int at = s.length();
 			steps(p.step(d1), s, wall, (3 + d1) % 6, (3 + d0) % 6, 0);
-			int ca = d0 + d1;
-			if (d1 == 4 && d0 == 0)
-				ca = 8;
-			rd = ca + (s.charAt(at) == 's' ? same ? 0 : 1 : -1);
+			rd = calcDir(d0, same, d1, s.charAt(at) == 's');
 			if (!same)
 				steps(p.step(d0), s, wall, (3 + d0) % 6, (3 + d1) % 6, 0);
 		} else {
@@ -229,6 +230,8 @@ public class Draw {
 		int dt = moveDir(t, 2) + 1;
 		return "c.beginPath(); c.moveTo(" + (f.rx() + MX[df]) + ", " + (f.ry() + MY[df]) + "); c.lineTo(" + (t.rx() + MX[dt]) + ", " + (t.ry() + MY[dt]) + "); c.stroke();\n" //
 				+ "c.beginPath(); c.arc(" + (f.rx() + MX[df]) + ", " + (f.ry() + MY[df]) + ", 5, 0, 2 * Math.PI); c.stroke();\n" //
-				+ "c.beginPath(); c.arc(" + (t.rx() + MX[dt]) + ", " + (t.ry() + MY[dt]) + ", 5, 0, 2 * Math.PI); c.stroke();\n";
+				+ "c.beginPath(); c.arc(" + (t.rx() + MX[dt]) + ", " + (t.ry() + MY[dt]) + ", 5, 0, 2 * Math.PI); c.stroke();\n" //
+				+ "c.fillText(\"" + (df - 1) + "\", " + (f.rx() + MX[df] + 3) + ", " + (f.ry() + MY[df] - 5) + ");\n" //
+				+ "c.fillText(\"" + (dt - 1) + "\", " + (t.rx() + MX[dt] + 3) + ", " + (t.ry() + MY[dt] - 5) + ");\n";
 	}
 }
