@@ -1,25 +1,5 @@
-- very simple map data structure
-	rewrite modLine in terms of Point coordinates
-		use found to determine direction & move point into that direction
-		when good enough create simplified version of found with out directory
+- very simple map data structure:
 	base wall material that doesn't morph in any way.. only 1 material
-	second wall material that will become straight
-		line matcher notation: only this matches
-			2 -> direction or -1 = indirect wobble.. allow plus/min 1
-			0 -> direction or -1 = wobble
-		Corners .. not yet
-			B & RT & TL
-			B & LT & TR
-			U & LB & BR
-			U & RB & BL
-		6 directions of 2 steps line.. LT T RT LB B TB identical to walls from center of tiles 
-		indirect wobble line: direction out != direction in .. but 1 off
-			also move points to centre
-			up/down half the wobble diameter
-		direct wobble line: direction out = direction in
-			into straight by moving points to line
-			left/right half the wobble diameter
-		draw this
 - draw single map on canvas.. inside = gray, outside = open
 	for now draw each tile separately
 - show different colors for floor materials

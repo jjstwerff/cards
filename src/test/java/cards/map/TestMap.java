@@ -25,17 +25,18 @@ public class TestMap extends Tests {
 		Area area = game.getAreas().next();
 		Map map = area.getMaps().next();
 		Assert.assertEquals("sso!sso!0", found(draw, map, 1, 6));
-		Assert.assertEquals("sskkb", found(draw, map, 1, 2));
-		Assert.assertEquals("skoso!9", found(draw, map, 4, 0));
+		Assert.assertEquals("ssccb", found(draw, map, 1, 2));
+		Assert.assertEquals("scoso!9", found(draw, map, 4, 0));
 		Assert.assertEquals("sos!oso!3", found(draw, map, 6, 1));
-		Assert.assertEquals("sksk6", found(draw, map, 2, 2));
+		Assert.assertEquals("scsc6", found(draw, map, 2, 2));
 		Assert.assertEquals("@", found(draw, map, 3, 2));
 		Assert.assertEquals(".", found(draw, map, 1, 0));
-		Assert.assertEquals("sos!k3", found(draw, map, 3, 1));
-		Assert.assertEquals("sos!k3", found(draw, map, 10, 1));
+		Assert.assertEquals("sos!c3", found(draw, map, 3, 1));
+		Assert.assertEquals("sos!c3", found(draw, map, 10, 1));
 
+		Assert.assertEquals(0, moveDir(draw, map, 1, 1));
 		Assert.assertEquals(0, moveDir(draw, map, 1, 6));
-		Assert.assertEquals(11, moveDir(draw, map, 1, 2));
+		Assert.assertEquals(0, moveDir(draw, map, 1, 2));
 		Assert.assertEquals(9, moveDir(draw, map, 4, 0));
 		Assert.assertEquals(3, moveDir(draw, map, 6, 1));
 		Assert.assertEquals(6, moveDir(draw, map, 2, 2));

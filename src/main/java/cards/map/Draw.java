@@ -67,9 +67,13 @@ public class Draw {
 			}
 		}
 		if (c == 2) {
-			boolean s0 = next(p.step(d0), wall, (3 + d0) % 6, (3 + d1) % 6);
-			boolean s1 = next(p.step(d1), wall, (3 + d1) % 6, (3 + d0) % 6);
-			rd = calcDir(d0, s0, d1, s1);
+			int s0 = next(p.step(d0), wall, (3 + d0) % 6, (3 + d1) % 6);
+			int s1 = next(p.step(d1), wall, (3 + d1) % 6, (3 + d0) % 6);
+			if (s0 == 1 && s1 == 2 && next(p.step(d0).step((3 + d1) % 6), wall, d1, d0) == 1)
+				s1 = 1;
+			if (s1 == 1 && s0 == 2 && next(p.step(d1).step((3 + d0) % 6), wall, d0, d1) == 1)
+				s0 = 1;
+			rd = calcDir(d0, s0 == 1, d1, s1 == 1);
 		} else {
 			// nothing yet on 3 directions
 		}
@@ -85,7 +89,7 @@ public class Draw {
 		return (ca + (s1 ? s0 ? 0 : 1 : -1)) % 12;
 	}
 
-	private boolean next(Point p, int wall, int dwalk, int doth) {
+	private int next(Point p, int wall, int dwalk, int doth) {
 		int c = 0;
 		int d0 = -1;
 		for (int d = p.x % 2; d < 6; d += 2) {
@@ -97,7 +101,9 @@ public class Draw {
 					d0 = d;
 			}
 		}
-		return c == 1 && d0 == doth;
+		if (c == 2)
+			return 2;
+		return c == 1 && d0 == doth ? 1 : 0;
 	}
 
 	public int found(Point p, StringBuilder s, int wall) {
@@ -155,7 +161,7 @@ public class Draw {
 		if (c == 0)
 			s.append(".");
 		else if (c == 2)
-			s.append("k");
+			s.append("c");
 		else {
 			s.append(d0 == doth ? "s" : "o");
 			steps(p.step(d0), s, wall, (3 + d0) % 6, (3 + dwalk) % 6, step + 1);
