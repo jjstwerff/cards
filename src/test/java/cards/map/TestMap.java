@@ -24,6 +24,8 @@ public class TestMap extends Tests {
 
 		Area area = game.getAreas().next();
 		Map map = area.getMaps().next();
+		Assert.assertEquals("oss!oso!7", found(draw, map, 2, 5));
+		Assert.assertEquals("sss!oos!1", found(draw, map, 1, 5));
 		Assert.assertEquals("", found(draw, map, 2, 1));
 		Assert.assertEquals("sscc1", found(draw, map, 1, 1));
 		Assert.assertEquals("sso!sso!0", found(draw, map, 1, 6));
@@ -36,6 +38,8 @@ public class TestMap extends Tests {
 		Assert.assertEquals("sos!c3", found(draw, map, 3, 1));
 		Assert.assertEquals("sos!c3", found(draw, map, 10, 1));
 
+		Assert.assertEquals(7, moveDir(draw, map, 2, 5));
+		Assert.assertEquals(0, moveDir(draw, map, 1, 5));
 		Assert.assertEquals(0, moveDir(draw, map, 1, 1));
 		Assert.assertEquals(0, moveDir(draw, map, 1, 6));
 		Assert.assertEquals(0, moveDir(draw, map, 1, 2));

@@ -57,13 +57,29 @@ public class Draw {
 			}
 		}
 		if (c == 2) {
-			int s0 = next(p.step(d0), wall, (3 + d0) % 6, (3 + d1) % 6);
-			int s1 = next(p.step(d1), wall, (3 + d1) % 6, (3 + d0) % 6);
-			if (s0 == 1 && s1 == 2 && next(p.step(d0).step((3 + d1) % 6), wall, d1, d0) == 1)
-				s1 = 1;
-			if (s1 == 1 && s0 == 2 && next(p.step(d1).step((3 + d0) % 6), wall, d0, d1) == 1)
-				s0 = 1;
-			rd = calcDir(d0, s0 == 1, d1, s1 == 1);
+			Point st0 = p.step(d0);
+			lastMove = d0;
+			Point st1 = next(st0, wall);
+			int s0 = lastMove;
+			boolean s0s = s0 == (3 + d1) % 6;
+			next(st1, wall);
+			int s1 = lastMove;
+			boolean s1s = s1 == d0;
+
+			Point nt0 = p.step(d1);
+			lastMove = d1;
+			Point nt1 = next(nt0, wall);
+			int n0 = lastMove;
+			boolean n0s = n0 == (3 + d0) % 6;
+			next(nt1, wall);
+			int n1 = lastMove;
+			boolean n1s = n1 == d1;
+
+			if (s0s && s1s && ((!n0s && !n1s) || n0 == -2))
+				n0s = true;
+			if (n0s && n1s && ((!s0s && !s1s) || s0 == -2))
+				s0s = true;
+			rd = calcDir(d0, s0s, d1, n0s);
 		} else if (c == 3) { // move 3 direction towards the loose end
 			for (int d = p.x % 2; d < 6; d += 2) {
 				Point n = p.step(d);
@@ -95,11 +111,18 @@ public class Draw {
 		return (ca + (s1 ? s0 ? 0 : 1 : -1)) % 12;
 	}
 
-	private int next(Point p, int wall, int dwalk, int doth) {
+	/**
+	 * lastMove becomes:
+	 * -2 : encountered cross
+	 * -1 : encountered end
+	 * ?? : direction of move
+	 * return: next step Point
+	 */
+	private Point next(Point p, int wall) {
 		int c = 0;
 		int d0 = -1;
 		for (int d = p.x % 2; d < 6; d += 2) {
-			if (d == dwalk)
+			if (lastMove >= 0 && d == (lastMove + 3) % 6) // is this direction back the last move?
 				continue;
 			if (p.match(wall, d)) {
 				c++;
@@ -107,9 +130,15 @@ public class Draw {
 					d0 = d;
 			}
 		}
+		if (c == 1) {
+			lastMove = d0;
+			return p.step(d0);
+		}
 		if (c == 2)
-			return 2;
-		return c == 1 && d0 == doth ? 1 : 0;
+			lastMove = -2;
+		else
+			lastMove = -1;
+		return p;
 	}
 
 	/*

@@ -1,7 +1,7 @@
 - very simple map data structure:
-	On a cross move halfway towards the dead end when it exists .. do no draw the dead end itself
-		dead end detection.. start on a cross.. each side & count next (not back) = 0
-	Show the patterns of the now inconsistent lower block corners.. can we find a pattern to recognize? 
+	Correct inconsistent corners:
+	 - extend last point of the indirect wobble into the actual corner position
+	 - more even distances on indirect wobble
 	Base wall material that doesn't morph in any way.. only 1 material
 - draw single map on canvas.. inside = gray, outside = open
 	for now draw each tile separately
