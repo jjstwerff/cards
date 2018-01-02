@@ -43,15 +43,6 @@ public class Draw {
 		return SY + (y * 2 - x % 2) * PY * 2;
 	}
 
-	/*
-	 * s: same as one step back
-	 * o: other as one step back
-	 * !: match
-	 * indirect wobble: so!os!
-	 * direct wobble: s!s!  or ss!ss!
-	 * normalize.. always start with an s when possible
-	 * return move direction: 0 - 11 in 30 degrees steps
-	 */
 	public int moveDir(Point p, int wall) {
 		int rd = -1;
 		int c = 0;
@@ -106,6 +97,15 @@ public class Draw {
 		return c == 1 && d0 == doth ? 1 : 0;
 	}
 
+	/*
+	 * s: same as one step back
+	 * o: other as one step back
+	 * !: match
+	 * indirect wobble: so!os!
+	 * direct wobble: s!s!  or ss!ss!
+	 * normalize.. always start with an s when possible
+	 * return move direction: 0 - 11 in 30 degrees steps
+	 */
 	public int found(Point p, StringBuilder s, int wall) {
 		int rd = -1;
 		int c = 0;
