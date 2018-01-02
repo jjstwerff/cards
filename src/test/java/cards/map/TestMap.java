@@ -24,6 +24,8 @@ public class TestMap extends Tests {
 
 		Area area = game.getAreas().next();
 		Map map = area.getMaps().next();
+		Assert.assertEquals("", found(draw, map, 2, 1));
+		Assert.assertEquals("sscc1", found(draw, map, 1, 1));
 		Assert.assertEquals("sso!sso!0", found(draw, map, 1, 6));
 		Assert.assertEquals("ssccb", found(draw, map, 1, 2));
 		Assert.assertEquals("scoso!9", found(draw, map, 4, 0));
@@ -41,7 +43,7 @@ public class TestMap extends Tests {
 		Assert.assertEquals(3, moveDir(draw, map, 6, 1));
 		Assert.assertEquals(6, moveDir(draw, map, 2, 2));
 		Assert.assertEquals(-1, moveDir(draw, map, 3, 2));
-		Assert.assertEquals(-1, moveDir(draw, map, 1, 0));
+		Assert.assertEquals(-2, moveDir(draw, map, 1, 0));
 		Assert.assertEquals(3, moveDir(draw, map, 3, 1));
 		Assert.assertEquals(3, moveDir(draw, map, 10, 1));
 
@@ -59,6 +61,7 @@ public class TestMap extends Tests {
 
 	private int moveDir(Draw draw, Map map, int x, int y) {
 		Point p = new Point(map.getD(), map.getL(), x, y);
-		return draw.moveDir(p, 2);
+		draw.moveDir(p, 2);
+		return draw.getLastMove();
 	}
 }

@@ -13,14 +13,13 @@ public class Draw {
 	public static final int SY = 104; // start of y to prevent negative numbers
 	static final int[] DX = new int[] { PX * 4, PX * 2, -PX * 2, -PX * 4, -PX * 2, PX * 2, 0 };
 	static final int[] DY = new int[] { 0, -PY * 2, -PY * 2, 0, PY * 2, PY * 2, 0 };
-	static final double[] MX = new double[] { 0, PX, HX, 0.5 * PX, 0, -0.5 * PX, -HX, -PX, -HX, -0.5 * PX, 0, 0.5 * PX, HX };
-	static final double[] MY = new double[] { 0, 0, -HY, -0.5 * PY, -PY, -0.5 * PY, -HY, 0, HY, 0.5 * PY, PY, 0.5 * PY, HY };
+	static final double[] MX = new double[] { PX, HX, 0.5 * PX, 0, -0.5 * PX, -HX, -PX, -HX, -0.5 * PX, 0, 0.5 * PX, HX };
+	static final double[] MY = new double[] { 0, -HY, -0.5 * PY, -PY, -0.5 * PY, -HY, 0, HY, 0.5 * PY, PY, 0.5 * PY, HY };
 	private final Area area;
-	private final StringBuilder bld;
+	int lastMove;
 
 	public Draw(Area area) {
 		this.area = area;
-		this.bld = new StringBuilder();
 	}
 
 	public Area getArea() {
@@ -43,7 +42,7 @@ public class Draw {
 		return SY + (y * 2 - x % 2) * PY * 2;
 	}
 
-	public int moveDir(Point p, int wall) {
+	public P moveDir(Point p, int wall) {
 		int rd = -1;
 		int c = 0;
 		int d0 = -1;
@@ -65,10 +64,26 @@ public class Draw {
 			if (s1 == 1 && s0 == 2 && next(p.step(d1).step((3 + d0) % 6), wall, d0, d1) == 1)
 				s0 = 1;
 			rd = calcDir(d0, s0 == 1, d1, s1 == 1);
-		} else {
-			// nothing yet on 3 directions
+		} else if (c == 3) { // move 3 direction towards the loose end
+			for (int d = p.x % 2; d < 6; d += 2) {
+				Point n = p.step(d);
+				c = 0;
+				for (int nd = n.x % 2; nd < 6; nd += 2)
+					if (n.match(wall, nd))
+						c++;
+				if (c == 1) {
+					lastMove = 2 * d;
+					return new P(p.rx() + 2 * MX[2 * d], p.ry() + 2 * MY[2 * d]);
+				}
+			}
+		} else if (c == 1) { // discard loose ends
+			lastMove = -2;
+			return null;
 		}
-		return rd;
+		lastMove = rd;
+		if (rd == -1)
+			return new P(p.rx(), p.ry());
+		return new P(p.rx() + MX[rd], p.ry() + MY[rd]);
 	}
 
 	private int calcDir(int d0, boolean s0, int d1, boolean s1) {
@@ -230,14 +245,20 @@ public class Draw {
 	private String modLine(Map map, int x, int y, int sd, int ed) {
 		Point f = new Point(map.getD(), map.getL(), x, y, sd);
 		Point t = new Point(map.getD(), map.getL(), x, y, ed);
-		bld.setLength(0);
-		int df = moveDir(f, 2) + 1;
-		bld.setLength(0);
-		int dt = moveDir(t, 2) + 1;
-		return "c.beginPath(); c.moveTo(" + (f.rx() + MX[df]) + ", " + (f.ry() + MY[df]) + "); c.lineTo(" + (t.rx() + MX[dt]) + ", " + (t.ry() + MY[dt]) + "); c.stroke();\n" //
-				+ "c.beginPath(); c.arc(" + (f.rx() + MX[df]) + ", " + (f.ry() + MY[df]) + ", 5, 0, 2 * Math.PI); c.stroke();\n" //
-				+ "c.beginPath(); c.arc(" + (t.rx() + MX[dt]) + ", " + (t.ry() + MY[dt]) + ", 5, 0, 2 * Math.PI); c.stroke();\n" //
-				+ "c.fillText(\"" + (df - 1) + "\", " + (f.rx() + MX[df] + 3) + ", " + (f.ry() + MY[df] - 5) + ");\n" //
-				+ "c.fillText(\"" + (dt - 1) + "\", " + (t.rx() + MX[dt] + 3) + ", " + (t.ry() + MY[dt] - 5) + ");\n";
+		P mf = moveDir(f, 2);
+		int df = lastMove;
+		P mt = moveDir(t, 2);
+		int dt = lastMove;
+		if (mf == null || mt == null)
+			return "";
+		return "c.beginPath(); c.moveTo(" + mf.x + ", " + mf.y + "); c.lineTo(" + mt.x + ", " + mt.y + "); c.stroke();\n" //
+				+ "c.beginPath(); c.arc(" + mf.x + ", " + mf.y + ", 5, 0, 2 * Math.PI); c.stroke();\n" //
+				+ "c.beginPath(); c.arc(" + mt.x + ", " + mt.y + ", 5, 0, 2 * Math.PI); c.stroke();\n" //
+				+ "c.fillText(\"" + df + "\", " + (mf.x + 3) + ", " + (mf.y - 5) + ");\n" //
+				+ "c.fillText(\"" + dt + "\", " + (mt.x + 3) + ", " + (mt.y - 5) + ");\n";
+	}
+
+	public int getLastMove() {
+		return lastMove;
 	}
 }
