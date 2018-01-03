@@ -1,0 +1,5 @@
+Straight lines that are drawn will not follow the sides of tiles exactly but round them off.
+This result is slightly different for the two types of aproximation in use.
+
+Line that cuts though sides of the tiles results in evenly spaced dots each 45 points.
+The other line that cuts the points of tiles results in slightly larger spaces of 52 points.

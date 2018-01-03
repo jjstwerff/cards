@@ -1,8 +1,12 @@
-- draw single map on canvas.. inside = gray, outside = open
-	for now draw each tile separately
-- show different colors for floor materials
-- add walls as thicker colored lines and doors / windows
-	separate pass
+- show different colors for floor materials:
+	introduce .. green for grass, brown for wood, grey for concrete and greyish light brown for dirt.
+- more types of 90° angles to walls.. no crosses
+- inside walls between rooms with possible crosses
+- walls as thicker colored lines
+- doors / window indications
+- 15% walls: 8 sided towers
+- trapezoid bay window
+- first simple rounded tower / stairs
 - indicators of player/NPC/item positions
 - very simple editor.. show current position/rotation.. allow to change current material/walls in directions
 - multiple levels and stairs.. including roofs.. do not show levels above the player
@@ -13,3 +17,6 @@
 - draw distance with calculated height map
 - long distance with less accurate height map
 - near distance with displacement map
+
+
+- horizontal=45  vertical=52  diff=86%
