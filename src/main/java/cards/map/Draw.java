@@ -121,12 +121,8 @@ public class Draw {
 	public P moveDir(Point p, int wall) {
 		int c = match(p, wall);
 		if (c == 2) {
-			int m = match("osos", "osss");
-			if (m > 0) {
-				lastMove = 2 * match[16];
-				return new P(p.rx() + 2 * MX[lastMove], p.ry() + 2 * MY[lastMove]);
-			} else if (m < 0) {
-				lastMove = 2 * match[0];
+			if ((c = match("osos", "osss")) != 0) {
+				lastMove = 2 * match[c > 0 ? 16 : 0];
 				return new P(p.rx() + 2 * MX[lastMove], p.ry() + 2 * MY[lastMove]);
 			}
 			if (match[1] == 1 && match[3] == 1 && ((match[17] == 2 && match[19] == 2) || match[17] == 3))
