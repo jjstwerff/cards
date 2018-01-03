@@ -70,7 +70,7 @@ public class Draw {
 		return bld.toString();
 	}
 
-	private void match(Point p, int wall) {
+	private int match(Point p, int wall) {
 		int c = 0;
 		int d0 = -1;
 		int d1 = -1;
@@ -87,6 +87,7 @@ public class Draw {
 			step(p, 0, wall, d0, (3 + d1) % 6);
 			step(p, 16, wall, d1, (3 + d0) % 6);
 		}
+		return c;
 	}
 
 	private void step(Point p, int i, int wall, int curD, int lastD) {
@@ -115,6 +116,38 @@ public class Draw {
 	}
 
 	public P moveDir(Point p, int wall) {
+		int c = match(p, wall);
+		if (c == 2) {
+			if (match[1] == 1 && match[3] == 1 && ((match[17] == 2 && match[19] == 2) || match[17] == 3))
+				match[17] = 1;
+			if (match[17] == 1 && match[19] == 1 && ((match[1] == 2 && match[3] == 2) || match[1] == 3))
+				match[1] = 1;
+			if ((match[1] == 1 || match[1] == 2) && (match[17] == 1 || match[17] == 2)) {
+				int rd = calcDir(match[0], match[1] == 1, match[16], match[17] == 1);
+				lastMove = rd;
+				return new P(p.rx() + MX[rd], p.ry() + MY[rd]);
+			}
+		} else if (c == 3) { // move 3 direction towards the loose end
+			for (int d = p.x % 2; d < 6; d += 2) {
+				Point n = p.step(d);
+				c = 0;
+				for (int nd = n.x % 2; nd < 6; nd += 2)
+					if (n.match(wall, nd))
+						c++;
+				if (c == 1) {
+					lastMove = 2 * d;
+					return new P(p.rx() + 2 * MX[2 * d], p.ry() + 2 * MY[2 * d]);
+				}
+			}
+		} else if (c == 1) { // discard loose ends
+			lastMove = -2;
+			return null;
+		}
+		lastMove = -1;
+		return new P(p.rx(), p.ry());
+	}
+
+	public P moveDirOld(Point p, int wall) {
 		int rd = -1;
 		int c = 0;
 		int d0 = -1;
