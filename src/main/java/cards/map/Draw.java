@@ -133,16 +133,26 @@ public class Draw {
 				match[17] = 2;
 			else if (match[17] == 1 && match[1] == 3)
 				match[1] = 2;
-			if ((match[1] == 1 || match[1] == 2) && (match[17] == 1 || match[17] == 2)) {
-				int ca = match[0] + match[16];
-				int d = 1;
-				if (match[0] == 0 && match[16] == 4) {
-					ca = 10;
-					d *= -1;
+			if ((c = match("o", "s")) != 0) {
+				int l = 2 * match[c > 0 ? 16 : 0];
+				int m = 0;
+				if (c > 0 && l != 8) {
+					lastMove = l - 1;
+					m = l - 2;
+				} else {
+					lastMove = l + 1;
+					m = l + 2;
 				}
+				double dx = (2 * MX[m] + MX[lastMove]) / 2.0;
+				double dy = (2 * MY[m] + MY[lastMove]) / 2.0;
+				return new P(p.rx() + dx, p.ry() + dy);
+			}
+			if (match[1] == 1 && match[17] == 1) {
+				lastMove = match[0] + match[16];
+				if (match[0] == 0 && match[16] == 4)
+					lastMove = 10;
 				if (match[0] == 1 && match[16] == 5)
-					ca = 12;
-				lastMove = (ca + (match[17] == 1 ? match[1] == 1 ? 0 : d : -d)) % 12;
+					lastMove = 0;
 				return new P(p.rx() + MX[lastMove], p.ry() + MY[lastMove]);
 			}
 		} else if (c == 3) { // move 3 direction towards the loose end

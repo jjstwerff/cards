@@ -1,13 +1,3 @@
-- very simple map data structure:
-	Correct inconsistent corners:
-	 - extend last point of the indirect wobble into the actual corner position
-	 	analyse one step futher.. what data structure to use? Towards the found? That is less easy to mutate.
-	 	Values into an array
-	 	 . 2 values per step: 0=direction 1=same/other/end/cross
-	 	 . later in array is other direction
-	 	 . use this array to fill the found structure to prevent the double analysis code
-	 - more even distances on indirect wobble
-	Base wall material that doesn't morph in any way.. only 1 material
 - draw single map on canvas.. inside = gray, outside = open
 	for now draw each tile separately
 - show different colors for floor materials
