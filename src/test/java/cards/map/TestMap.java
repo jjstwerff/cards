@@ -24,6 +24,7 @@ public class TestMap extends Tests {
 
 		Area area = game.getAreas().next();
 		Map map = area.getMaps().next();
+		Assert.assertEquals("osososo!ossssoo!", show(draw, map, 2, 5));
 		Assert.assertEquals("oss!oso!7", found(draw, map, 2, 5));
 		Assert.assertEquals("sss!oos!1", found(draw, map, 1, 5));
 		Assert.assertEquals("", found(draw, map, 2, 1));
@@ -52,6 +53,10 @@ public class TestMap extends Tests {
 		Assert.assertEquals(3, moveDir(draw, map, 10, 1));
 
 		Assert.assertEquals(content(this, "testMap.html"), draw.dump());
+	}
+
+	private String show(Draw draw, Map map, int x, int y) {
+		return draw.show(new Point(map.getD(), map.getL(), x, y), 2);
 	}
 
 	private String found(Draw draw, Map map, int x, int y) {

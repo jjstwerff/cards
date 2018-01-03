@@ -17,6 +17,9 @@ public class Draw {
 	static final double[] MY = new double[] { 0, -HY, -0.5 * PY, -PY, -0.5 * PY, -HY, 0, HY, 0.5 * PY, PY, 0.5 * PY, HY };
 	private final Area area;
 	int lastMove;
+	static final byte[] match = new byte[32];
+	// max 8 steps in 2 directions
+	//  2 bytes per step: 0=direction 1=0:end 1:same 2:other 3:cross
 
 	public Draw(Area area) {
 		this.area = area;
@@ -40,6 +43,75 @@ public class Draw {
 
 	int ry(int x, int y) {
 		return SY + (y * 2 - x % 2) * PY * 2;
+	}
+
+	public String show(Point p, int wall) {
+		match(p, wall);
+		StringBuilder bld = new StringBuilder();
+		Dir: for (int d = 0; d < 32; d += 16) {
+			for (int i = 1; i < 14; i += 2) {
+				switch (match[i + d]) {
+				case 0:
+					bld.append(".!");
+					continue Dir;
+				case 1:
+					bld.append("s");
+					break;
+				case 2:
+					bld.append("o");
+					break;
+				case 3:
+					bld.append("c!");
+					continue Dir;
+				}
+			}
+			bld.append("!");
+		}
+		return bld.toString();
+	}
+
+	private void match(Point p, int wall) {
+		int c = 0;
+		int d0 = -1;
+		int d1 = -1;
+		for (int d = p.x % 2; d < 6; d += 2) {
+			if (p.match(wall, d)) {
+				c++;
+				if (d0 == -1)
+					d0 = d;
+				else if (d1 == -1)
+					d1 = d;
+			}
+		}
+		if (c == 2) {
+			step(p, 0, wall, d0, (3 + d1) % 6);
+			step(p, 16, wall, d1, (3 + d0) % 6);
+		}
+	}
+
+	private void step(Point p, int i, int wall, int curD, int lastD) {
+		Point n = p.step(curD);
+		if (i % 16 == 14)
+			return;
+		int c = 0;
+		int d0 = -1;
+		for (int d = n.x % 2; d < 6; d += 2) {
+			if (d == (curD + 3) % 6) // is this direction back the last move?
+				continue;
+			if (n.match(wall, d)) {
+				c++;
+				if (d0 == -1)
+					d0 = d;
+			}
+		}
+		match[i] = (byte) curD;
+		if (c == 0) {
+			match[i + 1] = (byte) 0;
+		} else if (c == 1) {
+			match[i + 1] = (byte) (d0 == lastD ? 1 : 2);
+			step(n, i + 2, wall, d0, curD);
+		} else if (c == 2)
+			match[i + 1] = (byte) 3;
 	}
 
 	public P moveDir(Point p, int wall) {
