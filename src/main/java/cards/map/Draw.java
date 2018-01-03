@@ -121,6 +121,14 @@ public class Draw {
 	public P moveDir(Point p, int wall) {
 		int c = match(p, wall);
 		if (c == 2) {
+			int m = match("osos", "osss");
+			if (m > 0) {
+				lastMove = 2 * match[16];
+				return new P(p.rx() + 2 * MX[lastMove], p.ry() + 2 * MY[lastMove]);
+			} else if (m < 0) {
+				lastMove = 2 * match[0];
+				return new P(p.rx() + 2 * MX[lastMove], p.ry() + 2 * MY[lastMove]);
+			}
 			if (match[1] == 1 && match[3] == 1 && ((match[17] == 2 && match[19] == 2) || match[17] == 3))
 				match[17] = 1;
 			else if (match[17] == 1 && match[19] == 1 && ((match[1] == 2 && match[3] == 2) || match[1] == 3))
@@ -150,7 +158,7 @@ public class Draw {
 						c++;
 				if (c == 1) {
 					lastMove = 2 * d;
-					return new P(p.rx() + 2 * MX[2 * d], p.ry() + 2 * MY[2 * d]);
+					return new P(p.rx() + 2 * MX[lastMove], p.ry() + 2 * MY[lastMove]);
 				}
 			}
 		} else if (c == 1) { // discard loose ends
@@ -159,6 +167,34 @@ public class Draw {
 		}
 		lastMove = -1;
 		return new P(p.rx(), p.ry());
+	}
+
+	private int match(String f, String s) {
+		boolean mf = true;
+		boolean ms = true;
+		for (int i = 0; i < f.length(); i++) {
+			if (match[i * 2 + 1] != trans(f.charAt(i)))
+				mf = false;
+			if (match[i * 2 + 1] != trans(s.charAt(i)))
+				ms = false;
+			if (mf == false && ms == false)
+				return 0;
+		}
+		if (mf) {
+			for (int i = 0; i < f.length(); i++)
+				if (match[i * 2 + 17] != trans(s.charAt(i)))
+					return 0;
+			return 1;
+		} else {
+			for (int i = 0; i < f.length(); i++)
+				if (match[i * 2 + 17] != trans(f.charAt(i)))
+					return 0;
+			return -1;
+		}
+	}
+
+	private byte trans(char charAt) {
+		return (byte) (charAt == 's' ? 1 : 2);
 	}
 
 	public String dump() {

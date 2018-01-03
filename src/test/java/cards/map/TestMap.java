@@ -24,7 +24,8 @@ public class TestMap extends Tests {
 
 		Area area = game.getAreas().next();
 		Map map = area.getMaps().next();
-		Assert.assertEquals("osososo!ossssoo!11", show(draw, map, 2, 5));
+		Assert.assertEquals("ossssoo!osososo!2", show(draw, map, 11, 8));
+		Assert.assertEquals("osososo!ossssoo!8", show(draw, map, 2, 5));
 		Assert.assertEquals("oososos!ssssoos!0", show(draw, map, 1, 5));
 		Assert.assertEquals("c!c!4", show(draw, map, 2, 1));
 		Assert.assertEquals("c!ssc!0", show(draw, map, 1, 1));
@@ -38,7 +39,8 @@ public class TestMap extends Tests {
 		Assert.assertEquals("sososos!c!3", show(draw, map, 3, 1));
 		Assert.assertEquals("c!sososos!3", show(draw, map, 10, 1));
 
-		Assert.assertEquals(11, moveDir(draw, map, 2, 5));
+		Assert.assertEquals(2, moveDir(draw, map, 11, 8));
+		Assert.assertEquals(8, moveDir(draw, map, 2, 5));
 		Assert.assertEquals(0, moveDir(draw, map, 1, 5));
 		Assert.assertEquals(0, moveDir(draw, map, 1, 1));
 		Assert.assertEquals(0, moveDir(draw, map, 1, 6));
