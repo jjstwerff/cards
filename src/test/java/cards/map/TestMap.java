@@ -24,22 +24,21 @@ public class TestMap extends Tests {
 
 		Area area = game.getAreas().next();
 		Map map = area.getMaps().next();
-		Assert.assertEquals("osososo!ossssoo!", show(draw, map, 2, 5));
-		Assert.assertEquals("oss!oso!7", found(draw, map, 2, 5));
-		Assert.assertEquals("sss!oos!1", found(draw, map, 1, 5));
-		Assert.assertEquals("", found(draw, map, 2, 1));
-		Assert.assertEquals("sscc1", found(draw, map, 1, 1));
-		Assert.assertEquals("sso!sso!0", found(draw, map, 1, 6));
-		Assert.assertEquals("ssccb", found(draw, map, 1, 2));
-		Assert.assertEquals("scoso!9", found(draw, map, 4, 0));
-		Assert.assertEquals("sos!oso!3", found(draw, map, 6, 1));
-		Assert.assertEquals("scsc6", found(draw, map, 2, 2));
-		Assert.assertEquals("@", found(draw, map, 3, 2));
-		Assert.assertEquals(".", found(draw, map, 1, 0));
-		Assert.assertEquals("sos!c3", found(draw, map, 3, 1));
-		Assert.assertEquals("sos!c3", found(draw, map, 10, 1));
+		Assert.assertEquals("osososo!ossssoo!11", show(draw, map, 2, 5));
+		Assert.assertEquals("oososos!ssssoos!0", show(draw, map, 1, 5));
+		Assert.assertEquals("c!c!4", show(draw, map, 2, 1));
+		Assert.assertEquals("c!ssc!0", show(draw, map, 1, 1));
+		Assert.assertEquals("ssoosos!ssoosos!0", show(draw, map, 1, 6));
+		Assert.assertEquals("ssc!c!0", show(draw, map, 1, 2));
+		Assert.assertEquals("osososc!sc!9", show(draw, map, 4, 0));
+		Assert.assertEquals("ososc!sosc!3", show(draw, map, 6, 1));
+		Assert.assertEquals("sc!sc!6", show(draw, map, 2, 2));
+		Assert.assertEquals("!!-1", show(draw, map, 3, 2));
+		Assert.assertEquals("c!.!-2", show(draw, map, 1, 0));
+		Assert.assertEquals("sososos!c!3", show(draw, map, 3, 1));
+		Assert.assertEquals("c!sososos!3", show(draw, map, 10, 1));
 
-		Assert.assertEquals(7, moveDir(draw, map, 2, 5));
+		Assert.assertEquals(11, moveDir(draw, map, 2, 5));
 		Assert.assertEquals(0, moveDir(draw, map, 1, 5));
 		Assert.assertEquals(0, moveDir(draw, map, 1, 1));
 		Assert.assertEquals(0, moveDir(draw, map, 1, 6));
@@ -59,18 +58,8 @@ public class TestMap extends Tests {
 		return draw.show(new Point(map.getD(), map.getL(), x, y), 2);
 	}
 
-	private String found(Draw draw, Map map, int x, int y) {
-		StringBuilder bld = new StringBuilder();
-		Point p = new Point(map.getD(), map.getL(), x, y);
-		int found = draw.found(p, bld, 2);
-		if (found != -1)
-			bld.append(Integer.toHexString(found));
-		return bld.toString();
-	}
-
 	private int moveDir(Draw draw, Map map, int x, int y) {
-		Point p = new Point(map.getD(), map.getL(), x, y);
-		draw.moveDir(p, 2);
+		draw.moveDir(new Point(map.getD(), map.getL(), x, y), 2);
 		return draw.getLastMove();
 	}
 }
