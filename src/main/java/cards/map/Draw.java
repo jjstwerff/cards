@@ -34,6 +34,9 @@ public class Draw {
 		return SY + (y * 2 - x % 2) * PY * 2 + DY[d];
 	}
 
+	/**
+	 * Return debug information about what the algorithm will perform on a specific point.
+	 */
 	public String show(Point p, int wall) {
 		match(p, wall);
 		StringBuilder bld = new StringBuilder();
@@ -118,22 +121,26 @@ public class Draw {
 			match[i + 1] = (byte) 3;
 	}
 
+	/**
+	 * Return the actual coordinates of a point.
+	 * Or null if a point should not be drawn.
+	 */
 	public P moveDir(Point p, int wall) {
 		int c = match(p, wall);
 		if (c == 2) {
-			if ((c = match("osos", "osss")) != 0) {
+			if ((c = match("osos", "osss")) != 0) { // move a corner point into the correct position
 				lastMove = 2 * match[c > 0 ? 16 : 0];
 				return new P(p.rx() + 2 * MX[lastMove], p.ry() + 2 * MY[lastMove]);
 			}
 			if (match[1] == 1 && match[3] == 1 && ((match[17] == 2 && match[19] == 2) || match[17] == 3))
-				match[17] = 1;
+				match[17] = 1; // extend a direct line towards a cross of lines
 			else if (match[17] == 1 && match[19] == 1 && ((match[1] == 2 && match[3] == 2) || match[1] == 3))
-				match[1] = 1;
+				match[1] = 1; // extend a direct line towards a cross of lines
 			else if (match[1] == 1 && match[17] == 3)
-				match[17] = 2;
+				match[17] = 2; // extend an indirect line towards a cross of lines
 			else if (match[17] == 1 && match[1] == 3)
-				match[1] = 2;
-			if ((c = match("o", "s")) != 0) {
+				match[1] = 2; // extend an indirect line towards a cross of lines
+			if ((c = match("o", "s")) != 0) { // draw an indirect line
 				int l = 2 * match[c > 0 ? 16 : 0];
 				int m = 0;
 				if (c > 0 && l != 8) {
@@ -147,7 +154,7 @@ public class Draw {
 				double dy = (2 * MY[m] + MY[lastMove]) / 2.0;
 				return new P(p.rx() + dx, p.ry() + dy);
 			}
-			if (match[1] == 1 && match[17] == 1) {
+			if (match[1] == 1 && match[17] == 1) { // draw a direct line
 				lastMove = match[0] + match[16];
 				if (match[0] == 0 && match[16] == 4)
 					lastMove = 10;
@@ -155,7 +162,7 @@ public class Draw {
 					lastMove = 0;
 				return new P(p.rx() + MX[lastMove], p.ry() + MY[lastMove]);
 			}
-		} else if (c == 3) { // move 3 direction towards the loose end
+		} else if (c == 3) { // move a cross towards a single loose end
 			for (int d = p.x % 2; d < 6; d += 2) {
 				Point n = p.step(d);
 				c = 0;
@@ -175,6 +182,11 @@ public class Draw {
 		return new P(p.rx(), p.ry());
 	}
 
+	/**
+	 * Try to match two given patterns. One forwards along the line one backwards.
+	 * Return 0 if no match is found.
+	 * Return 1 if the match is towards the lower direction and -1 if it is towards the higher.
+	 */
 	private int match(String f, String s) {
 		boolean mf = true;
 		boolean ms = true;
@@ -199,10 +211,16 @@ public class Draw {
 		}
 	}
 
+	/**
+	 * Get the byte translation of a pattern element.
+	 */
 	private byte trans(char charAt) {
-		return (byte) (charAt == 's' ? 1 : 2);
+		return (byte) (charAt == 'c' ? 3 : charAt == 's' ? 1 : 2);
 	}
 
+	/**
+	 * Write a HTML 2d canvas output of the current drawing. Including debug information.
+	 */
 	public String dump() {
 		StringBuilder bld = new StringBuilder();
 		bld.append("<!DOCTYPE html>\n");
@@ -276,6 +294,9 @@ public class Draw {
 				+ "c.fillText(\"" + dt + "\", " + (mt.x + 3) + ", " + (mt.y - 5) + ");\n";
 	}
 
+	/**
+	 * Return roughly the last direction a point is moved. It's purpose is only debugging.
+	 */
 	public int getLastMove() {
 		return lastMove;
 	}

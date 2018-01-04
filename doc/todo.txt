@@ -1,9 +1,19 @@
-- show different colors for floor materials:
-	introduce .. green for grass, brown for wood, grey for concrete and greyish light brown for dirt.
-- more types of 90° angles to walls.. no crosses
+- walls with specified thickness
+    add data structure with extra info about walls/areas:
+    	. wall thickness, sloped?, combine-level, material, opening/drawing/inwards?, direction
+    	. area filled/open/inside, material
+    	. material: texture / color
+    	. item: drawing
+	inner points are not the same position as outer points
+		each wall have 2 sides involved.. unless there is an inside area
+	draw floor to better show what point is part of what tile
+        introduce .. green for grass, brown for wood, grey for concrete and greyish light brown for dirt.
+- more types of 90° angles to walls.. no crosses yet
 - inside walls between rooms with possible crosses
-- walls as thicker colored lines
 - doors / window indications
+	indicator of what is inside and what is outside the rooms
+	each type of door/window will have an indicator if they open outwards or inwards
+	inner room doors normally open towards outer doors (halls)
 - 15% walls: 8 sided towers
 - trapezoid bay window
 - first simple rounded tower / stairs
@@ -17,6 +27,3 @@
 - draw distance with calculated height map
 - long distance with less accurate height map
 - near distance with displacement map
-
-
-- horizontal=45  vertical=52  diff=86%
