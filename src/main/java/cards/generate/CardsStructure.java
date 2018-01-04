@@ -72,12 +72,38 @@ public class CardsStructure {
 		goal.field("XP", Type.INTEGER);
 		goal.field("gained", Type.ENUMERATE, "STASH", "OVERHEAR", "REWARD");
 
+		Record material = project.table("Material"); // TODO allow textures.. bump-map/color .. sizes
+		material.field("name", Type.STRING);
+		material.field("color", Type.INTEGER);
+
+		Record item = project.table("Item"); // TODO allow size & drawing & state
+		// PERSON/TABLE/BENCH/CHAIR/BED/BEDROLL/LAMP/ROOM_NR/TREE_TRUNC
+		item.field("item", Type.STRING);
+		item.field("material", Type.RELATION, material);
+
+		Record wall = project.record("Wall");
+		// OPEN/COMBINED/BRICKS/ROUNDED_BRICKS/CONCRETE/ROUNDED_CONCRETE/METAL/WOOD/STONE/ROUNDED_STONE/ROCK/FENCE/LOW_WALL/LOW_FENCE/TREE_TOP
+		wall.field("name", Type.STRING);
+		wall.field("thickness", Type.BYTE);
+		wall.field("sloped", Type.BOOLEAN);
+		wall.field("combineLevel", Type.BYTE);
+		wall.field("material", Type.RELATION, material);
+		wall.field("item", Type.RELATION, item);
+		wall.field("inwards", Type.BOOLEAN);
+
+		Record floor = project.record("Floor");
+		// OPEN/FILLED/DOOR/METAL_DOOR/WINDOW/WOOD/CONCRETE/ASPHALT/GRAVEL/GRASS/DIRT/ROCK/STAIRS/METAL/METAL_STAIRS/TILES/TILED/TREE_TOP
+		floor.field("name", Type.STRING);
+		floor.field("type", Type.ENUMERATE, "OPEN", "FILLED", "INSIDE");
+		floor.field("sloped", Type.BOOLEAN);
+		floor.field("material", Type.RELATION, material);
+
 		Record element = project.record("Element");
-		element.field("l", Type.BYTE); // OPEN/COMBINED/BRICKS/ROUNDED_BRICKS/CONCRETE/ROUNDED_CONCRETE/METAL/WOOD/STONE/ROUNDED_STONE/ROCK/FENCE/LOW_WALL/LOW_FENCE/TREE_TOP
+		element.field("l", Type.BYTE);
 		element.field("t", Type.BYTE);
 		element.field("r", Type.BYTE);
-		element.field("f", Type.BYTE); // OPEN/FILLED/DOOR/METAL_DOOR/WINDOW/WOOD/CONCRETE/ASPHALT/GRAVEL/GRASS/DIRT/ROCK/STAIRS/METAL/METAL_STAIRS/TILES/TILED/TREE_TOP
-		element.field("i", Type.BYTE); // PERSON/TABLE/BENCH/CHAIR/BED/BEDROLL/LAMP/ROOM_NR/TREE_TRUNC
+		element.field("f", Type.BYTE);
+		element.field("i", Type.BYTE);
 		element.field("d", Type.BYTE); // per 5 degrees 72 max
 		element.field("h", Type.SHORT); // per 10cm
 
@@ -108,6 +134,10 @@ public class CardsStructure {
 		game.field("areas", area, "name");
 		game.field("rules", Type.RELATION, rules);
 		game.field("characters", character, "name");
+		game.field("walls", Type.ARRAY, wall); // max 256
+		game.field("floors", Type.ARRAY, floor); // max 256
+		game.field("items", item, "name");
+		game.field("materials", material, "name");
 		game.index("gameName", "name");
 
 		Record member = project.table("Member");
