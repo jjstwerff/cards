@@ -2,7 +2,7 @@ package cards.map;
 
 import cards.record.Area;
 import cards.record.Map;
-import cards.record.Map.DArray;
+import cards.record.DArray;
 
 public class Draw {
 	public static final int PX = 15; // sixth of distance between each line

@@ -45,9 +45,11 @@ public class Rules implements RecordInterface {
 		return rec == 0 ? null : store.getString(store.getInt(rec, 4));
 	}
 
+
 	public IndexRaces getRaces() {
 		return new IndexRaces(new Race(store));
 	}
+
 
 	public class IndexRaces extends RedBlackTree implements Iterable<Race>, Iterator<Race> {
 		Key key = null;
@@ -173,6 +175,7 @@ public class Rules implements RecordInterface {
 	public IndexCards getCards() {
 		return new IndexCards(new Card(store));
 	}
+
 
 	public class IndexCards extends RedBlackTree implements Iterable<Card>, Iterator<Card> {
 		Key key = null;

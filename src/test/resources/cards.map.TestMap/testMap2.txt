@@ -70,4 +70,8 @@ name=TestMap, areas=[
     ]
   ]
 ], characters=[
+], walls=[
+], floors=[
+], items=[
+], materials=[
 ]

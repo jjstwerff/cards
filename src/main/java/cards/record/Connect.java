@@ -2,7 +2,6 @@ package cards.record;
 
 import java.io.IOException;
 import java.io.StringWriter;
-import java.util.Iterator;
 
 import com.betterbe.memorydb.file.Parser;
 import com.betterbe.memorydb.file.Write;
@@ -42,6 +41,7 @@ public class Connect implements RecordInterface {
 		return rec == 0 ? Integer.MIN_VALUE : store.getInt(rec, 4);
 	}
 
+
 	public enum Type {
 		DOOR, CLIMB, LINE
 	};
@@ -53,77 +53,11 @@ public class Connect implements RecordInterface {
 		return Type.values()[data - 1];
 	}
 
+
 	public ChecksArray getChecks() {
-		return new ChecksArray();
+		return new ChecksArray(this);
 	}
 
-	public class ChecksArray implements Iterable<ChecksArray>, Iterator<ChecksArray>{
-		int idx = -1;
-		int alloc = store.getInt(rec, 14);
-		int size = store.getInt(rec, 10);
-
-		public int getSize() {
-			return size;
-		}
-
-		public ChecksArray add() {
-			idx = size;
-			if (alloc == 0)
-				alloc = store.allocate(3);
-			else
-				alloc = store.resize(alloc, 1 + idx * 4 / 8);
-			store.setInt(rec, 14, alloc);
-			size = idx + 1;
-			store.setInt(rec, 10, size);
-			return this;
-		}
-
-		@Override
-		public Iterator<ChecksArray> iterator() {
-			return this;
-		}
-
-		@Override
-		public boolean hasNext() {
-			return idx + 1 < size;
-		}
-
-		@Override
-		public ChecksArray next() {
-			idx++;
-			return this;
-		}
-
-		public void getCard(Card value) {
-			value.setRec(store.getInt(rec, 0));
-		}
-
-		public Card getCard() {
-			return new Card(store, alloc == 0 || idx < 0 || idx >= size ? 0 : store.getInt(alloc, idx * 4 + 4));
-		}
-
-		public void setCard(Card value) {
-			if (alloc != 0 && idx >= 0 && idx < size)
-				store.setInt(alloc, idx * 4 + 4, value == null ? 0 : value.getRec());
-		}
-
-		public void output(Write write, int iterate) throws IOException {
-			if (rec == 0 || iterate <= 0)
-				return;
-			write.field("card", "{" + getCard().keys() + "}", true);
-			write.endRecord();
-		}
-
-		public void parse(Parser parser) {
-			ChecksArray record = this;
-			parser.getRelation("card", () -> {
-				Card rec = new Card(store);
-				boolean found = rec.parseKey(parser);
-				record.setCard(rec);
-				return found;
-			});
-		}
-	}
 
 	public void getUpRecord(Room value) {
 		value.setRec(store.getInt(rec, 27));
@@ -133,6 +67,7 @@ public class Connect implements RecordInterface {
 		return new Room(store, rec == 0 ? 0 : store.getInt(rec, 27));
 	}
 
+
 	public void getTo(Room value) {
 		value.setRec(store.getInt(rec, 31));
 	}
@@ -140,6 +75,7 @@ public class Connect implements RecordInterface {
 	public Room getTo() {
 		return new Room(store, rec == 0 ? 0 : store.getInt(rec, 31));
 	}
+
 
 	@Override
 	public void output(Write write, int iterate) throws IOException {
@@ -211,7 +147,7 @@ public class Connect implements RecordInterface {
 	private void parseFields(Parser parser, ChangeConnect record) {
 		record.setType(Type.valueOf(parser.getString("type")));
 		if (parser.hasSub("checks")) {
-			ChecksArray sub = record.new ChecksArray();
+			ChecksArray sub = new ChecksArray(record);
 			while (parser.getSub()) {
 				sub.add();
 				sub.parse(parser);

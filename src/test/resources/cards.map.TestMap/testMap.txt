@@ -1,4 +1,7 @@
-name=TestMap, areas=[
+name=TestMap, wall=[
+], floors=[
+], materials=[
+], areas=[
   name=Building, maps=[
     x=0, y=0, z=0, l=7, d=[
 # 0

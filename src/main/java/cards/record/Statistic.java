@@ -45,9 +45,11 @@ public class Statistic implements RecordInterface {
 		return rec == 0 ? null : store.getString(store.getInt(rec, 4));
 	}
 
+
 	public int getNr() {
 		return rec == 0 ? Integer.MIN_VALUE : store.getInt(rec, 8);
 	}
+
 
 	public class IndexStatisticName extends RedBlackTree implements Iterable<Statistic>, Iterator<Statistic> {
 		Key key = null;

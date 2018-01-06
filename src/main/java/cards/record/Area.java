@@ -45,9 +45,11 @@ public class Area implements RecordInterface {
 		return rec == 0 ? null : store.getString(store.getInt(rec, 4));
 	}
 
+
 	public IndexRooms getRooms() {
 		return new IndexRooms(new Room(store));
 	}
+
 
 	public class IndexRooms extends RedBlackTree implements Iterable<Room>, Iterator<Room> {
 		Key key = null;
@@ -171,80 +173,14 @@ public class Area implements RecordInterface {
 	}
 
 	public EncounterArray getEncounter() {
-		return new EncounterArray();
+		return new EncounterArray(this);
 	}
 
-	public class EncounterArray implements Iterable<EncounterArray>, Iterator<EncounterArray>{
-		int idx = -1;
-		int alloc = store.getInt(rec, 16);
-		int size = store.getInt(rec, 12);
-
-		public int getSize() {
-			return size;
-		}
-
-		public EncounterArray add() {
-			idx = size;
-			if (alloc == 0)
-				alloc = store.allocate(3);
-			else
-				alloc = store.resize(alloc, 1 + idx * 4 / 8);
-			store.setInt(rec, 16, alloc);
-			size = idx + 1;
-			store.setInt(rec, 12, size);
-			return this;
-		}
-
-		@Override
-		public Iterator<EncounterArray> iterator() {
-			return this;
-		}
-
-		@Override
-		public boolean hasNext() {
-			return idx + 1 < size;
-		}
-
-		@Override
-		public EncounterArray next() {
-			idx++;
-			return this;
-		}
-
-		public void getCard(Card value) {
-			value.setRec(store.getInt(rec, 0));
-		}
-
-		public Card getCard() {
-			return new Card(store, alloc == 0 || idx < 0 || idx >= size ? 0 : store.getInt(alloc, idx * 4 + 4));
-		}
-
-		public void setCard(Card value) {
-			if (alloc != 0 && idx >= 0 && idx < size)
-				store.setInt(alloc, idx * 4 + 4, value == null ? 0 : value.getRec());
-		}
-
-		public void output(Write write, int iterate) throws IOException {
-			if (rec == 0 || iterate <= 0)
-				return;
-			write.field("card", "{" + getCard().keys() + "}", true);
-			write.endRecord();
-		}
-
-		public void parse(Parser parser) {
-			EncounterArray record = this;
-			parser.getRelation("card", () -> {
-				Card rec = new Card(store);
-				boolean found = rec.parseKey(parser);
-				record.setCard(rec);
-				return found;
-			});
-		}
-	}
 
 	public IndexGoal getGoal() {
 		return new IndexGoal(new Goal(store));
 	}
+
 
 	public class IndexGoal extends RedBlackTree implements Iterable<Goal>, Iterator<Goal> {
 		Key key = null;
@@ -370,6 +306,7 @@ public class Area implements RecordInterface {
 	public IndexMaps getMaps() {
 		return new IndexMaps(new Map(store));
 	}
+
 
 	public class IndexMaps extends RedBlackTree implements Iterable<Map>, Iterator<Map> {
 		Key key = null;
@@ -561,6 +498,7 @@ public class Area implements RecordInterface {
 		return new Game(store, rec == 0 ? 0 : store.getInt(rec, 37));
 	}
 
+
 	@Override
 	public void output(Write write, int iterate) throws IOException {
 		if (rec == 0 || iterate <= 0)
@@ -642,7 +580,7 @@ public class Area implements RecordInterface {
 		if (parser.hasSub("rooms"))
 			new Room(store).parse(parser, record);
 		if (parser.hasSub("encounter")) {
-			EncounterArray sub = record.new EncounterArray();
+			EncounterArray sub = new EncounterArray(record);
 			while (parser.getSub()) {
 				sub.add();
 				sub.parse(parser);

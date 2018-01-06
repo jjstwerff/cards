@@ -45,9 +45,11 @@ public class Character implements RecordInterface {
 		return rec == 0 ? null : store.getString(store.getInt(rec, 4));
 	}
 
+
 	public IndexSkills getSkills() {
 		return new IndexSkills(new Skill(store));
 	}
+
 
 	public class IndexSkills extends RedBlackTree implements Iterable<Skill>, Iterator<Skill> {
 		Key key = null;
@@ -177,6 +179,7 @@ public class Character implements RecordInterface {
 	public Game getUpRecord() {
 		return new Game(store, rec == 0 ? 0 : store.getInt(rec, 21));
 	}
+
 
 	@Override
 	public void output(Write write, int iterate) throws IOException {

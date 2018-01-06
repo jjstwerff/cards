@@ -9,19 +9,19 @@ import com.betterbe.memorydb.structure.RecordInterface;
 import com.betterbe.memorydb.structure.Store;
 
 /**
- * Automatically generated record class for table Goal
+ * Automatically generated record class for table Material
  */
-public class Goal implements RecordInterface {
+public class Material implements RecordInterface {
 	/* package private */ Store store;
 	protected int rec;
-	/* package private */ static int SIZE = 29;
+	/* package private */ static int SIZE = 25;
 
-	public Goal(Store store) {
+	public Material(Store store) {
 		this.store = store;
 		this.rec = 0;
 	}
 
-	public Goal(Store store, int rec) {
+	public Material(Store store, int rec) {
 		rec = store.correct(rec);
 		this.store = store;
 		this.rec = rec;
@@ -42,41 +42,17 @@ public class Goal implements RecordInterface {
 	}
 
 
-	public enum Type {
-		KNOWLEDGE, WEAPON, WEARABLE, STATUS, IMPLANT
-	};
-
-	public Goal.Type getType() {
-		int data = rec == 0 ? 0 : store.getShort(rec, 8);
-		if (data <= 0)
-			return null;
-		return Type.values()[data - 1];
+	public int getColor() {
+		return rec == 0 ? Integer.MIN_VALUE : store.getInt(rec, 8);
 	}
 
 
-	public int getXP() {
-		return rec == 0 ? Integer.MIN_VALUE : store.getInt(rec, 10);
+	public void getUpRecord(Game value) {
+		value.setRec(store.getInt(rec, 21));
 	}
 
-
-	public enum Gained {
-		STASH, OVERHEAR, REWARD
-	};
-
-	public Goal.Gained getGained() {
-		int data = rec == 0 ? 0 : store.getShort(rec, 14);
-		if (data <= 0)
-			return null;
-		return Gained.values()[data - 1];
-	}
-
-
-	public void getUpRecord(Area value) {
-		value.setRec(store.getInt(rec, 25));
-	}
-
-	public Area getUpRecord() {
-		return new Area(store, rec == 0 ? 0 : store.getInt(rec, 25));
+	public Game getUpRecord() {
+		return new Game(store, rec == 0 ? 0 : store.getInt(rec, 21));
 	}
 
 
@@ -85,9 +61,7 @@ public class Goal implements RecordInterface {
 		if (rec == 0 || iterate <= 0)
 			return;
 		write.field("name", getName(), true);
-		write.field("type", getType(), false);
-		write.field("XP", getXP(), false);
-		write.field("gained", getGained(), false);
+		write.field("color", getColor(), false);
 		write.endRecord();
 	}
 
@@ -96,7 +70,7 @@ public class Goal implements RecordInterface {
 		StringBuilder res = new StringBuilder();
 		if (rec == 0)
 			return "";
-		res.append("Area").append("{").append(getUpRecord().keys()).append("}");
+		res.append("Game").append("{").append(getUpRecord().keys()).append("}");
 		res.append(", ");
 		res.append("Name").append("=").append(getName());
 		return res.toString();
@@ -113,18 +87,18 @@ public class Goal implements RecordInterface {
 		return write.toString();
 	}
 
-	public void parse(Parser parser, Area parent) {
+	public void parse(Parser parser, Game parent) {
 		while (parser.getSub()) {
 			String name = parser.getString("name");
-			Area.IndexGoal idx = parent.new IndexGoal(this, name);
+			Game.IndexMaterials idx = parent.new IndexMaterials(this, name);
 			if (idx.nextRec == 0) {
-				try (ChangeGoal record = new ChangeGoal(parent)) {
+				try (ChangeMaterial record = new ChangeMaterial(parent)) {
 					record.setName(name);
 					parseFields(parser, record);
 				}
 			} else {
 				rec = idx.nextRec;
-				try (ChangeGoal record = new ChangeGoal(this)) {
+				try (ChangeMaterial record = new ChangeMaterial(this)) {
 					parseFields(parser, record);
 				}
 			}
@@ -132,21 +106,19 @@ public class Goal implements RecordInterface {
 	}
 
 	public boolean parseKey(Parser parser) {
-		Area parent = new Area(store);
-		parser.getRelation("Area", () -> {
+		Game parent = new Game(store);
+		parser.getRelation("Game", () -> {
 			parent.parseKey(parser);
 			return true;
 		});
 		String name = parser.getString("name");
-		Area.IndexGoal idx = parent.new IndexGoal(this, name);
+		Game.IndexMaterials idx = parent.new IndexMaterials(this, name);
 		parser.finishRelation();
 		rec = idx.nextRec;
 		return idx.nextRec != 0;
 	}
 
-	private void parseFields(Parser parser, ChangeGoal record) {
-		record.setType(Type.valueOf(parser.getString("type")));
-		record.setXP(parser.getInt("XP"));
-		record.setGained(Gained.valueOf(parser.getString("gained")));
+	private void parseFields(Parser parser, ChangeMaterial record) {
+		record.setColor(parser.getInt("color"));
 	}
 }

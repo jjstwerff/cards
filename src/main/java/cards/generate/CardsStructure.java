@@ -78,7 +78,7 @@ public class CardsStructure {
 
 		Record item = project.table("Item"); // TODO allow size & drawing & state
 		// PERSON/TABLE/BENCH/CHAIR/BED/BEDROLL/LAMP/ROOM_NR/TREE_TRUNC
-		item.field("item", Type.STRING);
+		item.field("name", Type.STRING);
 		item.field("material", Type.RELATION, material);
 
 		Record wall = project.record("Wall");

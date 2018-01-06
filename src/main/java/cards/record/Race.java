@@ -2,7 +2,6 @@ package cards.record;
 
 import java.io.IOException;
 import java.io.StringWriter;
-import java.util.Iterator;
 
 import com.betterbe.memorydb.file.Parser;
 import com.betterbe.memorydb.file.Write;
@@ -42,77 +41,11 @@ public class Race implements RecordInterface {
 		return rec == 0 ? null : store.getString(store.getInt(rec, 4));
 	}
 
+
 	public CardsArray getCards() {
-		return new CardsArray();
+		return new CardsArray(this);
 	}
 
-	public class CardsArray implements Iterable<CardsArray>, Iterator<CardsArray>{
-		int idx = -1;
-		int alloc = store.getInt(rec, 12);
-		int size = store.getInt(rec, 8);
-
-		public int getSize() {
-			return size;
-		}
-
-		public CardsArray add() {
-			idx = size;
-			if (alloc == 0)
-				alloc = store.allocate(3);
-			else
-				alloc = store.resize(alloc, 1 + idx * 4 / 8);
-			store.setInt(rec, 12, alloc);
-			size = idx + 1;
-			store.setInt(rec, 8, size);
-			return this;
-		}
-
-		@Override
-		public Iterator<CardsArray> iterator() {
-			return this;
-		}
-
-		@Override
-		public boolean hasNext() {
-			return idx + 1 < size;
-		}
-
-		@Override
-		public CardsArray next() {
-			idx++;
-			return this;
-		}
-
-		public void getCard(Card value) {
-			value.setRec(store.getInt(rec, 0));
-		}
-
-		public Card getCard() {
-			return new Card(store, alloc == 0 || idx < 0 || idx >= size ? 0 : store.getInt(alloc, idx * 4 + 4));
-		}
-
-		public void setCard(Card value) {
-			if (alloc != 0 && idx >= 0 && idx < size)
-				store.setInt(alloc, idx * 4 + 4, value == null ? 0 : value.getRec());
-		}
-
-		public void output(Write write, int iterate) throws IOException {
-			if (rec == 0 || iterate <= 0)
-				return;
-			write.field("card", "{" + getCard().keys() + "}", true);
-			write.endRecord();
-		}
-
-		public void parse(Parser parser) {
-			CardsArray record = this;
-			parser.getRelation("card", () -> {
-				Card rec = new Card(store);
-				boolean found = rec.parseKey(parser);
-				record.setCard(rec);
-				return found;
-			});
-		}
-	}
 
 	public void getUpRecord(Rules value) {
 		value.setRec(store.getInt(rec, 25));
@@ -121,6 +54,7 @@ public class Race implements RecordInterface {
 	public Rules getUpRecord() {
 		return new Rules(store, rec == 0 ? 0 : store.getInt(rec, 25));
 	}
+
 
 	@Override
 	public void output(Write write, int iterate) throws IOException {
@@ -189,7 +123,7 @@ public class Race implements RecordInterface {
 
 	private void parseFields(Parser parser, ChangeRace record) {
 		if (parser.hasSub("cards")) {
-			CardsArray sub = record.new CardsArray();
+			CardsArray sub = new CardsArray(record);
 			while (parser.getSub()) {
 				sub.add();
 				sub.parse(parser);

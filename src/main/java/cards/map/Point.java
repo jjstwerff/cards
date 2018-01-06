@@ -1,6 +1,6 @@
 package cards.map;
 
-import cards.record.Map.DArray;
+import cards.record.DArray;
 
 public class Point {
 	final DArray a;

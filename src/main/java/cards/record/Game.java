@@ -18,7 +18,7 @@ import com.betterbe.memorydb.structure.Store;
 public class Game implements RecordInterface {
 	/* package private */ Store store;
 	protected int rec;
-	/* package private */ static int SIZE = 29;
+	/* package private */ static int SIZE = 53;
 
 	public Game(Store store) {
 		this.store = store;
@@ -45,9 +45,11 @@ public class Game implements RecordInterface {
 		return rec == 0 ? null : store.getString(store.getInt(rec, 4));
 	}
 
+
 	public IndexAreas getAreas() {
 		return new IndexAreas(new Area(store));
 	}
+
 
 	public class IndexAreas extends RedBlackTree implements Iterable<Area>, Iterator<Area> {
 		Key key = null;
@@ -178,9 +180,11 @@ public class Game implements RecordInterface {
 		return new Rules(store, rec == 0 ? 0 : store.getInt(rec, 12));
 	}
 
+
 	public IndexCharacters getCharacters() {
 		return new IndexCharacters(new Character(store));
 	}
+
 
 	public class IndexCharacters extends RedBlackTree implements Iterable<Character>, Iterator<Character> {
 		Key key = null;
@@ -303,6 +307,268 @@ public class Game implements RecordInterface {
 		}
 	}
 
+	public WallsArray getWalls() {
+		return new WallsArray(this);
+	}
+
+
+	public FloorsArray getFloors() {
+		return new FloorsArray(this);
+	}
+
+
+	public IndexItems getItems() {
+		return new IndexItems(new Item(store));
+	}
+
+
+	public class IndexItems extends RedBlackTree implements Iterable<Item>, Iterator<Item> {
+		Key key = null;
+		Item record;
+		int nextRec;
+
+		public IndexItems(Item record) {
+			this.record = record;
+			record.store = store;
+			this.key = null;
+			nextRec = first();
+		}
+
+		public IndexItems(Item record, String key1) {
+			this.record = record;
+			record.store = store;
+			this.key = new Key() {
+				@Override
+				public int compareTo(int recNr) {
+					if (recNr < 0)
+						return -1;
+					assert store.validate(recNr);
+					record.setRec(recNr);
+					int o = 0;
+					o = RedBlackTree.compare(key1, record.getName());
+					return o;
+				}
+
+				@Override
+				public IndexOperation oper() {
+					return IndexOperation.EQ;
+				}
+			};
+			nextRec = find(this.key);
+		}
+
+		@Override
+		public Iterator<Item> iterator() {
+			return this;
+		}
+
+		@Override
+		public boolean hasNext() {
+			return nextRec != 0;
+		}
+
+		@Override
+		public Item next() {
+			int n = nextRec;
+			nextRec = next(nextRec);
+			if (key != null) {
+				while (nextRec != 0 && key.compareTo(nextRec) != 0) {
+					nextRec = next(nextRec);
+				}
+			}
+			record.setRec(n);
+			return record;
+		}
+
+		@Override
+		protected boolean readRed(int recNr) {
+			assert store.validate(recNr);
+			return (store.getByte(recNr, 12) & 1) > 0;
+		}
+
+		@Override
+		protected void changeRed(int recNr, boolean value) {
+			assert store.validate(recNr);
+			store.setByte(recNr, 12, (store.getByte(rec, 12) & 254) + (value ? 1 : 0));
+		}
+
+		@Override
+		protected int readLeft(int recNr) {
+			assert store.validate(recNr);
+			return store.getInt(recNr, 13);
+		}
+
+		@Override
+		protected void changeLeft(int recNr, int value) {
+			assert store.validate(recNr);
+			store.setInt(recNr, 13, value);
+		}
+
+		@Override
+		protected int readRight(int recNr) {
+			assert store.validate(recNr);
+			return store.getInt(recNr, 17);
+		}
+
+		@Override
+		protected void changeRight(int recNr, int value) {
+			assert store.validate(recNr);
+			store.setInt(recNr, 17, value);
+		}
+
+		@Override
+		protected int readTop() {
+			return store.getInt(Game.this.getRec(), 36);
+		}
+
+		@Override
+		protected void changeTop(int value) {
+			store.setInt(Game.this.getRec(), 36, value);
+		}
+
+		@Override
+		protected int compareTo(int a, int b) {
+			Item recA = new Item(store, a);
+			Item recB = new Item(store, b);
+			int o = 0;
+			o = compare(recA.getName(), recB.getName());
+			if (o == 0)
+				return o;
+			return o;
+		}
+
+		@Override
+		protected String toString(int rec) {
+			return new Game(store, rec).toString();
+		}
+	}
+
+	public IndexMaterials getMaterials() {
+		return new IndexMaterials(new Material(store));
+	}
+
+
+	public class IndexMaterials extends RedBlackTree implements Iterable<Material>, Iterator<Material> {
+		Key key = null;
+		Material record;
+		int nextRec;
+
+		public IndexMaterials(Material record) {
+			this.record = record;
+			record.store = store;
+			this.key = null;
+			nextRec = first();
+		}
+
+		public IndexMaterials(Material record, String key1) {
+			this.record = record;
+			record.store = store;
+			this.key = new Key() {
+				@Override
+				public int compareTo(int recNr) {
+					if (recNr < 0)
+						return -1;
+					assert store.validate(recNr);
+					record.setRec(recNr);
+					int o = 0;
+					o = RedBlackTree.compare(key1, record.getName());
+					return o;
+				}
+
+				@Override
+				public IndexOperation oper() {
+					return IndexOperation.EQ;
+				}
+			};
+			nextRec = find(this.key);
+		}
+
+		@Override
+		public Iterator<Material> iterator() {
+			return this;
+		}
+
+		@Override
+		public boolean hasNext() {
+			return nextRec != 0;
+		}
+
+		@Override
+		public Material next() {
+			int n = nextRec;
+			nextRec = next(nextRec);
+			if (key != null) {
+				while (nextRec != 0 && key.compareTo(nextRec) != 0) {
+					nextRec = next(nextRec);
+				}
+			}
+			record.setRec(n);
+			return record;
+		}
+
+		@Override
+		protected boolean readRed(int recNr) {
+			assert store.validate(recNr);
+			return (store.getByte(recNr, 12) & 1) > 0;
+		}
+
+		@Override
+		protected void changeRed(int recNr, boolean value) {
+			assert store.validate(recNr);
+			store.setByte(recNr, 12, (store.getByte(rec, 12) & 254) + (value ? 1 : 0));
+		}
+
+		@Override
+		protected int readLeft(int recNr) {
+			assert store.validate(recNr);
+			return store.getInt(recNr, 13);
+		}
+
+		@Override
+		protected void changeLeft(int recNr, int value) {
+			assert store.validate(recNr);
+			store.setInt(recNr, 13, value);
+		}
+
+		@Override
+		protected int readRight(int recNr) {
+			assert store.validate(recNr);
+			return store.getInt(recNr, 17);
+		}
+
+		@Override
+		protected void changeRight(int recNr, int value) {
+			assert store.validate(recNr);
+			store.setInt(recNr, 17, value);
+		}
+
+		@Override
+		protected int readTop() {
+			return store.getInt(Game.this.getRec(), 40);
+		}
+
+		@Override
+		protected void changeTop(int value) {
+			store.setInt(Game.this.getRec(), 40, value);
+		}
+
+		@Override
+		protected int compareTo(int a, int b) {
+			Material recA = new Material(store, a);
+			Material recB = new Material(store, b);
+			int o = 0;
+			o = compare(recA.getName(), recB.getName());
+			if (o == 0)
+				return o;
+			return o;
+		}
+
+		@Override
+		protected String toString(int rec) {
+			return new Game(store, rec).toString();
+		}
+	}
+
 	public class IndexGameName extends RedBlackTree implements Iterable<Game>, Iterator<Game> {
 		Key key = null;
 		int nextRec;
@@ -359,37 +625,37 @@ public class Game implements RecordInterface {
 		@Override
 		protected boolean readRed(int recNr) {
 			assert store.validate(recNr);
-			return (store.getByte(recNr, 20) & 1) > 0;
+			return (store.getByte(recNr, 44) & 1) > 0;
 		}
 
 		@Override
 		protected void changeRed(int recNr, boolean value) {
 			assert store.validate(recNr);
-			store.setByte(recNr, 20, (store.getByte(rec, 20) & 254) + (value ? 1 : 0));
+			store.setByte(recNr, 44, (store.getByte(rec, 44) & 254) + (value ? 1 : 0));
 		}
 
 		@Override
 		protected int readLeft(int recNr) {
 			assert store.validate(recNr);
-			return store.getInt(recNr, 21);
+			return store.getInt(recNr, 45);
 		}
 
 		@Override
 		protected void changeLeft(int recNr, int value) {
 			assert store.validate(recNr);
-			store.setInt(recNr, 21, value);
+			store.setInt(recNr, 45, value);
 		}
 
 		@Override
 		protected int readRight(int recNr) {
 			assert store.validate(recNr);
-			return store.getInt(recNr, 25);
+			return store.getInt(recNr, 49);
 		}
 
 		@Override
 		protected void changeRight(int recNr, int value) {
 			assert store.validate(recNr);
-			store.setInt(recNr, 25, value);
+			store.setInt(recNr, 49, value);
 		}
 
 		@Override
@@ -431,6 +697,22 @@ public class Game implements RecordInterface {
 		write.field("rules", getRules(), false);
 		write.sub("characters", false);
 		for (Character sub : getCharacters())
+			sub.output(write, iterate - 1);
+		write.endSub();
+		write.sub("walls", false);
+		for (WallsArray sub: getWalls())
+			sub.output(write, iterate - 1);
+		write.endSub();
+		write.sub("floors", false);
+		for (FloorsArray sub: getFloors())
+			sub.output(write, iterate - 1);
+		write.endSub();
+		write.sub("items", false);
+		for (Item sub : getItems())
+			sub.output(write, iterate - 1);
+		write.endSub();
+		write.sub("materials", false);
+		for (Material sub : getMaterials())
 			sub.output(write, iterate - 1);
 		write.endSub();
 		write.endRecord();
@@ -493,5 +775,23 @@ public class Game implements RecordInterface {
 		});
 		if (parser.hasSub("characters"))
 			new Character(store).parse(parser, record);
+		if (parser.hasSub("walls")) {
+			WallsArray sub = new WallsArray(record);
+			while (parser.getSub()) {
+				sub.add();
+				sub.parse(parser);
+			}
+		}
+		if (parser.hasSub("floors")) {
+			FloorsArray sub = new FloorsArray(record);
+			while (parser.getSub()) {
+				sub.add();
+				sub.parse(parser);
+			}
+		}
+		if (parser.hasSub("items"))
+			new Item(store).parse(parser, record);
+		if (parser.hasSub("materials"))
+			new Material(store).parse(parser, record);
 	}
 }

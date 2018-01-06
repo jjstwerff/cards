@@ -45,153 +45,21 @@ public class Room implements RecordInterface {
 		return rec == 0 ? null : store.getString(store.getInt(rec, 4));
 	}
 
+
 	public OpponentArray getOpponent() {
-		return new OpponentArray();
+		return new OpponentArray(this);
 	}
 
-	public class OpponentArray implements Iterable<OpponentArray>, Iterator<OpponentArray>{
-		int idx = -1;
-		int alloc = store.getInt(rec, 12);
-		int size = store.getInt(rec, 8);
-
-		public int getSize() {
-			return size;
-		}
-
-		public OpponentArray add() {
-			idx = size;
-			if (alloc == 0)
-				alloc = store.allocate(3);
-			else
-				alloc = store.resize(alloc, 1 + idx * 4 / 8);
-			store.setInt(rec, 12, alloc);
-			size = idx + 1;
-			store.setInt(rec, 8, size);
-			return this;
-		}
-
-		@Override
-		public Iterator<OpponentArray> iterator() {
-			return this;
-		}
-
-		@Override
-		public boolean hasNext() {
-			return idx + 1 < size;
-		}
-
-		@Override
-		public OpponentArray next() {
-			idx++;
-			return this;
-		}
-
-		public void getCard(Card value) {
-			value.setRec(store.getInt(rec, 0));
-		}
-
-		public Card getCard() {
-			return new Card(store, alloc == 0 || idx < 0 || idx >= size ? 0 : store.getInt(alloc, idx * 4 + 4));
-		}
-
-		public void setCard(Card value) {
-			if (alloc != 0 && idx >= 0 && idx < size)
-				store.setInt(alloc, idx * 4 + 4, value == null ? 0 : value.getRec());
-		}
-
-		public void output(Write write, int iterate) throws IOException {
-			if (rec == 0 || iterate <= 0)
-				return;
-			write.field("card", "{" + getCard().keys() + "}", true);
-			write.endRecord();
-		}
-
-		public void parse(Parser parser) {
-			OpponentArray record = this;
-			parser.getRelation("card", () -> {
-				Card rec = new Card(store);
-				boolean found = rec.parseKey(parser);
-				record.setCard(rec);
-				return found;
-			});
-		}
-	}
 
 	public ItemsArray getItems() {
-		return new ItemsArray();
+		return new ItemsArray(this);
 	}
 
-	public class ItemsArray implements Iterable<ItemsArray>, Iterator<ItemsArray>{
-		int idx = -1;
-		int alloc = store.getInt(rec, 20);
-		int size = store.getInt(rec, 16);
-
-		public int getSize() {
-			return size;
-		}
-
-		public ItemsArray add() {
-			idx = size;
-			if (alloc == 0)
-				alloc = store.allocate(3);
-			else
-				alloc = store.resize(alloc, 1 + idx * 4 / 8);
-			store.setInt(rec, 20, alloc);
-			size = idx + 1;
-			store.setInt(rec, 16, size);
-			return this;
-		}
-
-		@Override
-		public Iterator<ItemsArray> iterator() {
-			return this;
-		}
-
-		@Override
-		public boolean hasNext() {
-			return idx + 1 < size;
-		}
-
-		@Override
-		public ItemsArray next() {
-			idx++;
-			return this;
-		}
-
-		public void getCard(Card value) {
-			value.setRec(store.getInt(rec, 0));
-		}
-
-		public Card getCard() {
-			return new Card(store, alloc == 0 || idx < 0 || idx >= size ? 0 : store.getInt(alloc, idx * 4 + 4));
-		}
-
-		public void setCard(Card value) {
-			if (alloc != 0 && idx >= 0 && idx < size)
-				store.setInt(alloc, idx * 4 + 4, value == null ? 0 : value.getRec());
-		}
-
-		public void output(Write write, int iterate) throws IOException {
-			if (rec == 0 || iterate <= 0)
-				return;
-			write.field("card", "{" + getCard().keys() + "}", true);
-			write.endRecord();
-		}
-
-		public void parse(Parser parser) {
-			ItemsArray record = this;
-			parser.getRelation("card", () -> {
-				Card rec = new Card(store);
-				boolean found = rec.parseKey(parser);
-				record.setCard(rec);
-				return found;
-			});
-		}
-	}
 
 	public IndexConnection getConnection() {
 		return new IndexConnection(new Connect(store));
 	}
+
 
 	public class IndexConnection extends RedBlackTree implements Iterable<Connect>, Iterator<Connect> {
 		Key key = null;
@@ -322,6 +190,7 @@ public class Room implements RecordInterface {
 		return new Area(store, rec == 0 ? 0 : store.getInt(rec, 37));
 	}
 
+
 	@Override
 	public void output(Write write, int iterate) throws IOException {
 		if (rec == 0 || iterate <= 0)
@@ -397,14 +266,14 @@ public class Room implements RecordInterface {
 
 	private void parseFields(Parser parser, ChangeRoom record) {
 		if (parser.hasSub("opponent")) {
-			OpponentArray sub = record.new OpponentArray();
+			OpponentArray sub = new OpponentArray(record);
 			while (parser.getSub()) {
 				sub.add();
 				sub.parse(parser);
 			}
 		}
 		if (parser.hasSub("items")) {
-			ItemsArray sub = record.new ItemsArray();
+			ItemsArray sub = new ItemsArray(record);
 			while (parser.getSub()) {
 				sub.add();
 				sub.parse(parser);
