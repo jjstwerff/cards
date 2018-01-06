@@ -41,7 +41,6 @@ public class Connect implements RecordInterface {
 		return rec == 0 ? Integer.MIN_VALUE : store.getInt(rec, 4);
 	}
 
-
 	public enum Type {
 		DOOR, CLIMB, LINE
 	};
@@ -53,11 +52,9 @@ public class Connect implements RecordInterface {
 		return Type.values()[data - 1];
 	}
 
-
 	public ChecksArray getChecks() {
 		return new ChecksArray(this);
 	}
-
 
 	public void getUpRecord(Room value) {
 		value.setRec(store.getInt(rec, 27));
@@ -67,7 +64,6 @@ public class Connect implements RecordInterface {
 		return new Room(store, rec == 0 ? 0 : store.getInt(rec, 27));
 	}
 
-
 	public void getTo(Room value) {
 		value.setRec(store.getInt(rec, 31));
 	}
@@ -75,7 +71,6 @@ public class Connect implements RecordInterface {
 	public Room getTo() {
 		return new Room(store, rec == 0 ? 0 : store.getInt(rec, 31));
 	}
-
 
 	@Override
 	public void output(Write write, int iterate) throws IOException {

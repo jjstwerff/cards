@@ -41,7 +41,6 @@ public class Card implements RecordInterface {
 		return rec == 0 ? null : store.getString(store.getInt(rec, 4));
 	}
 
-
 	public enum Set {
 		RACIAL, BACKGROUND, MOVE, WEAPON, WEARING, IMPLANT, ENCOUNTER, ROOM, OPPONENT, COMBAT
 	};
@@ -53,11 +52,9 @@ public class Card implements RecordInterface {
 		return Set.values()[data - 1];
 	}
 
-
 	public StatsArray getStats() {
 		return new StatsArray(this);
 	}
-
 
 	public void getUpRecord(Rules value) {
 		value.setRec(store.getInt(rec, 27));
@@ -66,7 +63,6 @@ public class Card implements RecordInterface {
 	public Rules getUpRecord() {
 		return new Rules(store, rec == 0 ? 0 : store.getInt(rec, 27));
 	}
-
 
 	@Override
 	public void output(Write write, int iterate) throws IOException {

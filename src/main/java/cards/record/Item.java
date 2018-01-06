@@ -41,7 +41,6 @@ public class Item implements RecordInterface {
 		return rec == 0 ? null : store.getString(store.getInt(rec, 4));
 	}
 
-
 	public void getMaterial(Material value) {
 		value.setRec(store.getInt(rec, 8));
 	}
@@ -50,7 +49,6 @@ public class Item implements RecordInterface {
 		return new Material(store, rec == 0 ? 0 : store.getInt(rec, 8));
 	}
 
-
 	public void getUpRecord(Game value) {
 		value.setRec(store.getInt(rec, 21));
 	}
@@ -58,7 +56,6 @@ public class Item implements RecordInterface {
 	public Game getUpRecord() {
 		return new Game(store, rec == 0 ? 0 : store.getInt(rec, 21));
 	}
-
 
 	@Override
 	public void output(Write write, int iterate) throws IOException {

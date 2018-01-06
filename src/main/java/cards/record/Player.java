@@ -47,21 +47,17 @@ public class Player implements RecordInterface {
 		return rec == 0 ? null : DateTime.of(store.getLong(rec, 4));
 	}
 
-
 	public LocalDateTime getLast() {
 		return rec == 0 ? null : DateTime.of(store.getLong(rec, 12));
 	}
-
 
 	public String getName() {
 		return rec == 0 ? null : store.getString(store.getInt(rec, 20));
 	}
 
-
 	public IndexMember getMember() {
 		return new IndexMember(new Member(store));
 	}
-
 
 	public class IndexMember extends RedBlackTree implements Iterable<Member>, Iterator<Member> {
 		Key key = null;

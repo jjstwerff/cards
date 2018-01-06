@@ -41,26 +41,21 @@ public class Map implements RecordInterface {
 		return rec == 0 ? Integer.MIN_VALUE : store.getInt(rec, 4);
 	}
 
-
 	public int getY() {
 		return rec == 0 ? Integer.MIN_VALUE : store.getInt(rec, 8);
 	}
-
 
 	public int getZ() {
 		return rec == 0 ? Integer.MIN_VALUE : store.getInt(rec, 12);
 	}
 
-
 	public int getL() {
 		return rec == 0 ? Integer.MIN_VALUE : store.getInt(rec, 16);
 	}
 
-
 	public DArray getD() {
 		return new DArray(this);
 	}
-
 
 	public void getUpRecord(Area value) {
 		value.setRec(store.getInt(rec, 37));
@@ -69,7 +64,6 @@ public class Map implements RecordInterface {
 	public Area getUpRecord() {
 		return new Area(store, rec == 0 ? 0 : store.getInt(rec, 37));
 	}
-
 
 	@Override
 	public void output(Write write, int iterate) throws IOException {

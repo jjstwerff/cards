@@ -77,24 +77,23 @@ public class CardsStructure {
 		material.field("color", Type.INTEGER);
 
 		Record item = project.table("Item"); // TODO allow size & drawing & state
-		// PERSON/TABLE/BENCH/CHAIR/BED/BEDROLL/LAMP/ROOM_NR/TREE_TRUNC
 		item.field("name", Type.STRING);
 		item.field("material", Type.RELATION, material);
 
 		Record wall = project.record("Wall");
-		// OPEN/COMBINED/BRICKS/ROUNDED_BRICKS/CONCRETE/ROUNDED_CONCRETE/METAL/WOOD/STONE/ROUNDED_STONE/ROCK/FENCE/LOW_WALL/LOW_FENCE/TREE_TOP
 		wall.field("name", Type.STRING);
 		wall.field("thickness", Type.BYTE);
+		wall.field("height", Type.BYTE);
 		wall.field("sloped", Type.BOOLEAN);
-		wall.field("combineLevel", Type.BYTE);
+		wall.field("combineLevel", Type.BYTE); // 0=never, 1=inner walls or fences, 2=outer walls, 3=stone walls, 4=opening in any wall
 		wall.field("material", Type.RELATION, material);
 		wall.field("item", Type.RELATION, item);
 		wall.field("inwards", Type.BOOLEAN);
 
 		Record floor = project.record("Floor");
-		// OPEN/FILLED/DOOR/METAL_DOOR/WINDOW/WOOD/CONCRETE/ASPHALT/GRAVEL/GRASS/DIRT/ROCK/STAIRS/METAL/METAL_STAIRS/TILES/TILED/TREE_TOP
 		floor.field("name", Type.STRING);
-		floor.field("type", Type.ENUMERATE, "OPEN", "FILLED", "INSIDE");
+		floor.field("filled", Type.BOOLEAN);
+		floor.field("inside", Type.BOOLEAN);
 		floor.field("sloped", Type.BOOLEAN);
 		floor.field("material", Type.RELATION, material);
 

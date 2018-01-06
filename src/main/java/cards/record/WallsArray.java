@@ -42,9 +42,9 @@ public class WallsArray implements Iterable<WallsArray>, Iterator<WallsArray>{
 	public WallsArray add() {
 		idx = size;
 		if (alloc == 0)
-			alloc = store.allocate(10);
+			alloc = store.allocate(11);
 		else
-			alloc = store.resize(alloc, 1 + idx * 16 / 8);
+			alloc = store.resize(alloc, 1 + idx * 17 / 8);
 		store.setInt(rec, 24, alloc);
 		size = idx + 1;
 		store.setInt(rec, 20, size);
@@ -68,74 +68,83 @@ public class WallsArray implements Iterable<WallsArray>, Iterator<WallsArray>{
 	}
 
 	public String getName() {
-		return alloc == 0 || idx < 0 || idx >= size ? null : store.getString(store.getInt(alloc, idx * 16 + 4));
+		return alloc == 0 || idx < 0 || idx >= size ? null : store.getString(store.getInt(alloc, idx * 17 + 4));
 	}
 
 	public void setName(String value) {
 		if (alloc != 0 && idx >= 0 && idx < size)
-				store.setInt(alloc, idx * 16 + 4, store.putString(value));
+				store.setInt(alloc, idx * 17 + 4, store.putString(value));
 	}
 
 	public byte getThickness() {
-		return alloc == 0 || idx < 0 || idx >= size ? 0 : store.getByte(alloc, idx * 16 + 8);
+		return alloc == 0 || idx < 0 || idx >= size ? 0 : store.getByte(alloc, idx * 17 + 8);
 	}
 
 	public void setThickness(byte value) {
 		if (alloc != 0 && idx >= 0 && idx < size)
-				store.setByte(alloc, idx * 16 + 8, value);
+				store.setByte(alloc, idx * 17 + 8, value);
+	}
+
+	public byte getHeight() {
+		return alloc == 0 || idx < 0 || idx >= size ? 0 : store.getByte(alloc, idx * 17 + 9);
+	}
+
+	public void setHeight(byte value) {
+		if (alloc != 0 && idx >= 0 && idx < size)
+				store.setByte(alloc, idx * 17 + 9, value);
 	}
 
 	public boolean isSloped() {
-		return alloc == 0 || idx < 0 || idx >= size ? false : (store.getByte(alloc, idx * 16 + 9) & 1) > 0;
+		return alloc == 0 || idx < 0 || idx >= size ? false : (store.getByte(alloc, idx * 17 + 10) & 1) > 0;
 	}
 
 	public void setSloped(boolean value) {
 		if (alloc != 0 && idx >= 0 && idx < size)
-				store.setByte(alloc, idx * 16 + 9, (store.getByte(alloc, idx * 16 + 9) & 254) + (value ? 1 : 0));
+				store.setByte(alloc, idx * 17 + 10, (store.getByte(alloc, idx * 17 + 10) & 254) + (value ? 1 : 0));
 	}
 
 	public byte getCombineLevel() {
-		return alloc == 0 || idx < 0 || idx >= size ? 0 : store.getByte(alloc, idx * 16 + 10);
+		return alloc == 0 || idx < 0 || idx >= size ? 0 : store.getByte(alloc, idx * 17 + 11);
 	}
 
 	public void setCombineLevel(byte value) {
 		if (alloc != 0 && idx >= 0 && idx < size)
-				store.setByte(alloc, idx * 16 + 10, value);
+				store.setByte(alloc, idx * 17 + 11, value);
 	}
 
 	public void getMaterial(Material value) {
-		value.setRec(store.getInt(rec, 7));
+		value.setRec(store.getInt(rec, 8));
 	}
 
 	public Material getMaterial() {
-		return new Material(store, alloc == 0 || idx < 0 || idx >= size ? 0 : store.getInt(alloc, idx * 16 + 11));
+		return new Material(store, alloc == 0 || idx < 0 || idx >= size ? 0 : store.getInt(alloc, idx * 17 + 12));
 	}
 
 	public void setMaterial(Material value) {
 		if (alloc != 0 && idx >= 0 && idx < size)
-				store.setInt(alloc, idx * 16 + 11, value == null ? 0 : value.getRec());
+				store.setInt(alloc, idx * 17 + 12, value == null ? 0 : value.getRec());
 	}
 
 	public void getItem(Item value) {
-		value.setRec(store.getInt(rec, 11));
+		value.setRec(store.getInt(rec, 12));
 	}
 
 	public Item getItem() {
-		return new Item(store, alloc == 0 || idx < 0 || idx >= size ? 0 : store.getInt(alloc, idx * 16 + 15));
+		return new Item(store, alloc == 0 || idx < 0 || idx >= size ? 0 : store.getInt(alloc, idx * 17 + 16));
 	}
 
 	public void setItem(Item value) {
 		if (alloc != 0 && idx >= 0 && idx < size)
-				store.setInt(alloc, idx * 16 + 15, value == null ? 0 : value.getRec());
+				store.setInt(alloc, idx * 17 + 16, value == null ? 0 : value.getRec());
 	}
 
 	public boolean isInwards() {
-		return alloc == 0 || idx < 0 || idx >= size ? false : (store.getByte(alloc, idx * 16 + 19) & 1) > 0;
+		return alloc == 0 || idx < 0 || idx >= size ? false : (store.getByte(alloc, idx * 17 + 20) & 1) > 0;
 	}
 
 	public void setInwards(boolean value) {
 		if (alloc != 0 && idx >= 0 && idx < size)
-				store.setByte(alloc, idx * 16 + 19, (store.getByte(alloc, idx * 16 + 19) & 254) + (value ? 1 : 0));
+				store.setByte(alloc, idx * 17 + 20, (store.getByte(alloc, idx * 17 + 20) & 254) + (value ? 1 : 0));
 	}
 
 	public void output(Write write, int iterate) throws IOException {
@@ -143,6 +152,7 @@ public class WallsArray implements Iterable<WallsArray>, Iterator<WallsArray>{
 			return;
 		write.field("name", getName(), true);
 		write.field("thickness", getThickness(), false);
+		write.field("height", getHeight(), false);
 		write.field("sloped", isSloped(), false);
 		write.field("combineLevel", getCombineLevel(), false);
 		write.field("material", "{" + getMaterial().keys() + "}", false);
@@ -155,6 +165,7 @@ public class WallsArray implements Iterable<WallsArray>, Iterator<WallsArray>{
 		WallsArray record = this;
 			record.setName(parser.getString("name"));
 			record.setThickness((byte) parser.getInt("thickness"));
+			record.setHeight((byte) parser.getInt("height"));
 			record.setSloped(StringUtils.equals(parser.getString("sloped"), "true"));
 			record.setCombineLevel((byte) parser.getInt("combineLevel"));
 			parser.getRelation("material", () -> {

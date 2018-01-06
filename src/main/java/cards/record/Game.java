@@ -45,11 +45,9 @@ public class Game implements RecordInterface {
 		return rec == 0 ? null : store.getString(store.getInt(rec, 4));
 	}
 
-
 	public IndexAreas getAreas() {
 		return new IndexAreas(new Area(store));
 	}
-
 
 	public class IndexAreas extends RedBlackTree implements Iterable<Area>, Iterator<Area> {
 		Key key = null;
@@ -180,11 +178,9 @@ public class Game implements RecordInterface {
 		return new Rules(store, rec == 0 ? 0 : store.getInt(rec, 12));
 	}
 
-
 	public IndexCharacters getCharacters() {
 		return new IndexCharacters(new Character(store));
 	}
-
 
 	public class IndexCharacters extends RedBlackTree implements Iterable<Character>, Iterator<Character> {
 		Key key = null;
@@ -311,16 +307,13 @@ public class Game implements RecordInterface {
 		return new WallsArray(this);
 	}
 
-
 	public FloorsArray getFloors() {
 		return new FloorsArray(this);
 	}
 
-
 	public IndexItems getItems() {
 		return new IndexItems(new Item(store));
 	}
-
 
 	public class IndexItems extends RedBlackTree implements Iterable<Item>, Iterator<Item> {
 		Key key = null;
@@ -446,7 +439,6 @@ public class Game implements RecordInterface {
 	public IndexMaterials getMaterials() {
 		return new IndexMaterials(new Material(store));
 	}
-
 
 	public class IndexMaterials extends RedBlackTree implements Iterable<Material>, Iterator<Material> {
 		Key key = null;

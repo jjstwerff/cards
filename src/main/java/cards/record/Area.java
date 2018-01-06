@@ -45,11 +45,9 @@ public class Area implements RecordInterface {
 		return rec == 0 ? null : store.getString(store.getInt(rec, 4));
 	}
 
-
 	public IndexRooms getRooms() {
 		return new IndexRooms(new Room(store));
 	}
-
 
 	public class IndexRooms extends RedBlackTree implements Iterable<Room>, Iterator<Room> {
 		Key key = null;
@@ -176,11 +174,9 @@ public class Area implements RecordInterface {
 		return new EncounterArray(this);
 	}
 
-
 	public IndexGoal getGoal() {
 		return new IndexGoal(new Goal(store));
 	}
-
 
 	public class IndexGoal extends RedBlackTree implements Iterable<Goal>, Iterator<Goal> {
 		Key key = null;
@@ -306,7 +302,6 @@ public class Area implements RecordInterface {
 	public IndexMaps getMaps() {
 		return new IndexMaps(new Map(store));
 	}
-
 
 	public class IndexMaps extends RedBlackTree implements Iterable<Map>, Iterator<Map> {
 		Key key = null;
@@ -497,7 +492,6 @@ public class Area implements RecordInterface {
 	public Game getUpRecord() {
 		return new Game(store, rec == 0 ? 0 : store.getInt(rec, 37));
 	}
-
 
 	@Override
 	public void output(Write write, int iterate) throws IOException {

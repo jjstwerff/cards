@@ -1,6 +1,90 @@
 name=TestMap, wall=[
+  name=open
+  name=rock, material={name=rock}
+  name=roadside
+  name=riverside, thickness=100, material={name=grass}
+  name=path, thickness=80, material={name=dirt}
+  name=outer wall, thickness=20, height=130, combineLevel=2, material={name=concrete}
+  name=rounded wall, thickness=20, height=130, sloped=true, combineLevel=2, material={name=concrete}
+  name=inner wall, thickness=10, height=130, combineLevel=1, material={name=concrete}
+  name=bricks, thickness=20, height=130, combineLevel=2, material={name=bricks}
+  name=rounded bricks, thickness=20, height=130, sloped=true, combineLevel=2, material={name=bricks}
+  name=fence, thickness=1, height=120, combineLevel=1, material={name=barbed}
+  name=wooden fence, thickness=2, height=100, combineLevel=1, material={name=wood}
+  name=razor wire, height=90, combineLevel=1, material={name=wood}
+  name=low wall, thickness=30, height=60, combineLevel=1, material={name=stone}
+  name=stone wall, thickness=40, height=140, combineLevel=3, material={name=stone}
+  name=rounded stone, thickness=40, height=140, sloped=true, combineLevel=3, material={name=stone}
+  name=metal wall, thickness=10, height=130, combineLevel=2, material={name=metal}
+  name=branches, sloped=true, material={name=branches}
+  name=door, thickness=5, height=130, combineLevel=4, material={name=wood}
+  name=double door, thickness=8, height=130, combineLevel=4, material={name=wood}
+  name=metal door, thickness=5, height=130, combineLevel=4, material={name=metal}
+  name=double metal door, thickness=5, height=130, combineLevel=4, material={name=metal}
+  name=window, thickness=3, height=100, combineLevel=4, material={name=wood}
+  name=pivot window, thickness=3, height=100, combineLevel=4, material={name=wood}
+  name=hopper, thickness=3, height=50, combineLevel=4, material={name=wood}
+  name=upper hopper, thickness=3, height=100, combineLevel=4, material={name=wood}
 ], floors=[
+  name=open
+  name=filled rock, filled=true
+  name=dirt, sloped=true, material={name=dirt}
+  name=filled dirt, filled=true
+  name=concrete, material={name=concrete}
+  name=concrete floor, inside=true, material={name=concrete}
+  name=stone floor, inside=true, material={name=stone}
+  name=grass, sloped=true, material={name=grass}
+  name=rock, material={name=rock}
+  name=wood, inside=true, material={name=wood}
+  name=tiled, material={name=tiled}
+  name=metal, material={name=metal}
+  name=asphalt, material={name=asphalt}
+  name=roof tiles, material={name=root tiles}
+  name=black roof tiles, material={name=black roof tiles}
+  name=branches, sloped=true, material={name=branches}
+  name=water, material={name=water}
+  name=sky light, material={name=wood}
+  name=wooden stairs, inside=true, material={name=wood}
+  name=metal stairs, material={name=metal}
+  name=stone stairs, inside=true, material={name=stone}
 ], materials=[
+  name=concrete
+  name=grass
+  name=dirt
+  name=rock
+  name=barbed
+  name=bricks
+  name=wood
+  name=stones
+  name=metal
+  name=tiled
+  name=asphalt
+  name=roof tiles
+  name=black roof tiles
+  name=tree trunk
+  name=branches
+  name=water
+], items=[
+  name=none
+  name=chair
+  name=arm chair
+  name=table
+  name=sofa
+  name=bench
+  name=cupboard
+  name=shelves
+  name=storage
+  name=bed
+  name=bed-roll
+  name=tree trunk
+  name=shrubbery
+  name=bureau
+  name=sink
+  name=refrigerator
+  name=work bench
+  name=counter
+  name=ladder
+  name=lamp
 ], areas=[
   name=Building, maps=[
     x=0, y=0, z=0, l=7, d=[

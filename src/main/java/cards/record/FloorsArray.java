@@ -76,23 +76,22 @@ public class FloorsArray implements Iterable<FloorsArray>, Iterator<FloorsArray>
 				store.setInt(alloc, idx * 11 + 4, store.putString(value));
 	}
 
-	public enum Type {
-		OPEN, FILLED, INSIDE
-	};
-
-	public Type getType() {
-		int data = alloc == 0 || idx < 0 || idx >= size ? 0 : store.getShort(rec, idx * 11 + 4);
-		if (data <= 0)
-			return null;
-		return Type.values()[data - 1];
+	public boolean isFilled() {
+		return alloc == 0 || idx < 0 || idx >= size ? false : (store.getByte(alloc, idx * 11 + 8) & 1) > 0;
 	}
 
-	public void setType(Type value) {
+	public void setFilled(boolean value) {
 		if (alloc != 0 && idx >= 0 && idx < size)
-				if (value == null)
-				store.setShort(rec, idx * 11 + 4, 0);
-			else
-				store.setShort(rec, idx * 11 + 4, 1 + value.ordinal());
+				store.setByte(alloc, idx * 11 + 8, (store.getByte(alloc, idx * 11 + 8) & 254) + (value ? 1 : 0));
+	}
+
+	public boolean isInside() {
+		return alloc == 0 || idx < 0 || idx >= size ? false : (store.getByte(alloc, idx * 11 + 9) & 1) > 0;
+	}
+
+	public void setInside(boolean value) {
+		if (alloc != 0 && idx >= 0 && idx < size)
+				store.setByte(alloc, idx * 11 + 9, (store.getByte(alloc, idx * 11 + 9) & 254) + (value ? 1 : 0));
 	}
 
 	public boolean isSloped() {
@@ -121,7 +120,8 @@ public class FloorsArray implements Iterable<FloorsArray>, Iterator<FloorsArray>
 		if (rec == 0 || iterate <= 0)
 			return;
 		write.field("name", getName(), true);
-		write.field("type", getType(), false);
+		write.field("filled", isFilled(), false);
+		write.field("inside", isInside(), false);
 		write.field("sloped", isSloped(), false);
 		write.field("material", "{" + getMaterial().keys() + "}", false);
 		write.endRecord();
@@ -130,7 +130,8 @@ public class FloorsArray implements Iterable<FloorsArray>, Iterator<FloorsArray>
 	public void parse(Parser parser) {
 		FloorsArray record = this;
 			record.setName(parser.getString("name"));
-			record.setType(Type.valueOf(parser.getString("type")));
+			record.setFilled(StringUtils.equals(parser.getString("filled"), "true"));
+			record.setInside(StringUtils.equals(parser.getString("inside"), "true"));
 			record.setSloped(StringUtils.equals(parser.getString("sloped"), "true"));
 			parser.getRelation("material", () -> {
 				Material rec = new Material(store);

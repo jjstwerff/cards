@@ -45,7 +45,6 @@ public class Member implements RecordInterface {
 		return new Game(store, rec == 0 ? 0 : store.getInt(rec, 4));
 	}
 
-
 	public enum Role {
 		PLAYER, MASTER, OBSERVER
 	};
@@ -57,11 +56,9 @@ public class Member implements RecordInterface {
 		return Role.values()[data - 1];
 	}
 
-
 	public int getXp() {
 		return rec == 0 ? Integer.MIN_VALUE : store.getInt(rec, 10);
 	}
-
 
 	public void getUpRecord(Player value) {
 		value.setRec(store.getInt(rec, 23));
@@ -70,7 +67,6 @@ public class Member implements RecordInterface {
 	public Player getUpRecord() {
 		return new Player(store, rec == 0 ? 0 : store.getInt(rec, 23));
 	}
-
 
 	@Override
 	public void output(Write write, int iterate) throws IOException {

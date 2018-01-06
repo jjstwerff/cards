@@ -45,21 +45,17 @@ public class Room implements RecordInterface {
 		return rec == 0 ? null : store.getString(store.getInt(rec, 4));
 	}
 
-
 	public OpponentArray getOpponent() {
 		return new OpponentArray(this);
 	}
-
 
 	public ItemsArray getItems() {
 		return new ItemsArray(this);
 	}
 
-
 	public IndexConnection getConnection() {
 		return new IndexConnection(new Connect(store));
 	}
-
 
 	public class IndexConnection extends RedBlackTree implements Iterable<Connect>, Iterator<Connect> {
 		Key key = null;
@@ -189,7 +185,6 @@ public class Room implements RecordInterface {
 	public Area getUpRecord() {
 		return new Area(store, rec == 0 ? 0 : store.getInt(rec, 37));
 	}
-
 
 	@Override
 	public void output(Write write, int iterate) throws IOException {

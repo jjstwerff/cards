@@ -41,7 +41,6 @@ public class Goal implements RecordInterface {
 		return rec == 0 ? null : store.getString(store.getInt(rec, 4));
 	}
 
-
 	public enum Type {
 		KNOWLEDGE, WEAPON, WEARABLE, STATUS, IMPLANT
 	};
@@ -53,11 +52,9 @@ public class Goal implements RecordInterface {
 		return Type.values()[data - 1];
 	}
 
-
 	public int getXP() {
 		return rec == 0 ? Integer.MIN_VALUE : store.getInt(rec, 10);
 	}
-
 
 	public enum Gained {
 		STASH, OVERHEAR, REWARD
@@ -70,7 +67,6 @@ public class Goal implements RecordInterface {
 		return Gained.values()[data - 1];
 	}
 
-
 	public void getUpRecord(Area value) {
 		value.setRec(store.getInt(rec, 25));
 	}
@@ -78,7 +74,6 @@ public class Goal implements RecordInterface {
 	public Area getUpRecord() {
 		return new Area(store, rec == 0 ? 0 : store.getInt(rec, 25));
 	}
-
 
 	@Override
 	public void output(Write write, int iterate) throws IOException {

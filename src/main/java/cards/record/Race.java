@@ -41,11 +41,9 @@ public class Race implements RecordInterface {
 		return rec == 0 ? null : store.getString(store.getInt(rec, 4));
 	}
 
-
 	public CardsArray getCards() {
 		return new CardsArray(this);
 	}
-
 
 	public void getUpRecord(Rules value) {
 		value.setRec(store.getInt(rec, 25));
@@ -54,7 +52,6 @@ public class Race implements RecordInterface {
 	public Rules getUpRecord() {
 		return new Rules(store, rec == 0 ? 0 : store.getInt(rec, 25));
 	}
-
 
 	@Override
 	public void output(Write write, int iterate) throws IOException {

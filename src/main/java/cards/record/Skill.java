@@ -45,7 +45,6 @@ public class Skill implements RecordInterface {
 		return new Card(store, rec == 0 ? 0 : store.getInt(rec, 4));
 	}
 
-
 	public enum State {
 		STASHED, PARTY, ACTIVE
 	};
@@ -57,7 +56,6 @@ public class Skill implements RecordInterface {
 		return State.values()[data - 1];
 	}
 
-
 	public void getUpRecord(Character value) {
 		value.setRec(store.getInt(rec, 19));
 	}
@@ -65,7 +63,6 @@ public class Skill implements RecordInterface {
 	public Character getUpRecord() {
 		return new Character(store, rec == 0 ? 0 : store.getInt(rec, 19));
 	}
-
 
 	@Override
 	public void output(Write write, int iterate) throws IOException {
