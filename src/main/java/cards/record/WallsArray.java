@@ -42,9 +42,9 @@ public class WallsArray implements Iterable<WallsArray>, Iterator<WallsArray>{
 	public WallsArray add() {
 		idx = size;
 		if (alloc == 0)
-			alloc = store.allocate(11);
+			alloc = store.allocate(12);
 		else
-			alloc = store.resize(alloc, 1 + idx * 17 / 8);
+			alloc = store.resize(alloc, (11 + (idx + 1) * 17) / 8);
 		store.setInt(rec, 24, alloc);
 		size = idx + 1;
 		store.setInt(rec, 20, size);

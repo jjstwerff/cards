@@ -43,7 +43,7 @@ public class EncounterArray implements Iterable<EncounterArray>, Iterator<Encoun
 		if (alloc == 0)
 			alloc = store.allocate(3);
 		else
-			alloc = store.resize(alloc, 1 + idx * 4 / 8);
+			alloc = store.resize(alloc, (11 + (idx + 1) * 4) / 8);
 		store.setInt(rec, 16, alloc);
 		size = idx + 1;
 		store.setInt(rec, 12, size);

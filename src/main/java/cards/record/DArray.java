@@ -41,9 +41,9 @@ public class DArray implements Iterable<DArray>, Iterator<DArray>{
 	public DArray add() {
 		idx = size;
 		if (alloc == 0)
-			alloc = store.allocate(5);
+			alloc = store.allocate(6);
 		else
-			alloc = store.resize(alloc, 1 + idx * 8 / 8);
+			alloc = store.resize(alloc, (11 + (idx + 1) * 8) / 8);
 		store.setInt(rec, 24, alloc);
 		size = idx + 1;
 		store.setInt(rec, 20, size);

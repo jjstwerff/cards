@@ -41,9 +41,9 @@ public class StatsArray implements Iterable<StatsArray>, Iterator<StatsArray>{
 	public StatsArray add() {
 		idx = size;
 		if (alloc == 0)
-			alloc = store.allocate(3);
+			alloc = store.allocate(4);
 		else
-			alloc = store.resize(alloc, 1 + idx * 5 / 8);
+			alloc = store.resize(alloc, (11 + (idx + 1) * 5) / 8);
 		store.setInt(rec, 14, alloc);
 		size = idx + 1;
 		store.setInt(rec, 10, size);

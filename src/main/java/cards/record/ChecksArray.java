@@ -43,7 +43,7 @@ public class ChecksArray implements Iterable<ChecksArray>, Iterator<ChecksArray>
 		if (alloc == 0)
 			alloc = store.allocate(3);
 		else
-			alloc = store.resize(alloc, 1 + idx * 4 / 8);
+			alloc = store.resize(alloc, (11 + (idx + 1) * 4) / 8);
 		store.setInt(rec, 14, alloc);
 		size = idx + 1;
 		store.setInt(rec, 10, size);

@@ -43,7 +43,7 @@ public class ItemsArray implements Iterable<ItemsArray>, Iterator<ItemsArray>{
 		if (alloc == 0)
 			alloc = store.allocate(3);
 		else
-			alloc = store.resize(alloc, 1 + idx * 4 / 8);
+			alloc = store.resize(alloc, (11 + (idx + 1) * 4) / 8);
 		store.setInt(rec, 20, alloc);
 		size = idx + 1;
 		store.setInt(rec, 16, size);

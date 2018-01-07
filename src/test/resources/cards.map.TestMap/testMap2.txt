@@ -72,6 +72,65 @@ name=TestMap, areas=[
 ], characters=[
 ], walls=[
 ], floors=[
+  name=open, filled=false, inside=false, sloped=false, material={}
+  name=filled rock, filled=true, inside=false, sloped=false, , material=
+    
+
+  name=dirt, filled=false, inside=false, sloped=true, material={}
+  name=filled dirt, filled=true, inside=false, sloped=false, material={}
+  name=concrete, filled=false, inside=false, sloped=false, material={}
+  name=concrete floor, filled=false, inside=true, sloped=false, material={}
+  name=stone floor, filled=false, inside=true, sloped=false, material={}
+  name=grass, filled=false, inside=false, sloped=true, material={}
+  name=rock, filled=false, inside=false, sloped=false, material={}
+  name=wood, filled=false, inside=true, sloped=false, material={}
+  name=tiled, filled=false, inside=false, sloped=false, material={}
+  name=metal, filled=false, inside=false, sloped=false, material={}
+  name=asphalt, filled=false, inside=false, sloped=false, material={}
+  name=roof tiles, filled=false, inside=false, sloped=false, material={}
+  name=black roof tiles, filled=false, inside=false, sloped=false, material={}
+  name=branches, filled=false, inside=false, sloped=true, material={}
+  name=water, filled=false, inside=false, sloped=false, material={}
+  name=sky light, filled=false, inside=false, sloped=false, material={}
+  name=wooden stairs, filled=false, inside=true, sloped=false, material={}
+  name=metal stairs, filled=false, inside=false, sloped=false, material={}
+  name=stone stairs, filled=false, inside=true, sloped=false, material={}
 ], items=[
+  name=arm chair
+  name=bed
+  name=bed-roll
+  name=bench
+  name=bureau
+  name=chair
+  name=counter
+  name=cupboard
+  name=ladder
+  name=lamp
+  name=none
+  name=refrigerator
+  name=shelves
+  name=shrubbery
+  name=sink
+  name=sofa
+  name=storage
+  name=table
+  name=tree trunk
+  name=work bench
 ], materials=[
+  name=asphalt
+  name=barbed
+  name=black roof tiles
+  name=branches
+  name=bricks
+  name=concrete
+  name=dirt
+  name=grass
+  name=metal
+  name=rock
+  name=roof tiles
+  name=stones
+  name=tiled
+  name=tree trunk
+  name=water
+  name=wood
 ]

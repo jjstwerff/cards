@@ -42,9 +42,9 @@ public class FloorsArray implements Iterable<FloorsArray>, Iterator<FloorsArray>
 	public FloorsArray add() {
 		idx = size;
 		if (alloc == 0)
-			alloc = store.allocate(7);
+			alloc = store.allocate(8);
 		else
-			alloc = store.resize(alloc, 1 + idx * 11 / 8);
+			alloc = store.resize(alloc, (11 + (idx + 1) * 11) / 8);
 		store.setInt(rec, 32, alloc);
 		size = idx + 1;
 		store.setInt(rec, 28, size);
