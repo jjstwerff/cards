@@ -1,9 +1,5 @@
 - walls with specified thickness
-    add data structure with extra info about walls/areas:
-    	. wall thickness, sloped?, combine-level, material, opening/drawing/inwards?, direction
-    	. area filled/open/inside, material
-    	. material: texture / color
-    	. item: drawing
+    read data structure
 	inner points are not the same position as outer points
 		each wall have 2 sides involved.. unless there is an inside area
 	draw floor to better show what point is part of what tile

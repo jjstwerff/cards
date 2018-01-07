@@ -126,10 +126,10 @@ public class Connect implements RecordInterface {
 		}
 	}
 
-	public boolean parseKey(Parser parser) {
-		Room parent = new Room(store);
+	public boolean parseKey(Parser parser, Room parentRec) {
+		Room parent = parentRec == null ? new Room(store) : parentRec;
 		parser.getRelation("Room", () -> {
-			parent.parseKey(parser);
+			parent.parseKey(parser, null);
 			return true;
 		});
 		int nr = parser.getInt("nr");
@@ -150,7 +150,7 @@ public class Connect implements RecordInterface {
 		}
 		parser.getRelation("to", () -> {
 			Room rec = new Room(store);
-			boolean found = rec.parseKey(parser);
+			boolean found = rec.parseKey(parser, null);
 			record.setTo(rec);
 			return found;
 		});

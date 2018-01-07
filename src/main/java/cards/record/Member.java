@@ -122,8 +122,8 @@ public class Member implements RecordInterface {
 		}
 	}
 
-	public boolean parseKey(Parser parser) {
-		Player parent = new Player(store);
+	public boolean parseKey(Parser parser, Player parentRec) {
+		Player parent = parentRec == null ? new Player(store) : parentRec;
 		parser.getRelation("Player", () -> {
 			parent.parseKey(parser);
 			return true;

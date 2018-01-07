@@ -36,7 +36,8 @@ name=Element, size=8
   name=h, type=SHORT, pos=48
 name=Floor, size=11
   name=name, type=STRING, pos=0
-  name=type, type=ENUMERATE, pos=32
+  name=filled, type=BOOLEAN, pos=32
+  name=inside, type=BOOLEAN, pos=40
   name=sloped, type=BOOLEAN, pos=48
   name=material, type=RELATION, related=Material, pos=56
 name=Game, size=53, related=true, full=true
@@ -100,14 +101,15 @@ name=Skill, parent=Character, size=23, full=true
 name=Statistic, size=30, related=true, full=true
   name=name, type=STRING, pos=32, key=true
   name=nr, type=INTEGER, pos=64
-name=Wall, size=16
+name=Wall, size=17
   name=name, type=STRING, pos=0
   name=thickness, type=BYTE, pos=32
-  name=sloped, type=BOOLEAN, pos=40
-  name=combineLevel, type=BYTE, pos=48
-  name=material, type=RELATION, related=Material, pos=56
-  name=item, type=RELATION, related=Item, pos=88
-  name=inwards, type=BOOLEAN, pos=120
+  name=height, type=BYTE, pos=40
+  name=sloped, type=BOOLEAN, pos=48
+  name=combineLevel, type=BYTE, pos=56
+  name=material, type=RELATION, related=Material, pos=64
+  name=item, type=RELATION, related=Item, pos=96
+  name=inwards, type=BOOLEAN, pos=128
 
 Indexes
 name=statisticName, record=Statistic, fields=[

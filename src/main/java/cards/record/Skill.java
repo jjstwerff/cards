@@ -99,7 +99,7 @@ public class Skill implements RecordInterface {
 		while (parser.getSub()) {
 			Card card = new Card(store);
 			parser.getRelation("card", () -> {
-				card.parseKey(parser);
+				card.parseKey(parser, null);
 				return true;
 			});
 			Character.IndexSkills idx = parent.new IndexSkills(this, card.getName());
@@ -117,15 +117,15 @@ public class Skill implements RecordInterface {
 		}
 	}
 
-	public boolean parseKey(Parser parser) {
-		Character parent = new Character(store);
+	public boolean parseKey(Parser parser, Character parentRec) {
+		Character parent = parentRec == null ? new Character(store) : parentRec;
 		parser.getRelation("Character", () -> {
-			parent.parseKey(parser);
+			parent.parseKey(parser, null);
 			return true;
 		});
 		Card card = new Card(store);
 		parser.getRelation("card", () -> {
-			card.parseKey(parser);
+			card.parseKey(parser, null);
 			return true;
 		});
 		Character.IndexSkills idx = parent.new IndexSkills(this, card.getName());

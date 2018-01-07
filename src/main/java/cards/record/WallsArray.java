@@ -170,13 +170,13 @@ public class WallsArray implements Iterable<WallsArray>, Iterator<WallsArray>{
 			record.setCombineLevel((byte) parser.getInt("combineLevel"));
 			parser.getRelation("material", () -> {
 				Material rec = new Material(store);
-				boolean found = rec.parseKey(parser);
+				boolean found = rec.parseKey(parser, null);
 				record.setMaterial(rec);
 				return found;
 			});
 			parser.getRelation("item", () -> {
 				Item rec = new Item(store);
-				boolean found = rec.parseKey(parser);
+				boolean found = rec.parseKey(parser, null);
 				record.setItem(rec);
 				return found;
 			});

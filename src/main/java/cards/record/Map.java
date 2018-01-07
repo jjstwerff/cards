@@ -128,10 +128,10 @@ public class Map implements RecordInterface {
 		}
 	}
 
-	public boolean parseKey(Parser parser) {
-		Area parent = new Area(store);
+	public boolean parseKey(Parser parser, Area parentRec) {
+		Area parent = parentRec == null ? new Area(store) : parentRec;
 		parser.getRelation("Area", () -> {
-			parent.parseKey(parser);
+			parent.parseKey(parser, null);
 			return true;
 		});
 		int x = parser.getInt("x");

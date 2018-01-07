@@ -105,8 +105,8 @@ public class Race implements RecordInterface {
 		}
 	}
 
-	public boolean parseKey(Parser parser) {
-		Rules parent = new Rules(store);
+	public boolean parseKey(Parser parser, Rules parentRec) {
+		Rules parent = parentRec == null ? new Rules(store) : parentRec;
 		parser.getRelation("Rules", () -> {
 			parent.parseKey(parser);
 			return true;

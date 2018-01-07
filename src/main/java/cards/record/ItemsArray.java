@@ -90,7 +90,7 @@ public class ItemsArray implements Iterable<ItemsArray>, Iterator<ItemsArray>{
 		ItemsArray record = this;
 			parser.getRelation("card", () -> {
 				Card rec = new Card(store);
-				boolean found = rec.parseKey(parser);
+				boolean found = rec.parseKey(parser, null);
 				record.setCard(rec);
 				return found;
 			});

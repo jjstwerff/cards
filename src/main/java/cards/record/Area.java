@@ -557,8 +557,8 @@ public class Area implements RecordInterface {
 		}
 	}
 
-	public boolean parseKey(Parser parser) {
-		Game parent = new Game(store);
+	public boolean parseKey(Parser parser, Game parentRec) {
+		Game parent = parentRec == null ? new Game(store) : parentRec;
 		parser.getRelation("Game", () -> {
 			parent.parseKey(parser);
 			return true;

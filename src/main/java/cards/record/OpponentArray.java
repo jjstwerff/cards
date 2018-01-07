@@ -90,7 +90,7 @@ public class OpponentArray implements Iterable<OpponentArray>, Iterator<Opponent
 		OpponentArray record = this;
 			parser.getRelation("card", () -> {
 				Card rec = new Card(store);
-				boolean found = rec.parseKey(parser);
+				boolean found = rec.parseKey(parser, null);
 				record.setCard(rec);
 				return found;
 			});

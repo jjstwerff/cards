@@ -135,7 +135,7 @@ public class FloorsArray implements Iterable<FloorsArray>, Iterator<FloorsArray>
 			record.setSloped(StringUtils.equals(parser.getString("sloped"), "true"));
 			parser.getRelation("material", () -> {
 				Material rec = new Material(store);
-				boolean found = rec.parseKey(parser);
+				boolean found = rec.parseKey(parser, null);
 				record.setMaterial(rec);
 				return found;
 			});

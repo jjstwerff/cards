@@ -106,8 +106,8 @@ public class Item implements RecordInterface {
 		}
 	}
 
-	public boolean parseKey(Parser parser) {
-		Game parent = new Game(store);
+	public boolean parseKey(Parser parser, Game parentRec) {
+		Game parent = parentRec == null ? new Game(store) : parentRec;
 		parser.getRelation("Game", () -> {
 			parent.parseKey(parser);
 			return true;
@@ -122,7 +122,7 @@ public class Item implements RecordInterface {
 	private void parseFields(Parser parser, ChangeItem record) {
 		parser.getRelation("material", () -> {
 			Material rec = new Material(store);
-			boolean found = rec.parseKey(parser);
+			boolean found = rec.parseKey(parser, getUpRecord());
 			record.setMaterial(rec);
 			return found;
 		});
