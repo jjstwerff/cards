@@ -62,7 +62,7 @@ public class Item implements RecordInterface {
 		if (rec == 0 || iterate <= 0)
 			return;
 		write.field("name", getName(), true);
-		write.field("material", getMaterial(), false);
+		write.strField("material", "{" + getMaterial().keys() + "}", false);
 		write.endRecord();
 	}
 
@@ -108,11 +108,12 @@ public class Item implements RecordInterface {
 
 	public boolean parseKey(Parser parser, Game parentRec) {
 		Game parent = parentRec == null ? new Game(store) : parentRec;
-		parser.getRelation("Game", () -> {
+		parser.getRelation("Game", (int recNr) -> {
+			parent.setRec(recNr);
 			parent.parseKey(parser);
 			return true;
-		});
-		String name = parser.getString("name");
+		}, getRec());
+		String name = parser.getRelationString("name");
 		Game.IndexItems idx = parent.new IndexItems(this, name);
 		parser.finishRelation();
 		rec = idx.nextRec;
@@ -120,11 +121,12 @@ public class Item implements RecordInterface {
 	}
 
 	private void parseFields(Parser parser, ChangeItem record) {
-		parser.getRelation("material", () -> {
+		parser.getRelation("material", (int recNr) -> {
 			Material rec = new Material(store);
 			boolean found = rec.parseKey(parser, getUpRecord());
+			record.setRec(recNr);
 			record.setMaterial(rec);
 			return found;
-		});
+		}, getRec());
 	}
 }

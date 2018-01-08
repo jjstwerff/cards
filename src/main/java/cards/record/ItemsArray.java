@@ -1,6 +1,7 @@
 package cards.record;
 
 import java.io.IOException;
+import java.io.StringWriter;
 import java.util.Iterator;
 
 import com.betterbe.memorydb.file.Parser;
@@ -82,17 +83,30 @@ public class ItemsArray implements Iterable<ItemsArray>, Iterator<ItemsArray>{
 	public void output(Write write, int iterate) throws IOException {
 		if (rec == 0 || iterate <= 0)
 			return;
-		write.field("card", "{" + getCard().keys() + "}", true);
+		write.strField("card", "{" + getCard().keys() + "}", true);
 		write.endRecord();
+	}
+
+	@Override
+	public String toString() {
+		Write write = new Write(new StringWriter());
+		try {
+			output(write, 4);
+		} catch (IOException e) {
+			throw new RuntimeException(e);
+		}
+		return write.toString();
 	}
 
 	public void parse(Parser parser) {
 		ItemsArray record = this;
-			parser.getRelation("card", () -> {
-				Card rec = new Card(store);
-				boolean found = rec.parseKey(parser, null);
-				record.setCard(rec);
-				return found;
-			});
+		record.setCard(null);
+		parser.getRelation("card", (int recNr) -> {
+			Card rec = new Card(store);
+			boolean found = rec.parseKey(parser, null);
+			idx=recNr;
+			record.setCard(rec);
+			return found;
+		}, idx);
 	}
 }

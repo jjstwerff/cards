@@ -72,7 +72,7 @@ public class Member implements RecordInterface {
 	public void output(Write write, int iterate) throws IOException {
 		if (rec == 0 || iterate <= 0)
 			return;
-		write.field("game", getGame(), true);
+		write.strField("game", "{" + getGame().keys() + "}", true);
 		write.field("role", getRole(), false);
 		write.field("xp", getXp(), false);
 		write.endRecord();
@@ -103,10 +103,10 @@ public class Member implements RecordInterface {
 	public void parse(Parser parser, Player parent) {
 		while (parser.getSub()) {
 			Game game = new Game(store);
-			parser.getRelation("game", () -> {
+			parser.getRelation("game", (int recNr) -> {
 				game.parseKey(parser);
 				return true;
-			});
+			}, -1);
 			Player.IndexMember idx = parent.new IndexMember(this, game.getName());
 			if (idx.nextRec == 0) {
 				try (ChangeMember record = new ChangeMember(parent)) {
@@ -124,15 +124,16 @@ public class Member implements RecordInterface {
 
 	public boolean parseKey(Parser parser, Player parentRec) {
 		Player parent = parentRec == null ? new Player(store) : parentRec;
-		parser.getRelation("Player", () -> {
+		parser.getRelation("Player", (int recNr) -> {
+			parent.setRec(recNr);
 			parent.parseKey(parser);
 			return true;
-		});
+		}, getRec());
 		Game game = new Game(store);
-		parser.getRelation("game", () -> {
+		parser.getRelation("game", (int recNr) -> {
 			game.parseKey(parser);
 			return true;
-		});
+		}, -1);
 		Player.IndexMember idx = parent.new IndexMember(this, game.getName());
 		parser.finishRelation();
 		rec = idx.nextRec;

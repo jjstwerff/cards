@@ -69,53 +69,101 @@ name=TestMap, areas=[
       l=0, t=0, r=0, f=0, i=0, d=0, h=0
     ]
   ]
-], characters=[
+], rules={}, characters=[
 ], walls=[
+  name=open, thickness=0, height=0, sloped=false, combineLevel=0, material={}, item={}, inwards=false
+  name=rock, thickness=0, height=0, sloped=false, combineLevel=0, material={Game{Name=TestMap}, Name=rock}, item={}, 
+  inwards=false
+  name=roadside, thickness=0, height=0, sloped=false, combineLevel=0, material={}, item={}, inwards=false
+  name=riverside, thickness=100, height=0, sloped=false, combineLevel=0, material={Game{Name=TestMap}, Name=grass}, 
+  item={}, inwards=false
+  name=path, thickness=80, height=0, sloped=false, combineLevel=0, material={Game{Name=TestMap}, Name=dirt}, item={}, 
+  inwards=false
+  name=outer wall, thickness=20, height=-126, sloped=false, combineLevel=2, material={Game{Name=TestMap}, Name=concrete}, 
+  item={}, inwards=false
+  name=rounded wall, thickness=20, height=-126, sloped=true, combineLevel=2, 
+  material={Game{Name=TestMap}, Name=concrete}, item={}, inwards=false
+  name=inner wall, thickness=10, height=-126, sloped=false, combineLevel=1, material={Game{Name=TestMap}, Name=concrete}, 
+  item={}, inwards=false
+  name=bricks, thickness=20, height=-126, sloped=false, combineLevel=2, material={Game{Name=TestMap}, Name=bricks}, 
+  item={}, inwards=false
+  name=rounded bricks, thickness=20, height=-126, sloped=true, combineLevel=2, 
+  material={Game{Name=TestMap}, Name=bricks}, item={}, inwards=false
+  name=fence, thickness=1, height=120, sloped=false, combineLevel=1, material={Game{Name=TestMap}, Name=barbed}, item={}, 
+  inwards=false
+  name=wooden fence, thickness=2, height=100, sloped=false, combineLevel=1, material={Game{Name=TestMap}, Name=wood}, 
+  item={}, inwards=false
+  name=razor wire, thickness=0, height=90, sloped=false, combineLevel=1, material={Game{Name=TestMap}, Name=wood}, 
+  item={}, inwards=false
+  name=low wall, thickness=30, height=60, sloped=false, combineLevel=1, material={Game{Name=TestMap}, Name=stone}, 
+  item={}, inwards=false
+  name=stone wall, thickness=40, height=-116, sloped=false, combineLevel=3, material={Game{Name=TestMap}, Name=stone}, 
+  item={}, inwards=false
+  name=rounded stone, thickness=40, height=-116, sloped=true, combineLevel=3, material={Game{Name=TestMap}, Name=stone}, 
+  item={}, inwards=false
+  name=metal wall, thickness=10, height=-126, sloped=false, combineLevel=2, material={Game{Name=TestMap}, Name=metal}, 
+  item={}, inwards=false
+  name=branches, thickness=0, height=0, sloped=true, combineLevel=0, material={Game{Name=TestMap}, Name=branches}, 
+  item={}, inwards=false
+  name=door, thickness=5, height=-126, sloped=false, combineLevel=4, material={Game{Name=TestMap}, Name=wood}, item={}, 
+  inwards=false
+  name=double door, thickness=8, height=-126, sloped=false, combineLevel=4, material={Game{Name=TestMap}, Name=wood}, 
+  item={}, inwards=false
+  name=metal door, thickness=5, height=-126, sloped=false, combineLevel=4, material={Game{Name=TestMap}, Name=metal}, 
+  item={}, inwards=false
+  name=double metal door, thickness=5, height=-126, sloped=false, combineLevel=4, 
+  material={Game{Name=TestMap}, Name=metal}, item={}, inwards=false
+  name=window, thickness=3, height=100, sloped=false, combineLevel=4, material={Game{Name=TestMap}, Name=wood}, item={}, 
+  inwards=false
+  name=pivot window, thickness=3, height=100, sloped=false, combineLevel=4, material={Game{Name=TestMap}, Name=wood}, 
+  item={}, inwards=false
+  name=hopper, thickness=3, height=50, sloped=false, combineLevel=4, material={Game{Name=TestMap}, Name=wood}, item={}, 
+  inwards=false
+  name=upper hopper, thickness=3, height=100, sloped=false, combineLevel=4, material={Game{Name=TestMap}, Name=wood}, 
+  item={}, inwards=false
 ], floors=[
   name=open, filled=false, inside=false, sloped=false, material={}
-  name=filled rock, filled=true, inside=false, sloped=false, , material=
-    
-
-  name=dirt, filled=false, inside=false, sloped=true, material={}
+  name=filled rock, filled=true, inside=false, sloped=false, material={}
+  name=dirt, filled=false, inside=false, sloped=true, material={Game{Name=TestMap}, Name=dirt}
   name=filled dirt, filled=true, inside=false, sloped=false, material={}
-  name=concrete, filled=false, inside=false, sloped=false, material={}
-  name=concrete floor, filled=false, inside=true, sloped=false, material={}
-  name=stone floor, filled=false, inside=true, sloped=false, material={}
-  name=grass, filled=false, inside=false, sloped=true, material={}
-  name=rock, filled=false, inside=false, sloped=false, material={}
-  name=wood, filled=false, inside=true, sloped=false, material={}
-  name=tiled, filled=false, inside=false, sloped=false, material={}
-  name=metal, filled=false, inside=false, sloped=false, material={}
-  name=asphalt, filled=false, inside=false, sloped=false, material={}
-  name=roof tiles, filled=false, inside=false, sloped=false, material={}
-  name=black roof tiles, filled=false, inside=false, sloped=false, material={}
-  name=branches, filled=false, inside=false, sloped=true, material={}
-  name=water, filled=false, inside=false, sloped=false, material={}
-  name=sky light, filled=false, inside=false, sloped=false, material={}
-  name=wooden stairs, filled=false, inside=true, sloped=false, material={}
-  name=metal stairs, filled=false, inside=false, sloped=false, material={}
-  name=stone stairs, filled=false, inside=true, sloped=false, material={}
+  name=concrete, filled=false, inside=false, sloped=false, material={Game{Name=TestMap}, Name=concrete}
+  name=concrete floor, filled=false, inside=true, sloped=false, material={Game{Name=TestMap}, Name=concrete}
+  name=stone floor, filled=false, inside=true, sloped=false, material={Game{Name=TestMap}, Name=stone}
+  name=grass, filled=false, inside=false, sloped=true, material={Game{Name=TestMap}, Name=grass}
+  name=rock, filled=false, inside=false, sloped=false, material={Game{Name=TestMap}, Name=rock}
+  name=wood, filled=false, inside=true, sloped=false, material={Game{Name=TestMap}, Name=wood}
+  name=tiled, filled=false, inside=false, sloped=false, material={Game{Name=TestMap}, Name=tiled}
+  name=metal, filled=false, inside=false, sloped=false, material={Game{Name=TestMap}, Name=metal}
+  name=asphalt, filled=false, inside=false, sloped=false, material={Game{Name=TestMap}, Name=asphalt}
+  name=roof tiles, filled=false, inside=false, sloped=false, material={Game{Name=TestMap}, Name=roof tiles}
+  name=black roof tiles, filled=false, inside=false, sloped=false, material={Game{Name=TestMap}, Name=black roof tiles}
+  name=branches, filled=false, inside=false, sloped=true, material={Game{Name=TestMap}, Name=branches}
+  name=water, filled=false, inside=false, sloped=false, material={Game{Name=TestMap}, Name=water}
+  name=sky light, filled=false, inside=false, sloped=false, material={Game{Name=TestMap}, Name=wood}
+  name=wooden stairs, filled=false, inside=true, sloped=false, material={Game{Name=TestMap}, Name=wood}
+  name=metal stairs, filled=false, inside=false, sloped=false, material={Game{Name=TestMap}, Name=metal}
+  name=stone stairs, filled=false, inside=true, sloped=false, material={Game{Name=TestMap}, Name=stone}
 ], items=[
-  name=arm chair
-  name=bed
-  name=bed-roll
-  name=bench
-  name=bureau
-  name=chair
-  name=counter
-  name=cupboard
-  name=ladder
-  name=lamp
-  name=none
-  name=refrigerator
-  name=shelves
-  name=shrubbery
-  name=sink
-  name=sofa
-  name=storage
-  name=table
-  name=tree trunk
-  name=work bench
+  name=arm chair, material={}
+  name=bed, material={}
+  name=bed-roll, material={}
+  name=bench, material={}
+  name=bureau, material={}
+  name=chair, material={}
+  name=counter, material={}
+  name=cupboard, material={}
+  name=ladder, material={}
+  name=lamp, material={}
+  name=none, material={}
+  name=refrigerator, material={}
+  name=shelves, material={}
+  name=shrubbery, material={}
+  name=sink, material={}
+  name=sofa, material={}
+  name=storage, material={}
+  name=table, material={}
+  name=tree trunk, material={}
+  name=work bench, material={}
 ], materials=[
   name=asphalt
   name=barbed
@@ -128,7 +176,7 @@ name=TestMap, areas=[
   name=metal
   name=rock
   name=roof tiles
-  name=stones
+  name=stone
   name=tiled
   name=tree trunk
   name=water

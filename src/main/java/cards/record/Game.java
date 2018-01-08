@@ -652,12 +652,12 @@ public class Game implements RecordInterface {
 
 		@Override
 		protected int readTop() {
-			return store.getInt(0, 16);
+			return store.getInt(0, 20);
 		}
 
 		@Override
 		protected void changeTop(int value) {
-			store.setInt(0, 16, value);
+			store.setInt(0, 20, value);
 		}
 
 		@Override
@@ -686,7 +686,7 @@ public class Game implements RecordInterface {
 		for (Area sub : getAreas())
 			sub.output(write, iterate - 1);
 		write.endSub();
-		write.field("rules", getRules(), false);
+		write.strField("rules", "{" + getRules().keys() + "}", false);
 		write.sub("characters", false);
 		for (Character sub : getCharacters())
 			sub.output(write, iterate - 1);
@@ -749,7 +749,7 @@ public class Game implements RecordInterface {
 	}
 
 	public boolean parseKey(Parser parser) {
-		String name = parser.getString("name");
+		String name = parser.getRelationString("name");
 		IndexGameName idx = new IndexGameName(name);
 		parser.finishRelation();
 		rec = idx.nextRec;
@@ -759,12 +759,13 @@ public class Game implements RecordInterface {
 	private void parseFields(Parser parser, ChangeGame record) {
 		if (parser.hasSub("areas"))
 			new Area(store).parse(parser, record);
-		parser.getRelation("rules", () -> {
+		parser.getRelation("rules", (int recNr) -> {
 			Rules rec = new Rules(store);
 			boolean found = rec.parseKey(parser);
+			record.setRec(recNr);
 			record.setRules(rec);
 			return found;
-		});
+		}, getRec());
 		if (parser.hasSub("characters"))
 			new Character(store).parse(parser, record);
 		if (parser.hasSub("walls")) {

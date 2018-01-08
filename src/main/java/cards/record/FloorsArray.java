@@ -1,6 +1,7 @@
 package cards.record;
 
 import java.io.IOException;
+import java.io.StringWriter;
 import java.util.Iterator;
 
 import com.betterbe.memorydb.file.Parser;
@@ -123,21 +124,38 @@ public class FloorsArray implements Iterable<FloorsArray>, Iterator<FloorsArray>
 		write.field("filled", isFilled(), false);
 		write.field("inside", isInside(), false);
 		write.field("sloped", isSloped(), false);
-		write.field("material", "{" + getMaterial().keys() + "}", false);
+		write.strField("material", "{" + getMaterial().keys() + "}", false);
 		write.endRecord();
+	}
+
+	@Override
+	public String toString() {
+		Write write = new Write(new StringWriter());
+		try {
+			output(write, 4);
+		} catch (IOException e) {
+			throw new RuntimeException(e);
+		}
+		return write.toString();
 	}
 
 	public void parse(Parser parser) {
 		FloorsArray record = this;
-			record.setName(parser.getString("name"));
-			record.setFilled(StringUtils.equals(parser.getString("filled"), "true"));
-			record.setInside(StringUtils.equals(parser.getString("inside"), "true"));
-			record.setSloped(StringUtils.equals(parser.getString("sloped"), "true"));
-			parser.getRelation("material", () -> {
-				Material rec = new Material(store);
-				boolean found = rec.parseKey(parser, null);
-				record.setMaterial(rec);
-				return found;
-			});
+		record.setName(null);
+		record.setFilled(false);
+		record.setInside(false);
+		record.setSloped(false);
+		record.setMaterial(null);
+		record.setName(parser.getString("name"));
+		record.setFilled(StringUtils.equals(parser.getString("filled"), "true"));
+		record.setInside(StringUtils.equals(parser.getString("inside"), "true"));
+		record.setSloped(StringUtils.equals(parser.getString("sloped"), "true"));
+		parser.getRelation("material", (int recNr) -> {
+			Material rec = new Material(store);
+			boolean found = rec.parseKey(parser, new Game(store, this.rec));
+			idx=recNr;
+			record.setMaterial(rec);
+			return found;
+		}, idx);
 	}
 }

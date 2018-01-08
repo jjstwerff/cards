@@ -68,7 +68,7 @@ public class Skill implements RecordInterface {
 	public void output(Write write, int iterate) throws IOException {
 		if (rec == 0 || iterate <= 0)
 			return;
-		write.field("card", getCard(), true);
+		write.strField("card", "{" + getCard().keys() + "}", true);
 		write.field("state", getState(), false);
 		write.endRecord();
 	}
@@ -98,10 +98,10 @@ public class Skill implements RecordInterface {
 	public void parse(Parser parser, Character parent) {
 		while (parser.getSub()) {
 			Card card = new Card(store);
-			parser.getRelation("card", () -> {
+			parser.getRelation("card", (int recNr) -> {
 				card.parseKey(parser, null);
 				return true;
-			});
+			}, -1);
 			Character.IndexSkills idx = parent.new IndexSkills(this, card.getName());
 			if (idx.nextRec == 0) {
 				try (ChangeSkill record = new ChangeSkill(parent)) {
@@ -119,15 +119,16 @@ public class Skill implements RecordInterface {
 
 	public boolean parseKey(Parser parser, Character parentRec) {
 		Character parent = parentRec == null ? new Character(store) : parentRec;
-		parser.getRelation("Character", () -> {
+		parser.getRelation("Character", (int recNr) -> {
+			parent.setRec(recNr);
 			parent.parseKey(parser, null);
 			return true;
-		});
+		}, getRec());
 		Card card = new Card(store);
-		parser.getRelation("card", () -> {
+		parser.getRelation("card", (int recNr) -> {
 			card.parseKey(parser, null);
 			return true;
-		});
+		}, -1);
 		Character.IndexSkills idx = parent.new IndexSkills(this, card.getName());
 		parser.finishRelation();
 		rec = idx.nextRec;

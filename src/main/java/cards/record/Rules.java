@@ -386,12 +386,12 @@ public class Rules implements RecordInterface {
 
 		@Override
 		protected int readTop() {
-			return store.getInt(0, 12);
+			return store.getInt(0, 16);
 		}
 
 		@Override
 		protected void changeTop(int value) {
-			store.setInt(0, 12, value);
+			store.setInt(0, 16, value);
 		}
 
 		@Override
@@ -466,7 +466,7 @@ public class Rules implements RecordInterface {
 	}
 
 	public boolean parseKey(Parser parser) {
-		String name = parser.getString("name");
+		String name = parser.getRelationString("name");
 		IndexRulesName idx = new IndexRulesName(name);
 		parser.finishRelation();
 		rec = idx.nextRec;

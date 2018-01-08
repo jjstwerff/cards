@@ -1,6 +1,7 @@
 package cards.record;
 
 import java.io.IOException;
+import java.io.StringWriter;
 import java.util.Iterator;
 
 import com.betterbe.memorydb.file.Parser;
@@ -142,14 +143,32 @@ public class DArray implements Iterable<DArray>, Iterator<DArray>{
 		write.endRecord();
 	}
 
+	@Override
+	public String toString() {
+		Write write = new Write(new StringWriter());
+		try {
+			output(write, 4);
+		} catch (IOException e) {
+			throw new RuntimeException(e);
+		}
+		return write.toString();
+	}
+
 	public void parse(Parser parser) {
 		DArray record = this;
-			record.setL((byte) parser.getInt("l"));
-			record.setT((byte) parser.getInt("t"));
-			record.setR((byte) parser.getInt("r"));
-			record.setF((byte) parser.getInt("f"));
-			record.setI((byte) parser.getInt("i"));
-			record.setD((byte) parser.getInt("d"));
-			record.setH((short) parser.getInt("h"));
+		record.setL((byte)0);
+		record.setT((byte)0);
+		record.setR((byte)0);
+		record.setF((byte)0);
+		record.setI((byte)0);
+		record.setD((byte)0);
+		record.setH((short)0);
+		record.setL((byte) parser.getInt("l"));
+		record.setT((byte) parser.getInt("t"));
+		record.setR((byte) parser.getInt("r"));
+		record.setF((byte) parser.getInt("f"));
+		record.setI((byte) parser.getInt("i"));
+		record.setD((byte) parser.getInt("d"));
+		record.setH((short) parser.getInt("h"));
 	}
 }

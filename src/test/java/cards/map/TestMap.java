@@ -16,7 +16,9 @@ public class TestMap extends Tests {
 	public void testMap() {
 		Store store = new Store(20);
 		Game game = new Game(store);
-		game.parse(new DBParser(resource(this, "testMap.txt")));
+		try (DBParser parser = new DBParser(resource(this, "testMap.txt"))) {
+			game.parse(parser);
+		}
 		game = game.new IndexGameName().iterator().next();
 		Assert.assertEquals(content(this, "testMap2.txt"), game.toString());
 

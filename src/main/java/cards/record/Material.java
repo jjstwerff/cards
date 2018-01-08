@@ -104,11 +104,12 @@ public class Material implements RecordInterface {
 
 	public boolean parseKey(Parser parser, Game parentRec) {
 		Game parent = parentRec == null ? new Game(store) : parentRec;
-		parser.getRelation("Game", () -> {
+		parser.getRelation("Game", (int recNr) -> {
+			parent.setRec(recNr);
 			parent.parseKey(parser);
 			return true;
-		});
-		String name = parser.getString("name");
+		}, getRec());
+		String name = parser.getRelationString("name");
 		Game.IndexMaterials idx = parent.new IndexMaterials(this, name);
 		parser.finishRelation();
 		rec = idx.nextRec;

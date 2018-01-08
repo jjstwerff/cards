@@ -1,6 +1,7 @@
 package cards.record;
 
 import java.io.IOException;
+import java.io.StringWriter;
 import java.util.Iterator;
 
 import com.betterbe.memorydb.file.Parser;
@@ -155,31 +156,52 @@ public class WallsArray implements Iterable<WallsArray>, Iterator<WallsArray>{
 		write.field("height", getHeight(), false);
 		write.field("sloped", isSloped(), false);
 		write.field("combineLevel", getCombineLevel(), false);
-		write.field("material", "{" + getMaterial().keys() + "}", false);
-		write.field("item", "{" + getItem().keys() + "}", false);
+		write.strField("material", "{" + getMaterial().keys() + "}", false);
+		write.strField("item", "{" + getItem().keys() + "}", false);
 		write.field("inwards", isInwards(), false);
 		write.endRecord();
 	}
 
+	@Override
+	public String toString() {
+		Write write = new Write(new StringWriter());
+		try {
+			output(write, 4);
+		} catch (IOException e) {
+			throw new RuntimeException(e);
+		}
+		return write.toString();
+	}
+
 	public void parse(Parser parser) {
 		WallsArray record = this;
-			record.setName(parser.getString("name"));
-			record.setThickness((byte) parser.getInt("thickness"));
-			record.setHeight((byte) parser.getInt("height"));
-			record.setSloped(StringUtils.equals(parser.getString("sloped"), "true"));
-			record.setCombineLevel((byte) parser.getInt("combineLevel"));
-			parser.getRelation("material", () -> {
-				Material rec = new Material(store);
-				boolean found = rec.parseKey(parser, null);
-				record.setMaterial(rec);
-				return found;
-			});
-			parser.getRelation("item", () -> {
-				Item rec = new Item(store);
-				boolean found = rec.parseKey(parser, null);
-				record.setItem(rec);
-				return found;
-			});
-			record.setInwards(StringUtils.equals(parser.getString("inwards"), "true"));
+		record.setName(null);
+		record.setThickness((byte)0);
+		record.setHeight((byte)0);
+		record.setSloped(false);
+		record.setCombineLevel((byte)0);
+		record.setMaterial(null);
+		record.setItem(null);
+		record.setInwards(false);
+		record.setName(parser.getString("name"));
+		record.setThickness((byte) parser.getInt("thickness"));
+		record.setHeight((byte) parser.getInt("height"));
+		record.setSloped(StringUtils.equals(parser.getString("sloped"), "true"));
+		record.setCombineLevel((byte) parser.getInt("combineLevel"));
+		parser.getRelation("material", (int recNr) -> {
+			Material rec = new Material(store);
+			boolean found = rec.parseKey(parser, new Game(store, this.rec));
+			idx=recNr;
+			record.setMaterial(rec);
+			return found;
+		}, idx);
+		parser.getRelation("item", (int recNr) -> {
+			Item rec = new Item(store);
+			boolean found = rec.parseKey(parser, new Game(store, this.rec));
+			idx=recNr;
+			record.setItem(rec);
+			return found;
+		}, idx);
+		record.setInwards(StringUtils.equals(parser.getString("inwards"), "true"));
 	}
 }

@@ -1,4 +1,21 @@
-name=TestMap, wall=[
+name=TestMap, materials=[
+  name=concrete
+  name=grass
+  name=dirt
+  name=rock
+  name=barbed
+  name=bricks
+  name=wood
+  name=stone
+  name=metal
+  name=tiled
+  name=asphalt
+  name=roof tiles
+  name=black roof tiles
+  name=tree trunk
+  name=branches
+  name=water
+], walls=[
   name=open
   name=rock, material={name=rock}
   name=roadside
@@ -39,7 +56,7 @@ name=TestMap, wall=[
   name=tiled, material={name=tiled}
   name=metal, material={name=metal}
   name=asphalt, material={name=asphalt}
-  name=roof tiles, material={name=root tiles}
+  name=roof tiles, material={name=roof tiles}
   name=black roof tiles, material={name=black roof tiles}
   name=branches, sloped=true, material={name=branches}
   name=water, material={name=water}
@@ -47,23 +64,6 @@ name=TestMap, wall=[
   name=wooden stairs, inside=true, material={name=wood}
   name=metal stairs, material={name=metal}
   name=stone stairs, inside=true, material={name=stone}
-], materials=[
-  name=concrete
-  name=grass
-  name=dirt
-  name=rock
-  name=barbed
-  name=bricks
-  name=wood
-  name=stones
-  name=metal
-  name=tiled
-  name=asphalt
-  name=roof tiles
-  name=black roof tiles
-  name=tree trunk
-  name=branches
-  name=water
 ], items=[
   name=none
   name=chair

@@ -140,12 +140,12 @@ public class Statistic implements RecordInterface {
 
 		@Override
 		protected int readTop() {
-			return store.getInt(0, 4);
+			return store.getInt(0, 8);
 		}
 
 		@Override
 		protected void changeTop(int value) {
-			store.setInt(0, 4, value);
+			store.setInt(0, 8, value);
 		}
 
 		@Override
@@ -256,12 +256,12 @@ public class Statistic implements RecordInterface {
 
 		@Override
 		protected int readTop() {
-			return store.getInt(0, 8);
+			return store.getInt(0, 12);
 		}
 
 		@Override
 		protected void changeTop(int value) {
-			store.setInt(0, 8, value);
+			store.setInt(0, 12, value);
 		}
 
 		@Override
@@ -329,7 +329,7 @@ public class Statistic implements RecordInterface {
 	}
 
 	public boolean parseKey(Parser parser) {
-		String name = parser.getString("name");
+		String name = parser.getRelationString("name");
 		IndexStatisticName idx = new IndexStatisticName(name);
 		parser.finishRelation();
 		rec = idx.nextRec;

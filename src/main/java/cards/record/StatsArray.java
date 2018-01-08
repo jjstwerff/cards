@@ -1,6 +1,7 @@
 package cards.record;
 
 import java.io.IOException;
+import java.io.StringWriter;
 import java.util.Iterator;
 
 import com.betterbe.memorydb.file.Parser;
@@ -91,19 +92,33 @@ public class StatsArray implements Iterable<StatsArray>, Iterator<StatsArray>{
 	public void output(Write write, int iterate) throws IOException {
 		if (rec == 0 || iterate <= 0)
 			return;
-		write.field("statistic", "{" + getStatistic().keys() + "}", true);
+		write.strField("statistic", "{" + getStatistic().keys() + "}", true);
 		write.field("value", getValue(), false);
 		write.endRecord();
 	}
 
+	@Override
+	public String toString() {
+		Write write = new Write(new StringWriter());
+		try {
+			output(write, 4);
+		} catch (IOException e) {
+			throw new RuntimeException(e);
+		}
+		return write.toString();
+	}
+
 	public void parse(Parser parser) {
 		StatsArray record = this;
-			parser.getRelation("statistic", () -> {
-				Statistic rec = new Statistic(store);
-				boolean found = rec.parseKey(parser);
-				record.setStatistic(rec);
-				return found;
-			});
-			record.setValue((byte) parser.getInt("value"));
+		record.setStatistic(null);
+		record.setValue((byte)0);
+		parser.getRelation("statistic", (int recNr) -> {
+			Statistic rec = new Statistic(store);
+			boolean found = rec.parseKey(parser);
+			idx=recNr;
+			record.setStatistic(rec);
+			return found;
+		}, idx);
+		record.setValue((byte) parser.getInt("value"));
 	}
 }

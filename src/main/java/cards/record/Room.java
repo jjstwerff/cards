@@ -248,11 +248,12 @@ public class Room implements RecordInterface {
 
 	public boolean parseKey(Parser parser, Area parentRec) {
 		Area parent = parentRec == null ? new Area(store) : parentRec;
-		parser.getRelation("Area", () -> {
+		parser.getRelation("Area", (int recNr) -> {
+			parent.setRec(recNr);
 			parent.parseKey(parser, null);
 			return true;
-		});
-		String name = parser.getString("name");
+		}, getRec());
+		String name = parser.getRelationString("name");
 		Area.IndexRooms idx = parent.new IndexRooms(this, name);
 		parser.finishRelation();
 		rec = idx.nextRec;

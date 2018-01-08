@@ -130,10 +130,11 @@ public class Map implements RecordInterface {
 
 	public boolean parseKey(Parser parser, Area parentRec) {
 		Area parent = parentRec == null ? new Area(store) : parentRec;
-		parser.getRelation("Area", () -> {
+		parser.getRelation("Area", (int recNr) -> {
+			parent.setRec(recNr);
 			parent.parseKey(parser, null);
 			return true;
-		});
+		}, getRec());
 		int x = parser.getInt("x");
 		int y = parser.getInt("y");
 		int z = parser.getInt("z");

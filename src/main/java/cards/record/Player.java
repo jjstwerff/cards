@@ -271,12 +271,12 @@ public class Player implements RecordInterface {
 
 		@Override
 		protected int readTop() {
-			return store.getInt(0, 20);
+			return store.getInt(0, 24);
 		}
 
 		@Override
 		protected void changeTop(int value) {
-			store.setInt(0, 20, value);
+			store.setInt(0, 24, value);
 		}
 
 		@Override
@@ -349,7 +349,7 @@ public class Player implements RecordInterface {
 	}
 
 	public boolean parseKey(Parser parser) {
-		String name = parser.getString("name");
+		String name = parser.getRelationString("name");
 		IndexPlayerName idx = new IndexPlayerName(name);
 		parser.finishRelation();
 		rec = idx.nextRec;

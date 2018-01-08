@@ -82,7 +82,7 @@ public class Connect implements RecordInterface {
 		for (ChecksArray sub: getChecks())
 			sub.output(write, iterate - 1);
 		write.endSub();
-		write.field("to", getTo(), false);
+		write.strField("to", "{" + getTo().keys() + "}", false);
 		write.endRecord();
 	}
 
@@ -128,10 +128,11 @@ public class Connect implements RecordInterface {
 
 	public boolean parseKey(Parser parser, Room parentRec) {
 		Room parent = parentRec == null ? new Room(store) : parentRec;
-		parser.getRelation("Room", () -> {
+		parser.getRelation("Room", (int recNr) -> {
+			parent.setRec(recNr);
 			parent.parseKey(parser, null);
 			return true;
-		});
+		}, getRec());
 		int nr = parser.getInt("nr");
 		Room.IndexConnection idx = parent.new IndexConnection(this, nr);
 		parser.finishRelation();
@@ -148,11 +149,12 @@ public class Connect implements RecordInterface {
 				sub.parse(parser);
 			}
 		}
-		parser.getRelation("to", () -> {
+		parser.getRelation("to", (int recNr) -> {
 			Room rec = new Room(store);
-			boolean found = rec.parseKey(parser, null);
+			boolean found = rec.parseKey(parser, getUpRecord().getUpRecord());
+			record.setRec(recNr);
 			record.setTo(rec);
 			return found;
-		});
+		}, getRec());
 	}
 }

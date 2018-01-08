@@ -119,11 +119,12 @@ public class Card implements RecordInterface {
 
 	public boolean parseKey(Parser parser, Rules parentRec) {
 		Rules parent = parentRec == null ? new Rules(store) : parentRec;
-		parser.getRelation("Rules", () -> {
+		parser.getRelation("Rules", (int recNr) -> {
+			parent.setRec(recNr);
 			parent.parseKey(parser);
 			return true;
-		});
-		String name = parser.getString("name");
+		}, getRec());
+		String name = parser.getRelationString("name");
 		Rules.IndexCards idx = parent.new IndexCards(this, name);
 		parser.finishRelation();
 		rec = idx.nextRec;
