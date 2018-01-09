@@ -69,7 +69,7 @@ name=TestMap, areas=[
       l=0, t=0, r=0, f=0, i=0, d=0, h=0
     ]
   ]
-], rules={}, characters=[
+], characters=[
 ], walls=[
   name=open, thickness=0, height=0, sloped=false, combineLevel=0, material={}, item={}, inwards=false
   name=rock, thickness=0, height=0, sloped=false, combineLevel=0, material={Game{Name=TestMap}, Name=rock}, item={}, 
@@ -144,26 +144,26 @@ name=TestMap, areas=[
   name=metal stairs, filled=false, inside=false, sloped=false, material={Game{Name=TestMap}, Name=metal}
   name=stone stairs, filled=false, inside=true, sloped=false, material={Game{Name=TestMap}, Name=stone}
 ], items=[
-  name=arm chair, material={}
-  name=bed, material={}
-  name=bed-roll, material={}
-  name=bench, material={}
-  name=bureau, material={}
-  name=chair, material={}
-  name=counter, material={}
-  name=cupboard, material={}
-  name=ladder, material={}
-  name=lamp, material={}
-  name=none, material={}
-  name=refrigerator, material={}
-  name=shelves, material={}
-  name=shrubbery, material={}
-  name=sink, material={}
-  name=sofa, material={}
-  name=storage, material={}
-  name=table, material={}
-  name=tree trunk, material={}
-  name=work bench, material={}
+  name=arm chair
+  name=bed
+  name=bed-roll
+  name=bench
+  name=bureau
+  name=chair
+  name=counter
+  name=cupboard
+  name=ladder
+  name=lamp
+  name=none
+  name=refrigerator
+  name=shelves
+  name=shrubbery
+  name=sink
+  name=sofa
+  name=storage
+  name=table
+  name=tree trunk
+  name=work bench
 ], materials=[
   name=asphalt
   name=barbed

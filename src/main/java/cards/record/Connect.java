@@ -82,7 +82,7 @@ public class Connect implements RecordInterface {
 		for (ChecksArray sub: getChecks())
 			sub.output(write, iterate - 1);
 		write.endSub();
-		write.strField("to", "{" + getTo().keys() + "}", false);
+		write.field("to", getTo(), false);
 		write.endRecord();
 	}
 

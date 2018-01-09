@@ -72,7 +72,7 @@ public class Member implements RecordInterface {
 	public void output(Write write, int iterate) throws IOException {
 		if (rec == 0 || iterate <= 0)
 			return;
-		write.strField("game", "{" + getGame().keys() + "}", true);
+		write.field("game", getGame(), true);
 		write.field("role", getRole(), false);
 		write.field("xp", getXp(), false);
 		write.endRecord();

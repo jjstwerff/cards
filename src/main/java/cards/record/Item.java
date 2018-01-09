@@ -62,7 +62,7 @@ public class Item implements RecordInterface {
 		if (rec == 0 || iterate <= 0)
 			return;
 		write.field("name", getName(), true);
-		write.strField("material", "{" + getMaterial().keys() + "}", false);
+		write.field("material", getMaterial(), false);
 		write.endRecord();
 	}
 

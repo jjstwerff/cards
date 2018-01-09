@@ -686,7 +686,7 @@ public class Game implements RecordInterface {
 		for (Area sub : getAreas())
 			sub.output(write, iterate - 1);
 		write.endSub();
-		write.strField("rules", "{" + getRules().keys() + "}", false);
+		write.field("rules", getRules(), false);
 		write.sub("characters", false);
 		for (Character sub : getCharacters())
 			sub.output(write, iterate - 1);

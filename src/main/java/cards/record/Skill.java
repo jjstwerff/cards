@@ -68,7 +68,7 @@ public class Skill implements RecordInterface {
 	public void output(Write write, int iterate) throws IOException {
 		if (rec == 0 || iterate <= 0)
 			return;
-		write.strField("card", "{" + getCard().keys() + "}", true);
+		write.field("card", getCard(), true);
 		write.field("state", getState(), false);
 		write.endRecord();
 	}
