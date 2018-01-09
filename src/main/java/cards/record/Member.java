@@ -108,6 +108,13 @@ public class Member implements RecordInterface {
 				return true;
 			}, -1);
 			Player.IndexMember idx = parent.new IndexMember(this, game.getName());
+			if (parser.isDelete(idx.nextRec)) {
+				try (ChangeMember record = new ChangeMember(this)) {
+					store.free(record.getRec());
+					record.setRec(0);
+				}
+				continue;
+			}
 			if (idx.nextRec == 0) {
 				try (ChangeMember record = new ChangeMember(parent)) {
 					record.setGame(game);

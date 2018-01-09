@@ -112,6 +112,13 @@ public class Connect implements RecordInterface {
 		while (parser.getSub()) {
 			int nr = parser.getInt("nr");
 			Room.IndexConnection idx = parent.new IndexConnection(this, nr);
+			if (parser.isDelete(idx.nextRec)) {
+				try (ChangeConnect record = new ChangeConnect(this)) {
+					store.free(record.getRec());
+					record.setRec(0);
+				}
+				continue;
+			}
 			if (idx.nextRec == 0) {
 				try (ChangeConnect record = new ChangeConnect(parent)) {
 					record.setNr(nr);

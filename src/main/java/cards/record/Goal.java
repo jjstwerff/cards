@@ -112,6 +112,13 @@ public class Goal implements RecordInterface {
 		while (parser.getSub()) {
 			String name = parser.getString("name");
 			Area.IndexGoal idx = parent.new IndexGoal(this, name);
+			if (parser.isDelete(idx.nextRec)) {
+				try (ChangeGoal record = new ChangeGoal(this)) {
+					store.free(record.getRec());
+					record.setRec(0);
+				}
+				continue;
+			}
 			if (idx.nextRec == 0) {
 				try (ChangeGoal record = new ChangeGoal(parent)) {
 					record.setName(name);

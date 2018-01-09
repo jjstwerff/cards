@@ -88,6 +88,13 @@ public class Material implements RecordInterface {
 		while (parser.getSub()) {
 			String name = parser.getString("name");
 			Game.IndexMaterials idx = parent.new IndexMaterials(this, name);
+			if (parser.isDelete(idx.nextRec)) {
+				try (ChangeMaterial record = new ChangeMaterial(this)) {
+					store.toFree(record.getRec());
+					record.setRec(0);
+				}
+				continue;
+			}
 			if (idx.nextRec == 0) {
 				try (ChangeMaterial record = new ChangeMaterial(parent)) {
 					record.setName(name);

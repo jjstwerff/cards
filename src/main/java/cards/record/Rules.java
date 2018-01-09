@@ -386,12 +386,12 @@ public class Rules implements RecordInterface {
 
 		@Override
 		protected int readTop() {
-			return store.getInt(0, 16);
+			return store.getInt(0, 20);
 		}
 
 		@Override
 		protected void changeTop(int value) {
-			store.setInt(0, 16, value);
+			store.setInt(0, 20, value);
 		}
 
 		@Override
@@ -451,6 +451,13 @@ public class Rules implements RecordInterface {
 		while (parser.getSub()) {
 			String name = parser.getString("name");
 			IndexRulesName idx = new IndexRulesName(name);
+			if (parser.isDelete(idx.nextRec)) {
+				try (ChangeRules record = new ChangeRules(this)) {
+					store.toFree(record.getRec());
+					record.setRec(0);
+				}
+				continue;
+			}
 			if (idx.nextRec == 0) {
 				try (ChangeRules record = new ChangeRules(store)) {
 					record.setName(name);

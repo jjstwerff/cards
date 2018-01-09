@@ -103,6 +103,13 @@ public class Card implements RecordInterface {
 		while (parser.getSub()) {
 			String name = parser.getString("name");
 			Rules.IndexCards idx = parent.new IndexCards(this, name);
+			if (parser.isDelete(idx.nextRec)) {
+				try (ChangeCard record = new ChangeCard(this)) {
+					store.toFree(record.getRec());
+					record.setRec(0);
+				}
+				continue;
+			}
 			if (idx.nextRec == 0) {
 				try (ChangeCard record = new ChangeCard(parent)) {
 					record.setName(name);

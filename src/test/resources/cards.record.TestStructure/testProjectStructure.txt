@@ -114,10 +114,10 @@ name=Wall, size=17
 Indexes
 name=statisticName, record=Statistic, fields=[
 	field=name
-], fieldPos=104, flagPos=96, parentPos=8, primary=true
+], fieldPos=104, flagPos=96, parentPos=12, primary=true
 name=statisticNr, record=Statistic, fields=[
 	field=nr
-], fieldPos=176, flagPos=168, parentPos=12
+], fieldPos=176, flagPos=168, parentPos=16
 name=races, record=Race, fields=[
 	field=name
 ], fieldPos=136, flagPos=128, parentPos=8, primary=true
@@ -126,7 +126,7 @@ name=cards, record=Card, fields=[
 ], fieldPos=152, flagPos=144, parentPos=12, primary=true
 name=rulesName, record=Rules, fields=[
 	field=name
-], fieldPos=136, flagPos=128, parentPos=16, primary=true
+], fieldPos=136, flagPos=128, parentPos=20, primary=true
 name=connection, record=Connect, fields=[
 	field=nr
 ], fieldPos=152, flagPos=144, parentPos=24, primary=true
@@ -158,10 +158,10 @@ name=materials, record=Material, fields=[
 ], fieldPos=104, flagPos=96, parentPos=40, primary=true
 name=gameName, record=Game, fields=[
 	field=name
-], fieldPos=360, flagPos=352, parentPos=20, primary=true
+], fieldPos=360, flagPos=352, parentPos=24, primary=true
 name=member, record=Member, fields=[
 	field=game.name
 ], fieldPos=120, flagPos=112, parentPos=24, primary=true
 name=playerName, record=Player, fields=[
 	field=name
-], fieldPos=232, flagPos=224, parentPos=24, primary=true
+], fieldPos=232, flagPos=224, parentPos=28, primary=true

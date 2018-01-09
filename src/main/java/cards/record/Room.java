@@ -232,6 +232,13 @@ public class Room implements RecordInterface {
 		while (parser.getSub()) {
 			String name = parser.getString("name");
 			Area.IndexRooms idx = parent.new IndexRooms(this, name);
+			if (parser.isDelete(idx.nextRec)) {
+				try (ChangeRoom record = new ChangeRoom(this)) {
+					store.toFree(record.getRec());
+					record.setRec(0);
+				}
+				continue;
+			}
 			if (idx.nextRec == 0) {
 				try (ChangeRoom record = new ChangeRoom(parent)) {
 					record.setName(name);

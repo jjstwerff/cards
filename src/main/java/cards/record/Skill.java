@@ -103,6 +103,13 @@ public class Skill implements RecordInterface {
 				return true;
 			}, -1);
 			Character.IndexSkills idx = parent.new IndexSkills(this, card.getName());
+			if (parser.isDelete(idx.nextRec)) {
+				try (ChangeSkill record = new ChangeSkill(this)) {
+					store.free(record.getRec());
+					record.setRec(0);
+				}
+				continue;
+			}
 			if (idx.nextRec == 0) {
 				try (ChangeSkill record = new ChangeSkill(parent)) {
 					record.setCard(card);

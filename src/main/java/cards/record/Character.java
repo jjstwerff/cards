@@ -216,6 +216,13 @@ public class Character implements RecordInterface {
 		while (parser.getSub()) {
 			String name = parser.getString("name");
 			Game.IndexCharacters idx = parent.new IndexCharacters(this, name);
+			if (parser.isDelete(idx.nextRec)) {
+				try (ChangeCharacter record = new ChangeCharacter(this)) {
+					store.toFree(record.getRec());
+					record.setRec(0);
+				}
+				continue;
+			}
 			if (idx.nextRec == 0) {
 				try (ChangeCharacter record = new ChangeCharacter(parent)) {
 					record.setName(name);

@@ -1,5 +1,4 @@
 - walls with specified thickness
-    read data structure
 	inner points are not the same position as outer points
 		each wall have 2 sides involved.. unless there is an inside area
 	draw floor to better show what point is part of what tile

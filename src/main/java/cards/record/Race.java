@@ -91,6 +91,13 @@ public class Race implements RecordInterface {
 		while (parser.getSub()) {
 			String name = parser.getString("name");
 			Rules.IndexRaces idx = parent.new IndexRaces(this, name);
+			if (parser.isDelete(idx.nextRec)) {
+				try (ChangeRace record = new ChangeRace(this)) {
+					store.free(record.getRec());
+					record.setRec(0);
+				}
+				continue;
+			}
 			if (idx.nextRec == 0) {
 				try (ChangeRace record = new ChangeRace(parent)) {
 					record.setName(name);

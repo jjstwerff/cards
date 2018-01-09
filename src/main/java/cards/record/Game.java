@@ -652,12 +652,12 @@ public class Game implements RecordInterface {
 
 		@Override
 		protected int readTop() {
-			return store.getInt(0, 20);
+			return store.getInt(0, 24);
 		}
 
 		@Override
 		protected void changeTop(int value) {
-			store.setInt(0, 20, value);
+			store.setInt(0, 24, value);
 		}
 
 		@Override
@@ -734,6 +734,13 @@ public class Game implements RecordInterface {
 		while (parser.getSub()) {
 			String name = parser.getString("name");
 			IndexGameName idx = new IndexGameName(name);
+			if (parser.isDelete(idx.nextRec)) {
+				try (ChangeGame record = new ChangeGame(this)) {
+					store.toFree(record.getRec());
+					record.setRec(0);
+				}
+				continue;
+			}
 			if (idx.nextRec == 0) {
 				try (ChangeGame record = new ChangeGame(store)) {
 					record.setName(name);

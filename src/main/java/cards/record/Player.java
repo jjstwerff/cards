@@ -271,12 +271,12 @@ public class Player implements RecordInterface {
 
 		@Override
 		protected int readTop() {
-			return store.getInt(0, 24);
+			return store.getInt(0, 28);
 		}
 
 		@Override
 		protected void changeTop(int value) {
-			store.setInt(0, 24, value);
+			store.setInt(0, 28, value);
 		}
 
 		@Override
@@ -334,6 +334,13 @@ public class Player implements RecordInterface {
 		while (parser.getSub()) {
 			String name = parser.getString("name");
 			IndexPlayerName idx = new IndexPlayerName(name);
+			if (parser.isDelete(idx.nextRec)) {
+				try (ChangePlayer record = new ChangePlayer(this)) {
+					store.toFree(record.getRec());
+					record.setRec(0);
+				}
+				continue;
+			}
 			if (idx.nextRec == 0) {
 				try (ChangePlayer record = new ChangePlayer(store)) {
 					record.setName(name);

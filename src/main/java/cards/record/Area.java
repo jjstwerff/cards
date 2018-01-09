@@ -543,6 +543,13 @@ public class Area implements RecordInterface {
 		while (parser.getSub()) {
 			String name = parser.getString("name");
 			Game.IndexAreas idx = parent.new IndexAreas(this, name);
+			if (parser.isDelete(idx.nextRec)) {
+				try (ChangeArea record = new ChangeArea(this)) {
+					store.toFree(record.getRec());
+					record.setRec(0);
+				}
+				continue;
+			}
 			if (idx.nextRec == 0) {
 				try (ChangeArea record = new ChangeArea(parent)) {
 					record.setName(name);

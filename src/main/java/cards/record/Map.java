@@ -112,6 +112,13 @@ public class Map implements RecordInterface {
 			int y = parser.getInt("y");
 			int z = parser.getInt("z");
 			Area.IndexMaps idx = parent.new IndexMaps(this, x, y, z);
+			if (parser.isDelete(idx.nextRec)) {
+				try (ChangeMap record = new ChangeMap(this)) {
+					store.free(record.getRec());
+					record.setRec(0);
+				}
+				continue;
+			}
 			if (idx.nextRec == 0) {
 				try (ChangeMap record = new ChangeMap(parent)) {
 					record.setX(x);

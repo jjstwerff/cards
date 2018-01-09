@@ -92,6 +92,13 @@ public class Item implements RecordInterface {
 		while (parser.getSub()) {
 			String name = parser.getString("name");
 			Game.IndexItems idx = parent.new IndexItems(this, name);
+			if (parser.isDelete(idx.nextRec)) {
+				try (ChangeItem record = new ChangeItem(this)) {
+					store.toFree(record.getRec());
+					record.setRec(0);
+				}
+				continue;
+			}
 			if (idx.nextRec == 0) {
 				try (ChangeItem record = new ChangeItem(parent)) {
 					record.setName(name);
