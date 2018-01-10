@@ -1,4 +1,5 @@
 - more types of 90° angles to walls.. no crosses yet
+	two types of angles.. 
 - walls with specified thickness
 	inner points are not the same position as outer points
 		loop through the 6 walls instead of the 3 upper walls per tile
@@ -16,6 +17,12 @@
 - 15% walls: 8 sided towers
 - trapezoid bay window
 - first simple rounded tower / stairs
+- separate map with cached move of points: this is for efficiency to prevent several times recalculation
+	2 values per tile .. Left/Right both top.. for now 8 bytes.. more bit packing is not yet implemented
+	L/R direction of movement (0-47) possibly 94  .. 6 bits
+	L/R distance of movement in points (0-50)..      6 bits
+	L/R direction of normal (0-47) possibly 94..     6 bits		for round structures
+	height difference of point relative to center	 1 byte
 - indicators of player/NPC/item positions
 - very simple editor.. show current position/rotation.. allow to change current material/walls in directions
 - multiple levels and stairs.. including roofs.. do not show levels above the player
