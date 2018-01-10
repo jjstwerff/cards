@@ -1,10 +1,14 @@
+- more types of 90° angles to walls.. no crosses yet
 - walls with specified thickness
 	inner points are not the same position as outer points
-		each wall have 2 sides involved.. unless there is an inside area
-	draw floor to better show what point is part of what tile
-        introduce .. green for grass, brown for wood, grey for concrete and greyish light brown for dirt.
-- more types of 90° angles to walls.. no crosses yet
-- inside walls between rooms with possible crosses
+		loop through the 6 walls instead of the 3 upper walls per tile
+			add color numbers to to the defined materials
+			use this loop to fill the tile with the correct color
+		when the wall size = 0 stop with this routine
+		detect if one side of the wall is filled... stop with this routine
+			determine the resulting wall angles at the end points
+			move this point with the thickness relative to the 2 wall angles towards the tile
+- inside walls between rooms with possible crosses and connection to outer walls
 - doors / window indications
 	indicator of what is inside and what is outside the rooms
 	each type of door/window will have an indicator if they open outwards or inwards
