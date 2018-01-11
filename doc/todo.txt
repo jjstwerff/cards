@@ -1,3 +1,17 @@
+jetty integration
+- initial page load
+    jquery-ui "Dark Hive" - resizable / tabs / selectable
+    pane with walls / floors / items / height tools  / elements
+- undo buffer.. last action / last continues simple edits
+	elder content around a position
+- rotate world .. needed for easy drag/drop
+- drag select tiles to named elements / multiple layers
+	rename, copy, remove, add layers
+	tooltip with details.. ref of html page with details
+- select named element and edit details
+- save map and defined elements
+    flip/rotate element.. possibly 15% rotate
+
 - more types of 90° angles to walls.. no crosses yet
 	two types of angles.. 
 - walls with specified thickness
