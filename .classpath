@@ -22,6 +22,13 @@
 	<classpathentry kind="var" path="M2_REPO/org/eclipse/jetty/jetty-client/9.4.8.v20171121/jetty-client-9.4.8.v20171121.jar" sourcepath="M2_REPO/org/eclipse/jetty/jetty-client/9.4.8.v20171121/jetty-client-9.4.8.v20171121-sources.jar"/>
 	<classpathentry kind="var" path="M2_REPO/org/eclipse/jetty/jetty-xml/9.4.8.v20171121/jetty-xml-9.4.8.v20171121.jar" sourcepath="M2_REPO/org/eclipse/jetty/jetty-xml/9.4.8.v20171121/jetty-xml-9.4.8.v20171121-sources.jar"/>
 	<classpathentry kind="var" path="M2_REPO/org/eclipse/jetty/websocket/websocket-servlet/9.4.8.v20171121/websocket-servlet-9.4.8.v20171121.jar" sourcepath="M2_REPO/org/eclipse/jetty/websocket/websocket-servlet/9.4.8.v20171121/websocket-servlet-9.4.8.v20171121-sources.jar"/>
+	<classpathentry kind="var" path="M2_REPO/org/rythmengine/rythm-engine/1.2.1/rythm-engine-1.2.1.jar" sourcepath="M2_REPO/org/rythmengine/rythm-engine/1.2.1/rythm-engine-1.2.1-sources.jar"/>
+	<classpathentry kind="var" path="M2_REPO/org/eclipse/jdt/core/compiler/ecj/4.6.1/ecj-4.6.1.jar" sourcepath="M2_REPO/org/eclipse/jdt/core/compiler/ecj/4.6.1/ecj-4.6.1-sources.jar"/>
+	<classpathentry kind="var" path="M2_REPO/com/stevesoft/pat/pat/1.5.3/pat-1.5.3.jar" sourcepath="M2_REPO/com/stevesoft/pat/pat/1.5.3/pat-1.5.3-sources.jar"/>
+	<classpathentry kind="var" path="M2_REPO/org/apache/commons/commons-lang3/3.4/commons-lang3-3.4.jar" sourcepath="M2_REPO/org/apache/commons/commons-lang3/3.4/commons-lang3-3.4-sources.jar"/>
+	<classpathentry kind="var" path="M2_REPO/commons-io/commons-io/2.4/commons-io-2.4.jar" sourcepath="M2_REPO/commons-io/commons-io/2.4/commons-io-2.4-sources.jar"/>
+	<classpathentry kind="var" path="M2_REPO/com/alibaba/fastjson/1.2.11/fastjson-1.2.11.jar" sourcepath="M2_REPO/com/alibaba/fastjson/1.2.11/fastjson-1.2.11-sources.jar"/>
+	<classpathentry kind="var" path="M2_REPO/org/mvel/mvel2/2.2.8.Final/mvel2-2.2.8.Final.jar" sourcepath="M2_REPO/org/mvel/mvel2/2.2.8.Final/mvel2-2.2.8.Final-sources.jar"/>
 	<classpathentry kind="var" path="M2_REPO/commons-collections/commons-collections/3.2.1/commons-collections-3.2.1.jar" sourcepath="M2_REPO/commons-collections/commons-collections/3.2.1/commons-collections-3.2.1-sources.jar"/>
 	<classpathentry kind="var" path="M2_REPO/commons-lang/commons-lang/2.6/commons-lang-2.6.jar" sourcepath="M2_REPO/commons-lang/commons-lang/2.6/commons-lang-2.6-sources.jar"/>
 	<classpathentry kind="var" path="M2_REPO/ch/qos/logback/logback-classic/1.0.13/logback-classic-1.0.13.jar" sourcepath="M2_REPO/ch/qos/logback/logback-classic/1.0.13/logback-classic-1.0.13-sources.jar"/>
