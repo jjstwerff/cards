@@ -20,6 +20,7 @@ public class Setup {
 		WebSocketHandler wsHandler = new WebSocketHandler() {
 			@Override
 			public void configure(WebSocketServletFactory factory) {
+				factory.getPolicy().setIdleTimeout(10000);
 				factory.register(MyEchoSocket.class);
 			}
 		};
