@@ -28,6 +28,14 @@ public class WallsArray implements Iterable<WallsArray>, Iterator<WallsArray>{
 		this.size = store.getInt(rec, 20);
 	}
 
+	public WallsArray(WallsArray cur) {
+		this.store = cur.store;
+		this.rec = cur.rec;
+		this.idx = cur.idx;
+		this.alloc = cur.alloc;
+		this.size = cur.size;
+	}
+
 	public int getSize() {
 		return size;
 	}
@@ -65,7 +73,7 @@ public class WallsArray implements Iterable<WallsArray>, Iterator<WallsArray>{
 	@Override
 	public WallsArray next() {
 		idx++;
-		return this;
+		return new WallsArray(this);
 	}
 
 	public String getName() {

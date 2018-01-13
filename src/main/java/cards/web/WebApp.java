@@ -1,7 +1,6 @@
 package cards.web;
 
 import java.io.BufferedWriter;
-import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -12,6 +11,7 @@ import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.handler.HandlerList;
 import org.eclipse.jetty.server.handler.ResourceHandler;
 import org.eclipse.jetty.servlet.ServletHandler;
+import org.eclipse.jetty.servlet.ServletHolder;
 import org.eclipse.jetty.websocket.server.WebSocketHandler;
 import org.eclipse.jetty.websocket.servlet.WebSocketServletFactory;
 import org.rythmengine.Rythm;
@@ -37,14 +37,15 @@ public class WebApp {
 		logger("org.rythmengine.RythmEngine", Level.INFO);
 
 		Store store = new Store(20);
-		Game game = new Game(store);
+		Game imp = new Game(store);
 		String file = WebApp.class.getResource("/data/db.txt").getFile();
 		try (DBParser parser = new DBParser(file)) {
-			game.parse(parser);
+			imp.parse(parser);
 		}
+		Game game = imp.new IndexGameName().iterator().next();
 		Runtime.getRuntime().addShutdownHook(new Thread() {
 			public void run() {
-				try (BufferedWriter newBufferedWriter = Files.newBufferedWriter(Paths.get(file))) {
+				try (BufferedWriter newBufferedWriter = Files.newBufferedWriter(Paths.get("/tmp/db.txt"))) {
 					game.output(new Write(newBufferedWriter), 99);
 				} catch (Exception e) {
 					throw new RuntimeException(e);
@@ -60,7 +61,7 @@ public class WebApp {
 		handlers.addHandler(resources);
 
 		ServletHandler servlet = new ServletHandler();
-		servlet.addServletWithMapping(CardsServlet.class, "/*");
+		servlet.addServletWithMapping(new ServletHolder(new CardsServlet(game)), "/*");
 		handlers.addHandler(servlet);
 
 		handlers.addHandler(new WebSocketHandler() {
@@ -72,6 +73,7 @@ public class WebApp {
 		});
 
 		Map<String, Object> map = new HashMap<>();
+		map.put("rythm.engine.mode", "dev");
 		map.put("home.template", WebApp.class.getResource("/templates").getFile());
 		Rythm.init(map);
 

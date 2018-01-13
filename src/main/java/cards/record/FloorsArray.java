@@ -28,6 +28,14 @@ public class FloorsArray implements Iterable<FloorsArray>, Iterator<FloorsArray>
 		this.size = store.getInt(rec, 28);
 	}
 
+	public FloorsArray(FloorsArray cur) {
+		this.store = cur.store;
+		this.rec = cur.rec;
+		this.idx = cur.idx;
+		this.alloc = cur.alloc;
+		this.size = cur.size;
+	}
+
 	public int getSize() {
 		return size;
 	}
@@ -65,7 +73,7 @@ public class FloorsArray implements Iterable<FloorsArray>, Iterator<FloorsArray>
 	@Override
 	public FloorsArray next() {
 		idx++;
-		return this;
+		return new FloorsArray(this);
 	}
 
 	public String getName() {

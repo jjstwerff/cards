@@ -3,17 +3,52 @@
 <html>
 <head>
   <link rel="stylesheet" href="/jquery-ui.min.css">
+  <link rel="stylesheet" href="/jquery-ui.theme.min.css">
   <script src="/jquery-3.2.1.min.js"></script>
   <script src="/jquery-ui.min.js"></script>
+  <style>
+  	#walls { padding: 0px; list-style-type: none; margin: 0px; }
+    #walls li { margin: 2px; padding: 2px 2px 2px 8px; font-size: 1.2em; height: 21px; width: 190px; }
+    #walls .ui-selecting { background: #0972a5 url("images/ui-bg_highlight-hard_20_0972a5_1x100.png") 50% 50% repeat-x; color: white; }
+    #walls .ui-selected { background: #0972a5 url("images/ui-bg_highlight-hard_20_0972a5_1x100.png") 50% 50% repeat-x; color: white; box-shadow: 0 0 3px 1px rgb(94, 158, 214); }
+  	#floors { padding: 0px; list-style-type: none; margin: 0px; }
+    #floors li { margin: 2px; padding: 2px 2px 2px 8px; font-size: 1.2em; height: 21px; width: 190px; }
+    #floors .ui-selecting { background: #0972a5 url("images/ui-bg_highlight-hard_20_0972a5_1x100.png") 50% 50% repeat-x; color: white; }
+    #floors .ui-selected { background: #0972a5 url("images/ui-bg_highlight-hard_20_0972a5_1x100.png") 50% 50% repeat-x; color: white; box-shadow: 0 0 3px 1px rgb(94, 158, 214); }
+    .ui-tabs { width: 240px; }
+	.ui-tabs .ui-tabs-panel { padding: 4px 0px 0px 1px; }
+	.ui-tabs .ui-tabs-nav .ui-tabs-anchor { padding: 2px 5px 2px 5px; }
+  </style>
   <script>
-   $( "#walls" ).selectable();
+  	$( function() {
+  		$( "#tabs" ).tabs();
+    	$( "#walls" ).selectable();
+    	$( "#floors" ).selectable();
+  	} );
   </script>
 </head>
 <body>
-<ol id="walls">
-@for(WallsArray wall: game.walls) {
-  <li>@wall.getName()</li>
-}
-</ol>
+<div id="tabs">
+  <ul>
+    <li><a href="#tabs-1">Walls</a></li>
+    <li><a href="#tabs-2">Floors</a></li>
+    <li><a href="#tabs-3">Items</a></li>
+    <li><a href="#tabs-4">Parts</a></li>
+  </ul>
+  <div id="tabs-1">
+	<ul id="walls" class="ui-selectable ui-widget">
+	@for(cards.record.WallsArray wall: game.getWalls()) {
+  		<li class="ui-corner-all ui-widget-content">@wall.getName()</li>
+	}
+	</ul>
+  </div>
+  <div id="tabs-2">
+	<ul id="floors" class="ui-selectable ui-widget">
+	@for(cards.record.FloorsArray floor: game.getFloors()) {
+  		<li class="ui-corner-all ui-widget-content">@floor.getName()</li>
+	}
+	</ul>
+  </div>
+</div>
 </body>
 </html>
