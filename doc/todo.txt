@@ -1,10 +1,13 @@
 Jetty integration
-- load an initial database
 - initial page load
-    pane with walls / floors / items / height tools  / elements
+    add working area to tabs page = float right of tabs.
+- load initial data.. canvas that can be reused
+	directly use websocket for this work
 - click wall/floor tiles
-	start websocket.. keep alive
+	start websocket.. keep alive .. log results to consoe
+	load new data
 - create text-backup file of the database
+	do it on a timer...
 	new name with rotation in temp directory
 	also on close of the application.. into own application directory
 		for now in same file as read on startup
@@ -23,11 +26,6 @@ ws.onmessage = function(event) {
 ws.onclose = function() {
   ws = null;
 };
-
-2D Performance inside browser:
-- let the browser know what specific world blocks exists
-- render a block to a buffer & redraw that buffer to the screen instead of the pathes.
-- drop a buffer on a change to that buffer
 
 Drag from the side bar to the current scene.
 Select inside the current scene:
