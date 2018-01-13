@@ -7,33 +7,48 @@
   <script src="/jquery-3.2.1.min.js"></script>
   <script src="/jquery-ui.min.js"></script>
   <style>
-  	#walls { padding: 0px; list-style-type: none; margin: 0px; }
-    #walls li { margin: 2px; padding: 2px 2px 2px 8px; font-size: 1.2em; height: 21px; width: 190px; }
-    #walls .ui-selecting { background: #0972a5 url("images/ui-bg_highlight-hard_20_0972a5_1x100.png") 50% 50% repeat-x; color: white; }
-    #walls .ui-selected { background: #0972a5 url("images/ui-bg_highlight-hard_20_0972a5_1x100.png") 50% 50% repeat-x; color: white; box-shadow: 0 0 3px 1px rgb(94, 158, 214); }
-  	#floors { padding: 0px; list-style-type: none; margin: 0px; }
-    #floors li { margin: 2px; padding: 2px 2px 2px 8px; font-size: 1.2em; height: 21px; width: 190px; }
-    #floors .ui-selecting { background: #0972a5 url("images/ui-bg_highlight-hard_20_0972a5_1x100.png") 50% 50% repeat-x; color: white; }
-    #floors .ui-selected { background: #0972a5 url("images/ui-bg_highlight-hard_20_0972a5_1x100.png") 50% 50% repeat-x; color: white; box-shadow: 0 0 3px 1px rgb(94, 158, 214); }
-    .ui-tabs { width: 240px; }
-	.ui-tabs .ui-tabs-panel { padding: 4px 0px 0px 1px; }
+	.ui-selectable { padding: 0px; list-style-type: none; margin: 0px; }
+	.ui-selectable li { margin: 2px; padding: 2px 2px 2px 8px; font-size: 1.2em; height: 21px; width: 190px; }
+	.ui-selectable .ui-selecting { background: #0972a5 url("images/ui-bg_highlight-hard_20_0972a5_1x100.png") 50% 50% repeat-x; color: white; }
+	.ui-selectable .ui-selected { background: #0972a5 url("images/ui-bg_highlight-hard_20_0972a5_1x100.png") 50% 50% repeat-x; color: white; box-shadow: 0 0 3px 1px rgb(94, 158, 214); }
+	.ui-tabs { width: 240px; }
+	.ui-tabs .ui-tabs-panel { padding: 4px 4px 4px 1px; }
 	.ui-tabs .ui-tabs-nav .ui-tabs-anchor { padding: 2px 5px 2px 5px; }
+	#both { float: right; }
   </style>
   <script>
   	$( function() {
-  		$( "#tabs" ).tabs();
-    	$( "#walls" ).selectable();
-    	$( "#floors" ).selectable();
+		$( "#tabs" ).tabs();
+		$( "#painting" ).tabs();
+		$( "#levels" ).selectable();
+		$( "#walls" ).selectable();
+		$( "#floors" ).selectable();
+		var a = document.getElementById("area");
+		var c = a.getContext("2d");
+		c.canvas.width  = window.innerWidth - 280;
+		c.canvas.height = window.innerHeight - 50;
   	} );
   </script>
 </head>
 <body>
+<canvas id="area" width="1280" height="1024" style="border:1px solid #d3d3d3;"></canvas>
+<div id="both">
+<div id="painting">
+  <ul>
+    <li><a href="#painting-1">Levels</a></li>
+  </ul>
+  <div id="painting-1">
+	<ul id="levels" class="ui-selectable ui-widget">
+		<li class="ui-corner-all ui-widget-content ui-selected">0</li>
+	</ul>
+  </div>
+</div>
 <div id="tabs">
   <ul>
-    <li><a href="#tabs-1">Walls</a></li>
-    <li><a href="#tabs-2">Floors</a></li>
-    <li><a href="#tabs-3">Items</a></li>
-    <li><a href="#tabs-4">Parts</a></li>
+	<li><a href="#tabs-1">Walls</a></li>
+	<li><a href="#tabs-2">Floors</a></li>
+	<li><a href="#tabs-3">Items</a></li>
+	<li><a href="#tabs-4">Parts</a></li>
   </ul>
   <div id="tabs-1">
 	<ul id="walls" class="ui-selectable ui-widget">
@@ -49,6 +64,7 @@
 	}
 	</ul>
   </div>
+</div>
 </div>
 </body>
 </html>
