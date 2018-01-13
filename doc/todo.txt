@@ -1,8 +1,11 @@
 Jetty integration
-- initial page load
-    add working area to tabs page = float right of tabs.
 - load initial data.. canvas that can be reused
+	it should be known to the canvas where in the world we are/our rotation? .. so we can change position/move later
 	directly use websocket for this work
+	request data with current view as parameters.. in pixels
+	return known blocks in/near view with etag
+	retrieve each needed blocks on name -> convert to separate canvas objects + window.requestAnimationFrame(draw);
+		function (time) {}
 - click wall/floor tiles
 	start websocket.. keep alive .. log results to consoe
 	load new data
@@ -11,6 +14,7 @@ Jetty integration
 	new name with rotation in temp directory
 	also on close of the application.. into own application directory
 		for now in same file as read on startup
+- tab with position (x,y) inside the world
 
 var ws = new WebSocket("ws://localhost:8080");
 ws.onopen = function(event) {
