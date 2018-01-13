@@ -1,6 +1,10 @@
 package cards.web;
 
+import java.io.BufferedWriter;
+import java.io.IOException;
 import java.net.InetSocketAddress;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -14,6 +18,11 @@ import org.rythmengine.Rythm;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.betterbe.memorydb.file.DBParser;
+import com.betterbe.memorydb.file.Write;
+import com.betterbe.memorydb.structure.Store;
+
+import cards.record.Game;
 import ch.qos.logback.classic.Level;
 
 public class WebApp {
@@ -25,6 +34,23 @@ public class WebApp {
 	public static void main(String[] args) throws Exception {
 		rootLogger(Level.DEBUG);
 		logger("org.eclipse.jetty", Level.WARN);
+		logger("org.rythmengine.RythmEngine", Level.INFO);
+
+		Store store = new Store(20);
+		Game game = new Game(store);
+		String file = WebApp.class.getResource("/data/db.txt").getFile();
+		try (DBParser parser = new DBParser(file)) {
+			game.parse(parser);
+		}
+		Runtime.getRuntime().addShutdownHook(new Thread() {
+			public void run() {
+				try (BufferedWriter newBufferedWriter = Files.newBufferedWriter(Paths.get(file))) {
+					game.output(new Write(newBufferedWriter), 99);
+				} catch (Exception e) {
+					throw new RuntimeException(e);
+				}
+			}
+		});
 
 		HandlerList handlers = new HandlerList();
 

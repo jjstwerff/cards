@@ -83,6 +83,11 @@
 			<version>9.4.8.v20171121</version>
 		</dependency>
 		<dependency>
+			<groupId>joda-time</groupId>
+			<artifactId>joda-time</artifactId>
+			<version>2.9.9</version>
+		</dependency>
+		<dependency>
 			<groupId>org.rythmengine</groupId>
 			<artifactId>rythm-engine</artifactId>
 			<version>1.2.1</version>

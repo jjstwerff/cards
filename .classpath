@@ -23,6 +23,7 @@
 	<classpathentry kind="var" path="M2_REPO/org/eclipse/jetty/jetty-client/9.4.8.v20171121/jetty-client-9.4.8.v20171121.jar" sourcepath="M2_REPO/org/eclipse/jetty/jetty-client/9.4.8.v20171121/jetty-client-9.4.8.v20171121-sources.jar"/>
 	<classpathentry kind="var" path="M2_REPO/org/eclipse/jetty/jetty-xml/9.4.8.v20171121/jetty-xml-9.4.8.v20171121.jar" sourcepath="M2_REPO/org/eclipse/jetty/jetty-xml/9.4.8.v20171121/jetty-xml-9.4.8.v20171121-sources.jar"/>
 	<classpathentry kind="var" path="M2_REPO/org/eclipse/jetty/websocket/websocket-servlet/9.4.8.v20171121/websocket-servlet-9.4.8.v20171121.jar" sourcepath="M2_REPO/org/eclipse/jetty/websocket/websocket-servlet/9.4.8.v20171121/websocket-servlet-9.4.8.v20171121-sources.jar"/>
+	<classpathentry kind="var" path="M2_REPO/joda-time/joda-time/2.9.9/joda-time-2.9.9.jar" sourcepath="M2_REPO/joda-time/joda-time/2.9.9/joda-time-2.9.9-sources.jar"/>
 	<classpathentry kind="var" path="M2_REPO/org/rythmengine/rythm-engine/1.2.1/rythm-engine-1.2.1.jar" sourcepath="M2_REPO/org/rythmengine/rythm-engine/1.2.1/rythm-engine-1.2.1-sources.jar"/>
 	<classpathentry kind="var" path="M2_REPO/org/eclipse/jdt/core/compiler/ecj/4.6.1/ecj-4.6.1.jar" sourcepath="M2_REPO/org/eclipse/jdt/core/compiler/ecj/4.6.1/ecj-4.6.1-sources.jar"/>
 	<classpathentry kind="var" path="M2_REPO/com/stevesoft/pat/pat/1.5.3/pat-1.5.3.jar" sourcepath="M2_REPO/com/stevesoft/pat/pat/1.5.3/pat-1.5.3-sources.jar"/>

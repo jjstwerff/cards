@@ -4,8 +4,10 @@ Jetty integration
     pane with walls / floors / items / height tools  / elements
 - click wall/floor tiles
 	start websocket.. keep alive
-
-
+- create text-backup file of the database
+	new name with rotation in temp directory
+	also on close of the application.. into own application directory
+		for now in same file as read on startup
 
 var ws = new WebSocket("ws://localhost:8080");
 ws.onopen = function(event) {
