@@ -1,6 +1,10 @@
-Toolbar
-- load inside html page .. initial page
-- 
+Jetty integration
+- load an initial database
+- initial page load
+    pane with walls / floors / items / height tools  / elements
+- click wall/floor tiles
+	start websocket.. keep alive
+
 
 
 var ws = new WebSocket("ws://localhost:8080");
@@ -38,12 +42,6 @@ Move the current scene:
     onmousedown / onmouseup in scene
 	event.shiftKey
 
-jetty integration
-- initial page load
-    jquery-ui "Dark Hive" - resizable / tabs / selectable
-    pane with walls / floors / items / height tools  / elements
-- click wall/floor tiles
-	start websocket.. keep alive
 - undo buffer.. last action / last continues simple edits
 	elder content around a position
 - rotate world .. needed for easy drag/drop

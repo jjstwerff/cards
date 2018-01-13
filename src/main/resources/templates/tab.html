@@ -1,0 +1,19 @@
+@args cards.record.Game game
+<!doctype html>
+<html>
+<head>
+  <link rel="stylesheet" href="/jquery-ui.min.css">
+  <script src="/jquery-3.2.1.min.js"></script>
+  <script src="/jquery-ui.min.js"></script>
+  <script>
+   $( "#walls" ).selectable();
+  </script>
+</head>
+<body>
+<ol id="walls">
+@for(WallsArray wall: game.walls) {
+  <li>@wall.getName()</li>
+}
+</ol>
+</body>
+</html>

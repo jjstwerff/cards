@@ -1,6 +1,8 @@
 package cards.web;
 
 import java.net.InetSocketAddress;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.handler.HandlerList;
@@ -8,6 +10,7 @@ import org.eclipse.jetty.server.handler.ResourceHandler;
 import org.eclipse.jetty.servlet.ServletHandler;
 import org.eclipse.jetty.websocket.server.WebSocketHandler;
 import org.eclipse.jetty.websocket.servlet.WebSocketServletFactory;
+import org.rythmengine.Rythm;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -41,6 +44,10 @@ public class WebApp {
 				factory.register(MyEchoSocket.class);
 			}
 		});
+
+		Map<String, Object> map = new HashMap<>();
+		map.put("home.template", WebApp.class.getResource("/templates").getFile());
+		Rythm.init(map);
 
 		Server server = new Server(new InetSocketAddress(HOSTNAME, PORT));
 		server.setHandler(handlers);
