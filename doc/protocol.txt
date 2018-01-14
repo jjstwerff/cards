@@ -1,0 +1,65 @@
+*requests*
+- "information" request to server:
+   request information about the world relative to the current position in that world
+- "valid" request from server to client after a minute
+	answer to valid is the same information request
+- "needed" or changed elements to client
+	only send the identifications of the needed data
+- "request" element from client
+- "send" element from server
+- "edit" to server
+	to change an area by copying data or changing a single data point
+
+Definition of different request:
+
+*information*:
+request to the server to gather information about the current position inside the world
+- position (a, x, y, z):
+	normal games will only use area'a'=0
+	editors can create new area's with a copy command from another area or an empty one
+	not needed to re-send if less than 20 steps in either is taken from the last request
+- reaction
+	server side determines the spread & need for elements like area definitions / height maps / sky domes / mobs
+
+*valid*:
+Request to the client to find out if it is still needing the requested information
+this valid requests will not be send if an updated information request is done in the last minute
+retry this request 2 times with a minute delay, then stop sending data
+- reaction:
+	client sends the information request again
+
+*needed*
+Information send to client about what information it needs to know about the world.
+- type:
+	meta-data, block of world geometry, texture in use here (material,sky,height,animation), meshes of items/mobs
+- id:
+	identifier for this information type
+- time-stamp:
+	of this specific data element
+- reaction:
+	the client should request this data if it not in it's own cache or it if holds a lower time-stamp
+
+*request*
+Request a new or newer data block from the server
+- type & id
+- reaction:
+	the server should send this data again
+
+*send*
+- type & id & time-stamp & data
+- reaction:
+	the client should hold this data in it's cache
+
+*edit*:
+- parameters 'a'/'x'/'y'/'z', 'action' (wall,floor,item,height,area,create,paste,remove,rename)
+- wall: set to 'wall'
+- floor: set to 'floor'
+- item: set to 'item' with 'rotation'
+- paste: 'a' with 'rotation' onto current position
+- height: increase with 'h', in a radius 'r'
+- create: 'lx'/'ly'/'lz' into 'name' .. returned 'a' as identified
+- remove: 'a'
+- rename: 'a' with 'name'
+- reaction:
+	the server should perform the edit and send a "needed" request to all clients that have an active "information" on
+	the specific element,
