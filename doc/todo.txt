@@ -1,3 +1,10 @@
+Implement information, needed, request and send request.
+- both side of their implementation.
+- fill the correct data on tiles in the array
+- draw these tiles on the canvas
+	filled path in correct color (add color to floor)
+	six sided outline for reference
+
 Jetty integration
 - load initial data.. canvas that can be reused
 	it should be known to the canvas where in the world we are/our rotation? .. so we can change position/move later
