@@ -75,6 +75,14 @@ request them in order of importance for smooth transitions.
 	{request=send, type=block, id=128313, block={a=0, x=120, y=30, z=0, lx=30, ly=30, size=1310, tiles=[p=[{x=1.2, y=3.4, z=0.2, lz=5, nx=1, ny=0} ...], wall=[1,5,0], floor=4, item=12, direction=13, height=0.1], ...]}}
 	.. binary tiles data for blocks as new Int16Array(32) array?
 
+wss.on('connection', (ws) => {
+  ws.binaryType = 'blob'; -> read data
+  ws.binaryType = 'arraybuffer'; -> read raw data ... move into Int16Array
+  ws.on('message', (message) => {
+    const array = new Int16Array(message);
+  });
+});
+
 var f64 = new Float64Array(8);
 var f32 = new Float32Array(16);
 var i32 = new Int32Array(16);

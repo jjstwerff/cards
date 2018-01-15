@@ -68,7 +68,7 @@ public class WebApp {
 			@Override
 			public void configure(WebSocketServletFactory factory) {
 				factory.getPolicy().setIdleTimeout(100000);
-				factory.register(MyEchoSocket.class);
+				factory.register(WebSocket.class);
 			}
 		});
 
