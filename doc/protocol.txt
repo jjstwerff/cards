@@ -13,23 +13,29 @@
 Definition of different request:
 
 *information*:
-request to the server to gather information about the current position inside the world
+Request to the server to gather information about the current position inside the world.
 - position (a, x, y, z):
 	normal games will only use area'a'=0
 	editors can create new area's with a copy command from another area or an empty one
 	not needed to re-send if less than 20 steps in either is taken from the last request
 - reaction
 	server side determines the spread & need for elements like area definitions / height maps / sky domes / mobs
+- example
+	{request=information, position={a=0, x=0, y=0, z=0}}
 
 *valid*:
-Request to the client to find out if it is still needing the requested information
-this valid requests will not be send if an updated information request is done in the last minute
-retry this request 2 times with a minute delay, then stop sending data
+Request to the client to find out if it is still needing the requested information.
+This valid requests can be skipped if an updated information request is done in the last minute.
+Retry this request at least 2 times with a minute delay, then stop sending data.
 - reaction:
 	client sends the information request again
+- example:
+	{request=valid}
 
 *needed*
-Information send to client about what information it needs to know about the world.
+Information send to client about what information it needs to know about the world. This can be blocks that are
+of some distance to the current position. At least enough to move 10 tiles in any direction before new blocks should
+be read.
 - type:
 	meta-data, block of world geometry, texture in use here (material,sky,height,animation), meshes of items/mobs
 - id:
@@ -38,17 +44,46 @@ Information send to client about what information it needs to know about the wor
 	of this specific data element
 - reaction:
 	the client should request this data if it not in it's own cache or it if holds a lower time-stamp
+- example:
+	{request=needed, data=[{type=block|meta, id=1847139, timestamp=21881313.121313}]}
 
 *request*
-Request a new or newer data block from the server
-- type & id
+Request a new or newer data block from the server. The client can potential request blocks simultaneous. And can
+request them in order of importance for smooth transitions.
+- type & id:
 - reaction:
 	the server should send this data again
+- example:
+	{request=request, type=block|meta|mesh|texture, id=128313}
 
 *send*
-- type & id & time-stamp & data
+- type (meta,block,texture,mesh) & id & time-stamp & data:
+- meta:
+	wall data.. link to material
+	floor data.. link to material
+	item data.. link to mesh, materials
+- block:
+    x/y/z -> lx, ly, tile (6 points (x,y,z,lz,nx,ny), L/T/R wall, floor, item, direction, height)
+- texture
+- mesh
 - reaction:
 	the client should hold this data in it's cache
+- example:
+	{request=send, type=texture, id=48333, size=592375, hash=4258235}
+	.. binary data
+
+	{request=send, type=block, id=128313, block={a=0, x=120, y=30, z=0, lx=30, ly=30, size=1310, tiles=[p=[{x=1.2, y=3.4, z=0.2, lz=5, nx=1, ny=0} ...], wall=[1,5,0], floor=4, item=12, direction=13, height=0.1], ...]}}
+	.. binary tiles data for blocks as new Int16Array(32) array?
+
+var f64 = new Float64Array(8);
+var f32 = new Float32Array(16);
+var i32 = new Int32Array(16);
+var i16 = new Int16Array(32);
+var i8 = new Int8Array(64);
+var u32 = new Uint32Array(16);
+var u16 = new Uint16Array(32);
+var u8 = new Uint8Array(64);
+var pixels = new Uint8ClampedArray(64);
 
 *edit*:
 - parameters 'a'/'x'/'y'/'z', 'action' (wall,floor,item,height,area,create,paste,remove,rename)
