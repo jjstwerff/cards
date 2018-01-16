@@ -2,6 +2,8 @@ package cards.map;
 
 import org.junit.Test;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import com.betterbe.memorydb.file.DBParser;
 import com.betterbe.memorydb.meta.Tests;
 import com.betterbe.memorydb.structure.Store;
@@ -56,6 +58,15 @@ public class TestMap extends Tests {
 		Assert.assertEquals(3, moveDir(draw, map, 10, 1));
 
 		Assert.assertEquals(content(this, "testMap.html"), draw.dump());
+	}
+
+	@Test
+	public void jsonParser() {
+		JSONObject parse = JSON.parseObject("{\"request\":\"information\", \"position\":{\"a\":0, \"x\":0, \"y\":1, \"z\":0}}");
+		Assert.assertEquals("{\"request\":\"information\",\"position\":{\"a\":0,\"x\":0,\"y\":1,\"z\":0}}", parse.toString());
+		Assert.assertEquals("information", parse.get("request").toString());
+		Assert.assertEquals("{\"a\":0,\"x\":0,\"y\":1,\"z\":0}", parse.get("position").toString());
+		Assert.assertEquals(1, parse.getJSONObject("position").getIntValue("y"));
 	}
 
 	private String show(Draw draw, Map map, int x, int y) {
