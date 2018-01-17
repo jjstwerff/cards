@@ -5,6 +5,7 @@ import java.net.InetSocketAddress;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.eclipse.jetty.server.Server;
@@ -13,6 +14,9 @@ import org.eclipse.jetty.server.handler.ResourceHandler;
 import org.eclipse.jetty.servlet.ServletHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
 import org.eclipse.jetty.websocket.server.WebSocketHandler;
+import org.eclipse.jetty.websocket.servlet.ServletUpgradeRequest;
+import org.eclipse.jetty.websocket.servlet.ServletUpgradeResponse;
+import org.eclipse.jetty.websocket.servlet.WebSocketCreator;
 import org.eclipse.jetty.websocket.servlet.WebSocketServletFactory;
 import org.rythmengine.Rythm;
 import org.slf4j.Logger;
@@ -31,6 +35,8 @@ public class WebApp {
 	private static final int PORT = 8080;
 	private static final String HOSTNAME = "localhost";
 
+	private static Map<Integer, List<WebSocket>> listen; // List of web-sockets that listen to events per block
+
 	public static void main(String[] args) throws Exception {
 		rootLogger(Level.DEBUG);
 		logger("org.eclipse.jetty", Level.WARN);
@@ -38,6 +44,7 @@ public class WebApp {
 
 		Store store = new Store(20);
 		Game imp = new Game(store);
+		listen = new HashMap<>();
 		String file = WebApp.class.getResource("/data/db.txt").getFile();
 		try (DBParser parser = new DBParser(file)) {
 			imp.parse(parser);
@@ -68,7 +75,12 @@ public class WebApp {
 			@Override
 			public void configure(WebSocketServletFactory factory) {
 				factory.getPolicy().setIdleTimeout(100000);
-				factory.register(WebSocket.class);
+				factory.setCreator(new WebSocketCreator() {
+					@Override
+					public Object createWebSocket(ServletUpgradeRequest req, ServletUpgradeResponse resp) {
+						return new WebSocket(game, listen);
+					}
+				});
 			}
 		});
 

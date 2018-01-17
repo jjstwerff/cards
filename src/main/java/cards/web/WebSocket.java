@@ -1,17 +1,42 @@
 package cards.web;
 
 import java.nio.ByteBuffer;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import org.eclipse.jetty.websocket.api.Session;
 import org.eclipse.jetty.websocket.api.WebSocketListener;
 import org.eclipse.jetty.websocket.api.WriteCallback;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
+
+import cards.record.Game;
+
 public class WebSocket implements WebSocketListener {
 	private Session session;
+	private final Game game;
+	private final Map<Integer, List<WebSocket>> listen;
+	private final Set<Integer> registered;
+
+	public WebSocket(Game game, Map<Integer, List<WebSocket>> listen) {
+		this.game = game;
+		this.listen = listen;
+		this.registered = new HashSet<>();
+	}
+
+	public Session getSession() {
+		return session;
+	}
 
 	@Override
 	public void onWebSocketClose(int statusCode, String reason) {
 		this.session = null;
+		for (int r : registered)
+			listen.get(r).remove(this);
+		registered.clear();
 	}
 
 	@Override
@@ -40,8 +65,15 @@ public class WebSocket implements WebSocketListener {
 
 	@Override
 	public void onWebSocketText(String message) {
-		if ((session != null) && (session.isOpen())) {
-			session.getRemote().sendString("got: " + message, null);
+		JSONObject obj = JSON.parseObject(message);
+		String request = obj.getString("request");
+		switch (request) {
+		case "information":
+			// register client position to the websocket
+			// find block that should be listened to
+		case "request":
+			// write game data
+		case "edit":
 		}
 	}
 }

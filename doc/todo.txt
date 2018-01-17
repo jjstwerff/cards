@@ -1,4 +1,11 @@
+		if ((session != null) && (session.isOpen())) {
+			session.getRemote().sendString("got: " + message, null);
+		}
+
+
 Implement information, needed, request and send request.
+- keep WebSocket very simple: it will get started again for each WebSocket request.
+	how to access singletons?
 - both side of their implementation.
 - fill the correct data on tiles in the array
 - draw these tiles on the canvas
