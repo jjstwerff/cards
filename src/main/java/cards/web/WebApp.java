@@ -35,7 +35,7 @@ public class WebApp {
 	private static final int PORT = 8080;
 	private static final String HOSTNAME = "localhost";
 
-	private static Map<Integer, List<WebSocket>> listen; // List of web-sockets that listen to events per block
+	private static Map<Integer, List<Pair<WebSocket, Integer>>> listen; // List of web-sockets that listen to events per block
 
 	public static void main(String[] args) throws Exception {
 		rootLogger(Level.DEBUG);
@@ -74,7 +74,7 @@ public class WebApp {
 		handlers.addHandler(new WebSocketHandler() {
 			@Override
 			public void configure(WebSocketServletFactory factory) {
-				factory.getPolicy().setIdleTimeout(100000);
+				factory.getPolicy().setIdleTimeout(10000);
 				factory.setCreator(new WebSocketCreator() {
 					@Override
 					public Object createWebSocket(ServletUpgradeRequest req, ServletUpgradeResponse resp) {

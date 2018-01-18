@@ -4,8 +4,16 @@
 
 
 Implement information, needed, request and send request.
-- keep WebSocket very simple: it will get started again for each WebSocket request.
-	how to access singletons?
+- test idle timeout behavior
+- internal state on information
+- send needed when internal information matches
+	function to match blocks vs current position .. x/y/z via index when possible
+	send internal block identifiers to other side.. but not actual blocks locations
+- implement 'edit' on server side
+	find correct tile/wall from click location
+	change the tile & send block identifier
+- send valid on intervals
+
 - both side of their implementation.
 - fill the correct data on tiles in the array
 - draw these tiles on the canvas

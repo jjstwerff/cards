@@ -1,10 +1,9 @@
 package cards.web;
 
 import java.nio.ByteBuffer;
-import java.util.HashSet;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import org.eclipse.jetty.websocket.api.Session;
 import org.eclipse.jetty.websocket.api.WebSocketListener;
@@ -18,13 +17,13 @@ import cards.record.Game;
 public class WebSocket implements WebSocketListener {
 	private Session session;
 	private final Game game;
-	private final Map<Integer, List<WebSocket>> listen;
-	private final Set<Integer> registered;
+	private final Map<Integer, List<Pair<WebSocket, Integer>>> listen;
+	private final List<Integer> registered;
 
-	public WebSocket(Game game, Map<Integer, List<WebSocket>> listen) {
+	public WebSocket(Game game, Map<Integer, List<Pair<WebSocket, Integer>>> listen) {
 		this.game = game;
 		this.listen = listen;
-		this.registered = new HashSet<>();
+		this.registered = new ArrayList<>();
 	}
 
 	public Session getSession() {
