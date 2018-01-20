@@ -1,6 +1,9 @@
 package cards.web;
 
 import java.io.IOException;
+import java.util.Date;
+import java.util.Random;
+import java.util.stream.LongStream;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -17,6 +20,7 @@ public class CardsServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 	private static final Logger logger = LoggerFactory.getLogger(CardsServlet.class);
 	private final Game game;
+	private static final LongStream random = new Random(new Date().getTime()).longs();
 
 	public CardsServlet(Game game) {
 		this.game = game;
@@ -29,6 +33,9 @@ public class CardsServlet extends HttpServlet {
 			response.setContentType("text/html");
 			response.setStatus(HttpServletResponse.SC_OK);
 			response.getWriter().println("<h1>Hello from HelloServlet</h1>");
+		} else if (request.getRequestURI().equals("/login")) {
+			
+			long val = random.findFirst().getAsLong();
 		} else if (request.getRequestURI().equals("/tab.html")) {
 			logger.debug(request.getRequestURI());
 			response.setContentType("text/html");

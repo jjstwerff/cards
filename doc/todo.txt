@@ -1,3 +1,9 @@
+Password set:
+- no password -> request admin password
+
+- test sha1 implementation 
+http://www.sha1-online.com/sha1-java/
+
 Database rewrites:
 - fix code generation of arrays
 	generate code
@@ -6,11 +12,18 @@ Database rewrites:
 - blocks array per area -> index
 	per WebSocket .. add flood protection
 		array of blocks.. to far away = remove block
-
-
 		if ((session != null) && (session.isOpen())) {
 			session.getRemote().sendString("got: " + message, null);
 		}
+
+
+
+var crypto = require('crypto')
+  , shasum = crypto.createHash('sha1');
+shasum.update("foo");
+console.log(shasum.digest('hex'));
+	https://www.npmjs.com/package/sha1
+	https://caligatio.github.io/jsSHA/
 
 Implement information, needed, request and send request.
 - internal state on information

@@ -1,4 +1,10 @@
 *requests*
+- "login" on servlet.. for now no SSL .. linked to local
+	keep ip address in data + secret random long
+	.. server sends random challenge: SplittableRandom per websocket
+			expect + send: hash(challenge + secret)
+- "authenticate" allow the gathering of more information through this socket
+	validate to ip address
 - "information" request to server:
    request information about the world relative to the current position in that world
 - "valid" request from server to client after a minute
@@ -11,6 +17,9 @@
 	to change an area by copying data or changing a single data point
 
 Definition of different request:
+
+*login*:
+- credentials (name, password)
 
 *information*:
 Request to the server to gather information about the current position inside the world.

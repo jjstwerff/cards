@@ -1,6 +1,7 @@
 package cards.web;
 
 import java.nio.ByteBuffer;
+import java.security.MessageDigest;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -86,6 +87,9 @@ public class WebSocket implements WebSocketListener {
 		JSONObject obj = JSON.parseObject(message);
 		String request = obj.getString("request");
 		switch (request) {
+		case "authenticate":
+			MessageDigest mDigest = MessageDigest.getInstance("SHA-256");
+			mDigest.digest(input);
 		case "information":
 			// register client position to the websocket
 			// find block that should be listened to

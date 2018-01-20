@@ -150,6 +150,7 @@ public class CardsStructure {
 
 		Record player = project.table("Player");
 		player.field("creation", Type.DATE);
+		player.field("secret", Type.LONG);
 		player.field("last", Type.DATE);
 		player.field("name", Type.STRING);
 		player.field("member", member, "game.name");
