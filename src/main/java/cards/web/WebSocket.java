@@ -2,6 +2,7 @@ package cards.web;
 
 import java.nio.ByteBuffer;
 import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -88,13 +89,17 @@ public class WebSocket implements WebSocketListener {
 		String request = obj.getString("request");
 		switch (request) {
 		case "authenticate":
-			MessageDigest mDigest = MessageDigest.getInstance("SHA-256");
-			mDigest.digest(input);
+			try {
+				MessageDigest mDigest = MessageDigest.getInstance("SHA1");
+				mDigest.digest("asdasd".getBytes());
+			} catch (NoSuchAlgorithmException e) {
+				e.printStackTrace();
+			}
 		case "information":
 			// register client position to the websocket
 			// find block that should be listened to
 			JSONObject position = obj.getJSONObject("position");
-			area = game.getAreas().get(position.getIntValue("a"));
+			//area = game.getAreas().get(position.getIntValue("a"));
 			x = position.getIntValue("x");
 			y = position.getIntValue("y");
 			z = position.getIntValue("z");

@@ -1,8 +1,27 @@
+Jetty SSL self signed:
+
+
 Password set:
-- no password -> request admin password
+- no password known -> request admin username / password
 
 - test sha1 implementation 
 http://www.sha1-online.com/sha1-java/
+
+ScriptEngine engine = new ScriptEngineManager().getEngineByName("nashorn");
+engine.eval(new FileReader("script.js"));
+Invocable invocable = (Invocable) engine;
+Object result = invocable.invokeFunction("fun1", "Peter Parker");
+
+
+var fun1 = function(name) {
+    print('Hi there from Javascript, ' + name);
+    return "greetings from javascript";
+};
+
+var fun2 = function (object) {
+    print("JS Class Definition: " + Object.prototype.toString.call(object));
+};
+
 
 Database rewrites:
 - fix code generation of arrays
@@ -16,14 +35,6 @@ Database rewrites:
 			session.getRemote().sendString("got: " + message, null);
 		}
 
-
-
-var crypto = require('crypto')
-  , shasum = crypto.createHash('sha1');
-shasum.update("foo");
-console.log(shasum.digest('hex'));
-	https://www.npmjs.com/package/sha1
-	https://caligatio.github.io/jsSHA/
 
 Implement information, needed, request and send request.
 - internal state on information
