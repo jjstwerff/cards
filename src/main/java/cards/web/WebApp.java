@@ -75,6 +75,8 @@ public class WebApp {
 			@Override
 			public void configure(WebSocketServletFactory factory) {
 				factory.getPolicy().setIdleTimeout(10000);
+				factory.getPolicy().setMaxBinaryMessageSize(2000);
+				factory.getPolicy().setMaxTextMessageSize(2000);
 				factory.setCreator(new WebSocketCreator() {
 					@Override
 					public Object createWebSocket(ServletUpgradeRequest req, ServletUpgradeResponse resp) {

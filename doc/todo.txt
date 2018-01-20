@@ -1,16 +1,34 @@
+Database rewrites:
+- fix code generation of arrays
+	generate code
+	code to fill arrays correctly
+- implement meta data request
+- blocks array per area -> index
+	per WebSocket .. add flood protection
+		array of blocks.. to far away = remove block
+
+
 		if ((session != null) && (session.isOpen())) {
 			session.getRemote().sendString("got: " + message, null);
 		}
 
-
 Implement information, needed, request and send request.
-- test idle timeout behavior
 - internal state on information
+	write state in WebSocket
+	write state from java script
 - send needed when internal information matches
 	function to match blocks vs current position .. x/y/z via index when possible
+		round x,y down to last %30 = introduce 30 as MAX_SIZE constant
+		find current x/y in index.. move back to y-2 and forward to y+2
+		find x-1/y in index.. move back/forwards on y
+		find x-2/y in index.. move back/forwards on y
+		find x+1/y in index.. move back/forwards on y
+		find x+2/y in index.. move back/forwards on y
 	send internal block identifiers to other side.. but not actual blocks locations
+	remember state in java script.. request details as creation from java script .. log the occurrence
 - implement 'edit' on server side
 	find correct tile/wall from click location
+		for now use distances to middles of near tiles/wall.. later use actual points in wall to find middle
 	change the tile & send block identifier
 - send valid on intervals
 
@@ -19,6 +37,9 @@ Implement information, needed, request and send request.
 - draw these tiles on the canvas
 	filled path in correct color (add color to floor)
 	six sided outline for reference
+
+- test idle timeout behavior: does it close the connection correctly??
+	for now assume the correct behavior
 
 Jetty integration
 - load initial data.. canvas that can be reused

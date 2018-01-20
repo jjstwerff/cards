@@ -120,6 +120,9 @@ public class CardsStructure {
 		area.field("goal", goal, "name");
 		area.field("maps", map, "x", "y", "z");
 
+		Record areaNr = project.table("AreaNr");
+		areaNr.field("area", Type.RELATION, area);
+
 		Record skill = project.table("Skill");
 		skill.field("card", Type.RELATION, card);
 		skill.field("state", Type.ENUMERATE, "STASHED", "PARTY", "ACTIVE");
@@ -130,7 +133,8 @@ public class CardsStructure {
 
 		Record game = project.table("Game");
 		game.field("name", Type.STRING);
-		game.field("areas", area, "name");
+		game.field("areaName", area, "name");
+		game.field("areas", Type.ARRAY, areaNr);
 		game.field("rules", Type.RELATION, rules);
 		game.field("characters", character, "name");
 		game.field("walls", Type.ARRAY, wall); // max 256

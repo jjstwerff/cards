@@ -2,6 +2,7 @@ package cards.web;
 
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -12,18 +13,28 @@ import org.eclipse.jetty.websocket.api.WriteCallback;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 
+import cards.record.Area;
 import cards.record.Game;
+import cards.record.Game.IndexAreas;
 
 public class WebSocket implements WebSocketListener {
 	private Session session;
 	private final Game game;
+	private Area area;
+	private int x;
+	private int y;
+	private int z;
 	private final Map<Integer, List<Pair<WebSocket, Integer>>> listen;
-	private final List<Integer> registered;
+	private final List<Integer> blocks;
 
 	public WebSocket(Game game, Map<Integer, List<Pair<WebSocket, Integer>>> listen) {
 		this.game = game;
 		this.listen = listen;
-		this.registered = new ArrayList<>();
+		this.blocks = new ArrayList<>();
+		area = null;
+		x = 0;
+		y = 0;
+		z = 0;
 	}
 
 	public Session getSession() {
@@ -33,13 +44,21 @@ public class WebSocket implements WebSocketListener {
 	@Override
 	public void onWebSocketClose(int statusCode, String reason) {
 		this.session = null;
-		for (int r : registered)
-			listen.get(r).remove(this);
-		registered.clear();
+		for (int r : blocks) {
+			Iterator<Pair<WebSocket, Integer>> it = listen.get(r).iterator();
+			while (it.hasNext()) {
+				Pair<WebSocket, Integer> next = it.next();
+				if (next.getFirst() == this)
+					it.remove();
+			}
+		}
+		blocks.clear();
 	}
 
 	@Override
 	public void onWebSocketConnect(Session session) {
+		// TODO flood protection from a single address .. timeout or simple drop too many connections
+		// flood protection from random addresses: drop when not known from Servlet login
 		this.session = session;
 	}
 
@@ -70,6 +89,11 @@ public class WebSocket implements WebSocketListener {
 		case "information":
 			// register client position to the websocket
 			// find block that should be listened to
+			JSONObject position = obj.getJSONObject("position");
+			area = game.getAreas().get(position.getIntValue("a"));
+			x = position.getIntValue("x");
+			y = position.getIntValue("y");
+			z = position.getIntValue("z");
 		case "request":
 			// write game data
 		case "edit":
