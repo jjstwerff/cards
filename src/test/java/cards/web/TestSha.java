@@ -2,33 +2,40 @@ package cards.web;
 
 import java.io.FileReader;
 import java.security.MessageDigest;
-import java.util.ArrayList;
-import java.util.Base64;
-import java.util.List;
 
 import javax.script.Invocable;
 import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
 
+import org.apache.commons.codec.binary.Hex;
 import org.junit.Test;
 
 import junit.framework.Assert;
 
 public class TestSha {
 	@Test
-	public void testJsSha() throws Exception {
+	public void testJsSha1() throws Exception {
 		String msg = "Peter Parker";
+		String should = Hex.encodeHexString(MessageDigest.getInstance("SHA1").digest(msg.getBytes()));
+		String was = hexString((String) callJs("sha.js", "sha1str", msg));
+		Assert.assertEquals(should, was);
+	}
 
+	/* Call the specified function in the specified javascript file */
+	private Object callJs(String file, String function, Object... parameters) throws Exception {
 		ScriptEngine engine = new ScriptEngineManager().getEngineByName("nashorn");
-		engine.eval(new FileReader(getClass().getResource("/html/sha.js").getFile()));
-		String res = (String) ((Invocable) engine).invokeFunction("sha1", msg);
-		byte[] bytes = new byte[20];
-		for (int i = 0; i < res.length(); i++)
-			bytes[i] = (byte) res.charAt(i);
-		String result = Base64.getEncoder().encodeToString(bytes);
+		engine.eval(new FileReader(getClass().getResource("/html/" + file).getFile()));
+		return ((Invocable) engine).invokeFunction(function, parameters);
+	}
 
-		MessageDigest mDigest = MessageDigest.getInstance("SHA1");
-		String should = Base64.getEncoder().encodeToString(mDigest.digest(msg.getBytes()));
-		Assert.assertEquals(should, result);
+	/* Return a hex dump of each individual 8 byte character on the given binary string */
+	private String hexString(String str) {
+		StringBuilder res = new StringBuilder();
+		for (int i = 0; i < str.length(); i++) {
+			if (str.charAt(i) < 16)
+				res.append("0");
+			res.append(Integer.toHexString(str.charAt(i)));
+		}
+		return res.toString();
 	}
 }

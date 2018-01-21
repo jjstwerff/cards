@@ -1,7 +1,7 @@
 /**
  *  Secure Hash Algorithm (SHA1)
  *  http://www.webtoolkit.info/
- *  Beware that this is not a good hash function to identify sensitive information.
+ *  Beware that this is not a good hash function as unique identification of sensitive information.
  **/
 
 function sha1(msg) {
@@ -14,22 +14,17 @@ function sha1(msg) {
     return x & 0x0ffffffff;
   };
 
-  function bytes(val, arr, p) {
-    for (var i = 3; i >= 0; i--)
-      arr[p++] = (val >>> (i * 8)) & 0xff;
-    return p;
-  };
-
-  var chunk;
-  var i, A, B, C, D, E, F, K, temp;
+  var chunk, i, A, B, C, D, E, F, K, temp;
   var W = new Uint32Array(80);
+  var buffer = new ArrayBuffer(20);
+  var H = new Uint32Array(buffer);
 
   // Initialize variables:
-  var H0 = 0x67452301;
-  var H1 = 0xEFCDAB89;
-  var H2 = 0x98BADCFE;
-  var H3 = 0x10325476;
-  var H4 = 0xC3D2E1F0;
+  H[0] = 0x67452301;
+  H[1] = 0xEFCDAB89;
+  H[2] = 0x98BADCFE;
+  H[3] = 0x10325476;
+  H[4] = 0xC3D2E1F0;
 
   // Pre-processing:
   var msg_len = msg.length;
@@ -60,11 +55,11 @@ function sha1(msg) {
       W[i] = rotate_left(W[i - 3] ^ W[i - 8] ^ W[i - 14] ^ W[i - 16], 1);
 
     // Initialize hash value for this chunk:
-    A = H0;
-    B = H1;
-    C = H2;
-    D = H3;
-    E = H4;
+    A = H[0];
+    B = H[1];
+    C = H[2];
+    D = H[3];
+    E = H[4];
 
     // Main loop:
     for (i = 0; i <= 79; i++) {
@@ -90,19 +85,20 @@ function sha1(msg) {
     }
 
     // Add this chunk's hash to result so far:
-    H0 = int32(H0 + A);
-    H1 = int32(H1 + B);
-    H2 = int32(H2 + C);
-    H3 = int32(H3 + D);
-    H4 = int32(H4 + E);
+    H[0] = int32(H[0] + A);
+    H[1] = int32(H[1] + B);
+    H[2] = int32(H[2] + C);
+    H[3] = int32(H[3] + D);
+    H[4] = int32(H[4] + E);
   }
+  return buffer;
+}
 
-  // Produce the final hash value (big-endian) as a 160-bit number:
-  var buf = new Uint8Array(20);
-  var p = bytes(H0, buf, 0);
-  p = bytes(H1, buf, p);
-  p = bytes(H2, buf, p);
-  p = bytes(H3, buf, p);
-  bytes(H4, buf, p);
-  return String.fromCharCode.apply(null, buf);
+function sha1str(msg) {
+  var from = new Uint8Array(sha1(msg));
+  var into = new Uint8Array(20);
+  // Change byte order per word
+  for (var i = 0; i < 20; i++)
+    into[i] = from[4 * (i >> 2) + 3 - i % 4];
+  return String.fromCharCode.apply(null, new Uint8Array(into));
 }
