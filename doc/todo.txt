@@ -1,27 +1,19 @@
+Test WebSocket connection with only identification.
+- player name and secret as parameter
+- authentification message from client
+	do not allow any other message till answer is correct
+- respond with challenge
+	if ((session != null) && (session.isOpen())) {
+		session.getRemote().sendString("got: " + message, null);
+	}	
+- respond with answer
+- validate answer locally
+
 Jetty SSL self signed:
-
-
-Password set:
-- no password known -> request admin username / password
-
-- test sha1 implementation 
-http://www.sha1-online.com/sha1-java/
-
-ScriptEngine engine = new ScriptEngineManager().getEngineByName("nashorn");
-engine.eval(new FileReader("script.js"));
-Invocable invocable = (Invocable) engine;
-Object result = invocable.invokeFunction("fun1", "Peter Parker");
-
-
-var fun1 = function(name) {
-    print('Hi there from Javascript, ' + name);
-    return "greetings from javascript";
-};
-
-var fun2 = function (object) {
-    print("JS Class Definition: " + Object.prototype.toString.call(object));
-};
-
+- allow to set admin account on startup without accounts
+- allow to log into an account
+- allow to add an account on login screen
+- show accounts and allow to reset passwords by admin
 
 Database rewrites:
 - fix code generation of arrays
@@ -29,12 +21,7 @@ Database rewrites:
 	code to fill arrays correctly
 - implement meta data request
 - blocks array per area -> index
-	per WebSocket .. add flood protection
-		array of blocks.. to far away = remove block
-		if ((session != null) && (session.isOpen())) {
-			session.getRemote().sendString("got: " + message, null);
-		}
-
+	array of blocks.. to far away = remove block
 
 Implement information, needed, request and send request.
 - internal state on information
