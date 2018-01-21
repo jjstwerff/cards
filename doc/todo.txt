@@ -1,5 +1,4 @@
 Test WebSocket connection with only identification.
-- player name and secret as parameter
 - authentification message from client
 	do not allow any other message till answer is correct
 - respond with challenge
@@ -14,7 +13,8 @@ Jetty SSL self signed:
 - allow to log into an account
 - allow to add an account on login screen
 - show accounts and allow to reset passwords by admin
-
+ 
+ 
 Database rewrites:
 - fix code generation of arrays
 	generate code
@@ -70,21 +70,6 @@ Jetty integration
 		for now in same file as read on startup
 	button to save/stop application?
 - tab with position (x,y) inside the world
-
-var ws = new WebSocket("ws://localhost:8080");
-ws.onopen = function(event) {
-  exampleSocket.send(JSON.stringify({click:{type:"wall",nr:2,x:12,y:424}}));
-};
-ws.onmessage = function(event) {
-  var msg = JSON.parse(event.data);
-  // update canvas
-  // c.fillStyle = "blue";
-  // c.strokeStyle = color;
-  // c.beginPath(); c.moveTo(540, 104); c.lineTo(480, 104); c.fill(); c.stroke();
-};
-ws.onclose = function() {
-  ws = null;
-};
 
 Drag from the side bar to the current scene.
 Select inside the current scene:

@@ -1,3 +1,18 @@
+var ws = null;
+
+function session(secret, name) { 
+  var ws = new WebSocket("ws://localhost:8080");
+  ws.onopen = function(event) {
+    exampleSocket.send(JSON.stringify({click:{type:"wall",nr:2,x:12,y:424}}));
+  };
+  ws.onmessage = function(event) {
+    var msg = JSON.parse(event.data);
+  };
+  ws.onclose = function() {
+    ws = null;
+  };
+}
+
 /**
  *  Secure Hash Algorithm (SHA1)
  *  http://www.webtoolkit.info/

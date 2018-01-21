@@ -2,6 +2,9 @@ package cards.web;
 
 import java.io.FileReader;
 import java.security.MessageDigest;
+import java.util.Date;
+import java.util.Random;
+import java.util.stream.LongStream;
 
 import javax.script.Invocable;
 import javax.script.ScriptEngine;
@@ -12,13 +15,22 @@ import org.junit.Test;
 
 import junit.framework.Assert;
 
-public class TestSha {
+public class TestSession {
+	private static final LongStream random = new Random(new Date().getTime()).longs();
+
 	@Test
 	public void testJsSha1() throws Exception {
 		String msg = "Peter Parker";
 		String should = Hex.encodeHexString(MessageDigest.getInstance("SHA1").digest(msg.getBytes()));
-		String was = hexString((String) callJs("sha.js", "sha1str", msg));
+		String was = hexString((String) callJs("session.js", "sha1str", msg));
 		Assert.assertEquals(should, was);
+	}
+
+	@Test
+	public void testSession() throws Exception {
+		// start WebSocket
+		String secret = Long.toString(random.findFirst().getAsLong());
+		callJs("session.js", "session", secret, "admin");
 	}
 
 	/* Call the specified function in the specified javascript file */
