@@ -22,7 +22,7 @@ public class ChangeArea extends Area implements AutoCloseable {
 	public ChangeArea(Area current) {
 		super(current.store, current.getRec());
 		this.parent = getUpRecord();
-		parent.new IndexAreas(this).remove(getRec());
+		parent.new IndexAreaName(this).remove(getRec());
 	}
 
 	public void setName(String value) {
@@ -35,6 +35,6 @@ public class ChangeArea extends Area implements AutoCloseable {
 
 	@Override
 	public void close() {
-		parent.new IndexAreas(this).insert(getRec());
+		parent.new IndexAreaName(this).insert(getRec());
 	}
 }

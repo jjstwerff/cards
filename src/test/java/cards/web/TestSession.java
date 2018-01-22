@@ -11,8 +11,12 @@ import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
 
 import org.apache.commons.codec.binary.Hex;
+import org.eclipse.jetty.server.Server;
 import org.junit.Test;
 
+import com.betterbe.memorydb.structure.Store;
+
+import cards.record.ChangePlayer;
 import junit.framework.Assert;
 
 public class TestSession {
@@ -28,9 +32,19 @@ public class TestSession {
 
 	@Test
 	public void testSession() throws Exception {
+		// fill use in database
+		long asLong = random.findFirst().getAsLong();
+		Store store = new Store(20);
+		try (ChangePlayer player = new ChangePlayer(store)) {
+			player.setName("admin");
+			player.setSecret(asLong);
+		}
 		// start WebSocket
-		String secret = Long.toString(random.findFirst().getAsLong());
-		callJs("session.js", "session", secret, "admin");
+		WebApp app = new WebApp();
+		Server server = app.config();
+		// call javascript
+		callJs("session.js", "session", Long.toString(asLong), "admin");
+		server.join();
 	}
 
 	/* Call the specified function in the specified javascript file */

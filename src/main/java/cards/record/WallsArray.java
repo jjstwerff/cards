@@ -24,16 +24,16 @@ public class WallsArray implements Iterable<WallsArray>, Iterator<WallsArray>{
 		this.store = record.store;
 		this.rec = record.rec;
 		this.idx = -1;
-		this.alloc = store.getInt(rec, 24);
-		this.size = store.getInt(rec, 20);
+		this.alloc = store.getInt(rec, 32);
+		this.size = store.getInt(rec, 28);
 	}
 
-	public WallsArray(WallsArray cur) {
-		this.store = cur.store;
-		this.rec = cur.rec;
-		this.idx = cur.idx;
-		this.alloc = cur.alloc;
-		this.size = cur.size;
+	public WallsArray(WallsArray other) {
+		this.store = other.store;
+		this.rec = other.rec;
+		this.idx = other.idx;
+		this.alloc = other.alloc;
+		this.size = other.size;
 	}
 
 	public int getSize() {
@@ -54,9 +54,9 @@ public class WallsArray implements Iterable<WallsArray>, Iterator<WallsArray>{
 			alloc = store.allocate(12);
 		else
 			alloc = store.resize(alloc, (11 + (idx + 1) * 17) / 8);
-		store.setInt(rec, 24, alloc);
+		store.setInt(rec, 32, alloc);
 		size = idx + 1;
-		store.setInt(rec, 20, size);
+		store.setInt(rec, 28, size);
 		return this;
 	}
 

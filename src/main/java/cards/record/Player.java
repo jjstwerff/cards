@@ -20,7 +20,7 @@ import java.time.LocalDateTime;
 public class Player implements RecordInterface {
 	/* package private */ Store store;
 	protected int rec;
-	/* package private */ static int SIZE = 37;
+	/* package private */ static int SIZE = 45;
 
 	public Player(Store store) {
 		this.store = store;
@@ -47,12 +47,16 @@ public class Player implements RecordInterface {
 		return rec == 0 ? null : DateTime.of(store.getLong(rec, 4));
 	}
 
+	public long getSecret() {
+		return rec == 0 ? Long.MIN_VALUE : store.getLong(rec, 12);
+	}
+
 	public LocalDateTime getLast() {
-		return rec == 0 ? null : DateTime.of(store.getLong(rec, 12));
+		return rec == 0 ? null : DateTime.of(store.getLong(rec, 20));
 	}
 
 	public String getName() {
-		return rec == 0 ? null : store.getString(store.getInt(rec, 20));
+		return rec == 0 ? null : store.getString(store.getInt(rec, 28));
 	}
 
 	public IndexMember getMember() {
@@ -155,12 +159,12 @@ public class Player implements RecordInterface {
 
 		@Override
 		protected int readTop() {
-			return store.getInt(Player.this.getRec(), 24);
+			return store.getInt(Player.this.getRec(), 32);
 		}
 
 		@Override
 		protected void changeTop(int value) {
-			store.setInt(Player.this.getRec(), 24, value);
+			store.setInt(Player.this.getRec(), 32, value);
 		}
 
 		@Override
@@ -236,37 +240,37 @@ public class Player implements RecordInterface {
 		@Override
 		protected boolean readRed(int recNr) {
 			assert store.validate(recNr);
-			return (store.getByte(recNr, 28) & 1) > 0;
+			return (store.getByte(recNr, 36) & 1) > 0;
 		}
 
 		@Override
 		protected void changeRed(int recNr, boolean value) {
 			assert store.validate(recNr);
-			store.setByte(recNr, 28, (store.getByte(rec, 28) & 254) + (value ? 1 : 0));
+			store.setByte(recNr, 36, (store.getByte(rec, 36) & 254) + (value ? 1 : 0));
 		}
 
 		@Override
 		protected int readLeft(int recNr) {
 			assert store.validate(recNr);
-			return store.getInt(recNr, 29);
+			return store.getInt(recNr, 37);
 		}
 
 		@Override
 		protected void changeLeft(int recNr, int value) {
 			assert store.validate(recNr);
-			store.setInt(recNr, 29, value);
+			store.setInt(recNr, 37, value);
 		}
 
 		@Override
 		protected int readRight(int recNr) {
 			assert store.validate(recNr);
-			return store.getInt(recNr, 33);
+			return store.getInt(recNr, 41);
 		}
 
 		@Override
 		protected void changeRight(int recNr, int value) {
 			assert store.validate(recNr);
-			store.setInt(recNr, 33, value);
+			store.setInt(recNr, 41, value);
 		}
 
 		@Override
@@ -301,6 +305,7 @@ public class Player implements RecordInterface {
 		if (rec == 0 || iterate <= 0)
 			return;
 		write.field("creation", getCreation(), true);
+		write.field("secret", getSecret(), false);
 		write.field("last", getLast(), false);
 		write.field("name", getName(), false);
 		write.sub("member", false);
@@ -365,6 +370,7 @@ public class Player implements RecordInterface {
 
 	private void parseFields(Parser parser, ChangePlayer record) {
 		record.setCreation(DateTime.of(parser.getString("creation")));
+		record.setSecret(parser.getLong("secret"));
 		record.setLast(DateTime.of(parser.getString("last")));
 		if (parser.hasSub("member"))
 			new Member(store).parse(parser, record);

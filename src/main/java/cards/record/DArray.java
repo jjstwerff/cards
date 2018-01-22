@@ -27,6 +27,14 @@ public class DArray implements Iterable<DArray>, Iterator<DArray>{
 		this.size = store.getInt(rec, 20);
 	}
 
+	public DArray(DArray other) {
+		this.store = other.store;
+		this.rec = other.rec;
+		this.idx = other.idx;
+		this.alloc = other.alloc;
+		this.size = other.size;
+	}
+
 	public int getSize() {
 		return size;
 	}
@@ -64,7 +72,7 @@ public class DArray implements Iterable<DArray>, Iterator<DArray>{
 	@Override
 	public DArray next() {
 		idx++;
-		return this;
+		return new DArray(this);
 	}
 
 	public byte getL() {

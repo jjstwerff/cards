@@ -18,7 +18,7 @@ import com.betterbe.memorydb.structure.Store;
 public class Game implements RecordInterface {
 	/* package private */ Store store;
 	protected int rec;
-	/* package private */ static int SIZE = 53;
+	/* package private */ static int SIZE = 61;
 
 	public Game(Store store) {
 		this.store = store;
@@ -45,23 +45,23 @@ public class Game implements RecordInterface {
 		return rec == 0 ? null : store.getString(store.getInt(rec, 4));
 	}
 
-	public IndexAreas getAreas() {
-		return new IndexAreas(new Area(store));
+	public IndexAreaName getAreaName() {
+		return new IndexAreaName(new Area(store));
 	}
 
-	public class IndexAreas extends RedBlackTree implements Iterable<Area>, Iterator<Area> {
+	public class IndexAreaName extends RedBlackTree implements Iterable<Area>, Iterator<Area> {
 		Key key = null;
 		Area record;
 		int nextRec;
 
-		public IndexAreas(Area record) {
+		public IndexAreaName(Area record) {
 			this.record = record;
 			record.store = store;
 			this.key = null;
 			nextRec = first();
 		}
 
-		public IndexAreas(Area record, String key1) {
+		public IndexAreaName(Area record, String key1) {
 			this.record = record;
 			record.store = store;
 			this.key = new Key() {
@@ -170,12 +170,16 @@ public class Game implements RecordInterface {
 		}
 	}
 
+	public AreasArray getAreas() {
+		return new AreasArray(this);
+	}
+
 	public void getRules(Rules value) {
-		value.setRec(store.getInt(rec, 12));
+		value.setRec(store.getInt(rec, 20));
 	}
 
 	public Rules getRules() {
-		return new Rules(store, rec == 0 ? 0 : store.getInt(rec, 12));
+		return new Rules(store, rec == 0 ? 0 : store.getInt(rec, 20));
 	}
 
 	public IndexCharacters getCharacters() {
@@ -278,12 +282,12 @@ public class Game implements RecordInterface {
 
 		@Override
 		protected int readTop() {
-			return store.getInt(Game.this.getRec(), 16);
+			return store.getInt(Game.this.getRec(), 24);
 		}
 
 		@Override
 		protected void changeTop(int value) {
-			store.setInt(Game.this.getRec(), 16, value);
+			store.setInt(Game.this.getRec(), 24, value);
 		}
 
 		@Override
@@ -411,12 +415,12 @@ public class Game implements RecordInterface {
 
 		@Override
 		protected int readTop() {
-			return store.getInt(Game.this.getRec(), 36);
+			return store.getInt(Game.this.getRec(), 44);
 		}
 
 		@Override
 		protected void changeTop(int value) {
-			store.setInt(Game.this.getRec(), 36, value);
+			store.setInt(Game.this.getRec(), 44, value);
 		}
 
 		@Override
@@ -536,12 +540,12 @@ public class Game implements RecordInterface {
 
 		@Override
 		protected int readTop() {
-			return store.getInt(Game.this.getRec(), 40);
+			return store.getInt(Game.this.getRec(), 48);
 		}
 
 		@Override
 		protected void changeTop(int value) {
-			store.setInt(Game.this.getRec(), 40, value);
+			store.setInt(Game.this.getRec(), 48, value);
 		}
 
 		@Override
@@ -617,37 +621,37 @@ public class Game implements RecordInterface {
 		@Override
 		protected boolean readRed(int recNr) {
 			assert store.validate(recNr);
-			return (store.getByte(recNr, 44) & 1) > 0;
+			return (store.getByte(recNr, 52) & 1) > 0;
 		}
 
 		@Override
 		protected void changeRed(int recNr, boolean value) {
 			assert store.validate(recNr);
-			store.setByte(recNr, 44, (store.getByte(rec, 44) & 254) + (value ? 1 : 0));
+			store.setByte(recNr, 52, (store.getByte(rec, 52) & 254) + (value ? 1 : 0));
 		}
 
 		@Override
 		protected int readLeft(int recNr) {
 			assert store.validate(recNr);
-			return store.getInt(recNr, 45);
+			return store.getInt(recNr, 53);
 		}
 
 		@Override
 		protected void changeLeft(int recNr, int value) {
 			assert store.validate(recNr);
-			store.setInt(recNr, 45, value);
+			store.setInt(recNr, 53, value);
 		}
 
 		@Override
 		protected int readRight(int recNr) {
 			assert store.validate(recNr);
-			return store.getInt(recNr, 49);
+			return store.getInt(recNr, 57);
 		}
 
 		@Override
 		protected void changeRight(int recNr, int value) {
 			assert store.validate(recNr);
-			store.setInt(recNr, 49, value);
+			store.setInt(recNr, 57, value);
 		}
 
 		@Override
@@ -682,8 +686,12 @@ public class Game implements RecordInterface {
 		if (rec == 0 || iterate <= 0)
 			return;
 		write.field("name", getName(), true);
+		write.sub("areaName", false);
+		for (Area sub : getAreaName())
+			sub.output(write, iterate - 1);
+		write.endSub();
 		write.sub("areas", false);
-		for (Area sub : getAreas())
+		for (AreasArray sub: getAreas())
 			sub.output(write, iterate - 1);
 		write.endSub();
 		write.field("rules", getRules(), false);
@@ -764,8 +772,15 @@ public class Game implements RecordInterface {
 	}
 
 	private void parseFields(Parser parser, ChangeGame record) {
-		if (parser.hasSub("areas"))
+		if (parser.hasSub("areaName"))
 			new Area(store).parse(parser, record);
+		if (parser.hasSub("areas")) {
+			AreasArray sub = new AreasArray(record);
+			while (parser.getSub()) {
+				sub.add();
+				sub.parse(parser);
+			}
+		}
 		parser.getRelation("rules", (int recNr) -> {
 			Rules rec = new Rules(store);
 			boolean found = rec.parseKey(parser);

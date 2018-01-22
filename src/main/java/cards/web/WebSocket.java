@@ -17,7 +17,6 @@ import com.alibaba.fastjson.JSONObject;
 
 import cards.record.Area;
 import cards.record.Game;
-import cards.record.Game.IndexAreas;
 
 public class WebSocket implements WebSocketListener {
 	private Session session;

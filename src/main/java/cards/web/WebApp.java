@@ -37,8 +37,14 @@ public class WebApp {
 
 	private static Map<Integer, List<Pair<WebSocket, Integer>>> listen; // List of web-sockets that listen to events per block
 
-	public static void main(String[] args) throws Exception {
+	public static void main(String[] args) throws InterruptedException {
 		rootLogger(Level.DEBUG);
+		WebApp app = new WebApp();
+		Server server = app.config();
+		server.join();
+	}
+
+	public Server config() {
 		logger("org.eclipse.jetty", Level.WARN);
 		logger("org.rythmengine.RythmEngine", Level.INFO);
 
@@ -91,11 +97,16 @@ public class WebApp {
 		map.put("home.template", WebApp.class.getResource("/templates").getFile());
 		Rythm.init(map);
 
-		Server server = new Server(new InetSocketAddress(HOSTNAME, PORT));
-		server.setHandler(handlers);
-		server.start();
-		logger.info("Url: http://localhost:" + PORT + "/");
-		server.join();
+		Server server;
+		try {
+			server = new Server(new InetSocketAddress(HOSTNAME, PORT));
+			server.setHandler(handlers);
+			server.start();
+			logger.info("Url: http://localhost:" + PORT + "/");
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+		return server;
 	}
 
 	private static void logger(String context, Level level) {

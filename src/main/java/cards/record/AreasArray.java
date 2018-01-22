@@ -9,25 +9,25 @@ import com.betterbe.memorydb.file.Write;
 import com.betterbe.memorydb.structure.Store;
 
 /**
- * Automatically generated record class for items
+ * Automatically generated record class for areas
  */
 
-public class ItemsArray implements Iterable<ItemsArray>, Iterator<ItemsArray>{
+public class AreasArray implements Iterable<AreasArray>, Iterator<AreasArray>{
 	private final Store store;
 	private final int rec;
 	private int idx;
 	private int alloc;
 	private int size;
 
-	public ItemsArray(Room record) {
+	public AreasArray(Game record) {
 		this.store = record.store;
 		this.rec = record.rec;
 		this.idx = -1;
-		this.alloc = store.getInt(rec, 20);
-		this.size = store.getInt(rec, 16);
+		this.alloc = store.getInt(rec, 16);
+		this.size = store.getInt(rec, 12);
 	}
 
-	public ItemsArray(ItemsArray other) {
+	public AreasArray(AreasArray other) {
 		this.store = other.store;
 		this.rec = other.rec;
 		this.idx = other.idx;
@@ -47,20 +47,20 @@ public class ItemsArray implements Iterable<ItemsArray>, Iterator<ItemsArray>{
 		this.idx = index;
 	}
 
-	public ItemsArray add() {
+	public AreasArray add() {
 		idx = size;
 		if (alloc == 0)
 			alloc = store.allocate(3);
 		else
 			alloc = store.resize(alloc, (11 + (idx + 1) * 4) / 8);
-		store.setInt(rec, 20, alloc);
+		store.setInt(rec, 16, alloc);
 		size = idx + 1;
-		store.setInt(rec, 16, size);
+		store.setInt(rec, 12, size);
 		return this;
 	}
 
 	@Override
-	public Iterator<ItemsArray> iterator() {
+	public Iterator<AreasArray> iterator() {
 		return this;
 	}
 
@@ -70,20 +70,20 @@ public class ItemsArray implements Iterable<ItemsArray>, Iterator<ItemsArray>{
 	}
 
 	@Override
-	public ItemsArray next() {
+	public AreasArray next() {
 		idx++;
-		return new ItemsArray(this);
+		return new AreasArray(this);
 	}
 
-	public void getCard(Card value) {
+	public void getArea(Area value) {
 		value.setRec(store.getInt(rec, 0));
 	}
 
-	public Card getCard() {
-		return new Card(store, alloc == 0 || idx < 0 || idx >= size ? 0 : store.getInt(alloc, idx * 4 + 4));
+	public Area getArea() {
+		return new Area(store, alloc == 0 || idx < 0 || idx >= size ? 0 : store.getInt(alloc, idx * 4 + 4));
 	}
 
-	public void setCard(Card value) {
+	public void setArea(Area value) {
 		if (alloc != 0 && idx >= 0 && idx < size)
 				store.setInt(alloc, idx * 4 + 4, value == null ? 0 : value.getRec());
 	}
@@ -91,7 +91,7 @@ public class ItemsArray implements Iterable<ItemsArray>, Iterator<ItemsArray>{
 	public void output(Write write, int iterate) throws IOException {
 		if (rec == 0 || iterate <= 0)
 			return;
-		write.strField("card", "{" + getCard().keys() + "}", true);
+		write.strField("area", "{" + getArea().keys() + "}", true);
 		write.endRecord();
 	}
 
@@ -107,13 +107,13 @@ public class ItemsArray implements Iterable<ItemsArray>, Iterator<ItemsArray>{
 	}
 
 	public void parse(Parser parser) {
-		ItemsArray record = this;
-		record.setCard(null);
-		parser.getRelation("card", (int recNr) -> {
-			Card rec = new Card(store);
-			boolean found = rec.parseKey(parser, null);
+		AreasArray record = this;
+		record.setArea(null);
+		parser.getRelation("area", (int recNr) -> {
+			Area rec = new Area(store);
+			boolean found = rec.parseKey(parser, new Game(store, this.rec));
 			idx=recNr;
-			record.setCard(rec);
+			record.setArea(rec);
 			return found;
 		}, idx);
 	}

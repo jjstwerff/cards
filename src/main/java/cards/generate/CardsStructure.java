@@ -120,7 +120,7 @@ public class CardsStructure {
 		area.field("goal", goal, "name");
 		area.field("maps", map, "x", "y", "z");
 
-		Record areaNr = project.table("AreaNr");
+		Record areaNr = project.record("AreaNr");
 		areaNr.field("area", Type.RELATION, area);
 
 		Record skill = project.table("Skill");

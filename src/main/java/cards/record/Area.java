@@ -542,7 +542,7 @@ public class Area implements RecordInterface {
 	public void parse(Parser parser, Game parent) {
 		while (parser.getSub()) {
 			String name = parser.getString("name");
-			Game.IndexAreas idx = parent.new IndexAreas(this, name);
+			Game.IndexAreaName idx = parent.new IndexAreaName(this, name);
 			if (parser.isDelete(idx.nextRec)) {
 				try (ChangeArea record = new ChangeArea(this)) {
 					store.toFree(record.getRec());
@@ -572,7 +572,7 @@ public class Area implements RecordInterface {
 			return true;
 		}, getRec());
 		String name = parser.getRelationString("name");
-		Game.IndexAreas idx = parent.new IndexAreas(this, name);
+		Game.IndexAreaName idx = parent.new IndexAreaName(this, name);
 		parser.finishRelation();
 		rec = idx.nextRec;
 		return idx.nextRec != 0;

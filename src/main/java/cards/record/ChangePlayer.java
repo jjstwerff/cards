@@ -11,9 +11,10 @@ public class ChangePlayer extends Player implements AutoCloseable {
 	public ChangePlayer(Store store) {
 		super(store, store.allocate(Player.SIZE));
 		setCreation(null);
+		setSecret(0L);
 		setLast(null);
 		setName(null);
-		store.setInt(rec, 24, 0); // SET member
+		store.setInt(rec, 32, 0); // SET member
 	}
 
 	public ChangePlayer(Player current) {
@@ -25,12 +26,16 @@ public class ChangePlayer extends Player implements AutoCloseable {
 		store.setLong(rec, 4, value == null ? 0 : DateTime.getLong(value));
 	}
 
+	public void setSecret(long value) {
+		store.setLong(rec, 12, value);
+	}
+
 	public void setLast(LocalDateTime value) {
-		store.setLong(rec, 12, value == null ? 0 : DateTime.getLong(value));
+		store.setLong(rec, 20, value == null ? 0 : DateTime.getLong(value));
 	}
 
 	public void setName(String value) {
-		store.setInt(rec, 20, store.putString(value));
+		store.setInt(rec, 28, store.putString(value));
 	}
 
 	@Override

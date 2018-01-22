@@ -27,6 +27,14 @@ public class EncounterArray implements Iterable<EncounterArray>, Iterator<Encoun
 		this.size = store.getInt(rec, 12);
 	}
 
+	public EncounterArray(EncounterArray other) {
+		this.store = other.store;
+		this.rec = other.rec;
+		this.idx = other.idx;
+		this.alloc = other.alloc;
+		this.size = other.size;
+	}
+
 	public int getSize() {
 		return size;
 	}
@@ -64,7 +72,7 @@ public class EncounterArray implements Iterable<EncounterArray>, Iterator<Encoun
 	@Override
 	public EncounterArray next() {
 		idx++;
-		return this;
+		return new EncounterArray(this);
 	}
 
 	public void getCard(Card value) {

@@ -27,6 +27,14 @@ public class CardsArray implements Iterable<CardsArray>, Iterator<CardsArray>{
 		this.size = store.getInt(rec, 8);
 	}
 
+	public CardsArray(CardsArray other) {
+		this.store = other.store;
+		this.rec = other.rec;
+		this.idx = other.idx;
+		this.alloc = other.alloc;
+		this.size = other.size;
+	}
+
 	public int getSize() {
 		return size;
 	}
@@ -64,7 +72,7 @@ public class CardsArray implements Iterable<CardsArray>, Iterator<CardsArray>{
 	@Override
 	public CardsArray next() {
 		idx++;
-		return this;
+		return new CardsArray(this);
 	}
 
 	public void getCard(Card value) {

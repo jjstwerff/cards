@@ -27,6 +27,14 @@ public class ChecksArray implements Iterable<ChecksArray>, Iterator<ChecksArray>
 		this.size = store.getInt(rec, 10);
 	}
 
+	public ChecksArray(ChecksArray other) {
+		this.store = other.store;
+		this.rec = other.rec;
+		this.idx = other.idx;
+		this.alloc = other.alloc;
+		this.size = other.size;
+	}
+
 	public int getSize() {
 		return size;
 	}
@@ -64,7 +72,7 @@ public class ChecksArray implements Iterable<ChecksArray>, Iterator<ChecksArray>
 	@Override
 	public ChecksArray next() {
 		idx++;
-		return this;
+		return new ChecksArray(this);
 	}
 
 	public void getCard(Card value) {

@@ -27,6 +27,14 @@ public class OpponentArray implements Iterable<OpponentArray>, Iterator<Opponent
 		this.size = store.getInt(rec, 8);
 	}
 
+	public OpponentArray(OpponentArray other) {
+		this.store = other.store;
+		this.rec = other.rec;
+		this.idx = other.idx;
+		this.alloc = other.alloc;
+		this.size = other.size;
+	}
+
 	public int getSize() {
 		return size;
 	}
@@ -64,7 +72,7 @@ public class OpponentArray implements Iterable<OpponentArray>, Iterator<Opponent
 	@Override
 	public OpponentArray next() {
 		idx++;
-		return this;
+		return new OpponentArray(this);
 	}
 
 	public void getCard(Card value) {

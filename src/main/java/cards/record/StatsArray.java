@@ -27,6 +27,14 @@ public class StatsArray implements Iterable<StatsArray>, Iterator<StatsArray>{
 		this.size = store.getInt(rec, 10);
 	}
 
+	public StatsArray(StatsArray other) {
+		this.store = other.store;
+		this.rec = other.rec;
+		this.idx = other.idx;
+		this.alloc = other.alloc;
+		this.size = other.size;
+	}
+
 	public int getSize() {
 		return size;
 	}
@@ -64,7 +72,7 @@ public class StatsArray implements Iterable<StatsArray>, Iterator<StatsArray>{
 	@Override
 	public StatsArray next() {
 		idx++;
-		return this;
+		return new StatsArray(this);
 	}
 
 	public void getStatistic(Statistic value) {
