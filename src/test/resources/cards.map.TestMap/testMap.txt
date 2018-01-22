@@ -86,6 +86,7 @@ name=TestMap, materials=[
   name=ladder
   name=lamp
 ], areas=[
+], areaName=[
   name=Building, maps=[
     x=0, y=0, z=0, l=7, d=[
 # 0

@@ -24,7 +24,7 @@ public class TestMap extends Tests {
 		game = game.new IndexGameName().iterator().next();
 		Assert.assertEquals(content(this, "testMap2.txt"), game.toString());
 
-		Area area = game.getAreas().next().getArea();
+		Area area = game.getAreaName().next();
 		Draw draw = new Draw(area);
 
 		Map map = area.getMaps().next();

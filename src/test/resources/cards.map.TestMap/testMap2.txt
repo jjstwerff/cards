@@ -1,4 +1,4 @@
-name=TestMap, areas=[
+name=TestMap, areaName=[
   name=Building, rooms=[
   ], encounter=[
   ], goal=[
@@ -69,6 +69,7 @@ name=TestMap, areas=[
       l=0, t=0, r=0, f=0, i=0, d=0, h=0
     ]
   ]
+], areas=[
 ], characters=[
 ], walls=[
   name=open, thickness=0, height=0, sloped=false, combineLevel=0, material={}, item={}, inwards=false
