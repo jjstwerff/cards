@@ -6,6 +6,8 @@ name=Area, parent=Game, size=41, related=true, full=true
   name=goal, type=SET, related=Goal, pos=160
   name=maps, type=SET, related=Map, pos=192
   name=upRecord, type=RELATION, related=Game, pos=296
+name=AreaNr, size=4
+  name=area, type=RELATION, related=Area, pos=0
 name=Card, parent=Rules, size=31, related=true, full=true
   name=name, type=STRING, pos=32, key=true
   name=set, type=ENUMERATE, pos=64
@@ -40,15 +42,16 @@ name=Floor, size=11
   name=inside, type=BOOLEAN, pos=40
   name=sloped, type=BOOLEAN, pos=48
   name=material, type=RELATION, related=Material, pos=56
-name=Game, size=53, related=true, full=true
+name=Game, size=61, related=true, full=true
   name=name, type=STRING, pos=32, key=true
-  name=areas, type=SET, related=Area, pos=64
-  name=rules, type=RELATION, related=Rules, pos=96
-  name=characters, type=SET, related=Character, pos=128
-  name=walls, type=ARRAY, related=Wall, pos=160
-  name=floors, type=ARRAY, related=Floor, pos=224
-  name=items, type=SET, related=Item, pos=288
-  name=materials, type=SET, related=Material, pos=320
+  name=areaName, type=SET, related=Area, pos=64
+  name=areas, type=ARRAY, related=AreaNr, pos=96
+  name=rules, type=RELATION, related=Rules, pos=160
+  name=characters, type=SET, related=Character, pos=192
+  name=walls, type=ARRAY, related=Wall, pos=224
+  name=floors, type=ARRAY, related=Floor, pos=288
+  name=items, type=SET, related=Item, pos=352
+  name=materials, type=SET, related=Material, pos=384
 name=Goal, parent=Area, size=29, full=true
   name=name, type=STRING, pos=32, key=true
   name=type, type=ENUMERATE, pos=64
@@ -75,11 +78,12 @@ name=Member, parent=Player, size=27, full=true
   name=role, type=ENUMERATE, pos=64
   name=xp, type=INTEGER, pos=80
   name=upRecord, type=RELATION, related=Player, pos=184
-name=Player, size=37, related=true, full=true
+name=Player, size=45, related=true, full=true
   name=creation, type=DATE, pos=32
-  name=last, type=DATE, pos=96
-  name=name, type=STRING, pos=160, key=true
-  name=member, type=SET, related=Member, pos=192
+  name=secret, type=LONG, pos=96
+  name=last, type=DATE, pos=160
+  name=name, type=STRING, pos=224, key=true
+  name=member, type=SET, related=Member, pos=256
 name=Race, parent=Rules, size=29, full=true
   name=name, type=STRING, pos=32, key=true
   name=cards, type=ARRAY, related=Cards, pos=64
@@ -144,24 +148,24 @@ name=maps, record=Map, fields=[
 name=skills, record=Skill, fields=[
 	field=card.name
 ], fieldPos=88, flagPos=80, parentPos=8, primary=true
-name=areas, record=Area, fields=[
+name=areaName, record=Area, fields=[
 	field=name
 ], fieldPos=232, flagPos=224, parentPos=8, primary=true
 name=characters, record=Character, fields=[
 	field=name
-], fieldPos=104, flagPos=96, parentPos=16, primary=true
+], fieldPos=104, flagPos=96, parentPos=24, primary=true
 name=items, record=Item, fields=[
 	field=name
-], fieldPos=104, flagPos=96, parentPos=36, primary=true
+], fieldPos=104, flagPos=96, parentPos=44, primary=true
 name=materials, record=Material, fields=[
 	field=name
-], fieldPos=104, flagPos=96, parentPos=40, primary=true
+], fieldPos=104, flagPos=96, parentPos=48, primary=true
 name=gameName, record=Game, fields=[
 	field=name
-], fieldPos=360, flagPos=352, parentPos=24, primary=true
+], fieldPos=424, flagPos=416, parentPos=24, primary=true
 name=member, record=Member, fields=[
 	field=game.name
-], fieldPos=120, flagPos=112, parentPos=24, primary=true
+], fieldPos=120, flagPos=112, parentPos=32, primary=true
 name=playerName, record=Player, fields=[
 	field=name
-], fieldPos=232, flagPos=224, parentPos=28, primary=true
+], fieldPos=296, flagPos=288, parentPos=28, primary=true

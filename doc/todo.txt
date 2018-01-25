@@ -1,3 +1,19 @@
+http://winterbe.com/posts/2014/04/05/java8-nashorn-tutorial/
+
+load('http://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.6.0/underscore-min.js');
+
+var MyJavaClass = Java.type('my.package.MyJavaClass');
+
+var result = MyJavaClass.fun1('John Doe');
+print(result);
+
+MyJavaClass.fun2(123); // class java.lang.Integer
+MyJavaClass.fun2(49.99); // class java.lang.Double
+MyJavaClass.fun2(true); // class java.lang.Boolean
+MyJavaClass.fun2("hi there") // class java.lang.String
+MyJavaClass.fun2({foo: 'bar'}); // class jdk.nashorn.internal.scripts.JO4
+
+
 Test WebSocket connection with only identification.
 - authentification message from client
 	do not allow any other message till answer is correct
@@ -13,8 +29,7 @@ Jetty SSL self signed:
 - allow to log into an account
 - allow to add an account on login screen
 - show accounts and allow to reset passwords by admin
- 
- 
+
 Database rewrites:
 - fix code generation of arrays
 	generate code
