@@ -1,9 +1,5 @@
-Spatial version of Radix tree:
-	store 2 bytes in each node .. higher than the current bit
-	use these bytes when searching records to mitigate misses of close records
-	specific lookup that returns the closest found element
-
 http://winterbe.com/posts/2014/04/05/java8-nashorn-tutorial/
+Test simple callback to nashorn
 
 load('http://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.6.0/underscore-min.js');
 
@@ -17,6 +13,70 @@ MyJavaClass.fun2(49.99); // class java.lang.Double
 MyJavaClass.fun2(true); // class java.lang.Boolean
 MyJavaClass.fun2("hi there") // class java.lang.String
 MyJavaClass.fun2({foo: 'bar'}); // class jdk.nashorn.internal.scripts.JO4
+
+https://developer.mozilla.org/en-US/docs/Web/API/WebSocket
+
+if (!'WebSocket' in window) {
+  load("websocket.js"); 
+}
+
+class WebSocket {
+  readonly url
+  constructor(url, protocols = "") {
+    Object.defineProperty(this, 'url', {
+  		value: url,
+        writable: false
+    });
+    this.protocols = protocols;
+    this.binaryType = 'blob';
+    Object.defineProperty(this, 'bufferedAmount', {
+  		value: 0,
+        writable: false
+    });
+    Object.defineProperty(this, 'readyState', {
+  		value: 0,
+        writable: false
+    });
+    this.onclose = null;
+    this.onerror = null;
+    this.onmessage = null;
+    this.onopen = null;
+  }
+  
+  void close(code = 1000, reason = "") {
+  }
+
+  void send(data) { // USVString, ArrayBuffer, Blob, ArrayBufferView
+    if (this.readyState != 1)
+      throw INVALID_STATE_ERR;
+    if (this.binaryType == 'blob') // otherwise 'arraybuffer'
+      this.bufferedAmount += data.size
+  }
+}
+Object.defineProperty(WebSocket, 'CONNECTING', {
+    value: 0,
+    writable : false,
+    enumerable : true,
+    configurable : false
+});
+Object.defineProperty(WebSocket, 'OPEN', {
+    value: 1,
+    writable : false,
+    enumerable : true,
+    configurable : false
+});
+Object.defineProperty(WebSocket, 'CLOSING', {
+    value: 2,
+    writable : false,
+    enumerable : true,
+    configurable : false
+});
+Object.defineProperty(WebSocket, 'CLOSED', {
+    value: 3,
+    writable : false,
+    enumerable : true,
+    configurable : false
+});
 
 
 Test WebSocket connection with only identification.
@@ -105,6 +165,11 @@ Select inside the current scene:
 Move the current scene:
     onmousedown / onmouseup in scene
 	event.shiftKey
+
+Spatial version of Radix tree:
+	store 2 bytes in each node .. higher than the current bit
+	use these bytes when searching records to mitigate misses of close records
+	specific lookup that returns the closest found element
 
 - undo buffer.. last action / last continues simple edits
 	elder content around a position

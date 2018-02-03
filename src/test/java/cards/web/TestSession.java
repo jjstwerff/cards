@@ -48,9 +48,9 @@ public class TestSession {
 	}
 
 	/* Call the specified function in the specified javascript file */
-	private Object callJs(String file, String function, Object... parameters) throws Exception {
+	/* package private */ static Object callJs(String file, String function, Object... parameters) throws Exception {
 		ScriptEngine engine = new ScriptEngineManager().getEngineByName("nashorn");
-		engine.eval(new FileReader(getClass().getResource("/html/" + file).getFile()));
+		engine.eval(new FileReader(TestSession.class.getResource("/html/" + file).getFile()));
 		return ((Invocable) engine).invokeFunction(function, parameters);
 	}
 
