@@ -1,5 +1,11 @@
 var ws = null;
 
+class SomeThing {
+}
+
+if (typeof WebSocket === "undefined")
+  load('src/main/resources/html/websocket.js');
+
 function session(secret, name) { 
   var ws = new WebSocket("ws://localhost:8080");
   ws.onopen = function(event) {
